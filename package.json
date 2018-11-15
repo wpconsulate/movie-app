@@ -1,31 +1,43 @@
 {
-  "name": "movie-app",
+  "name": "empty-project-template",
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "test": "node node_modules/jest/bin/jest.js",
+    "lint": "tslint src/**/*.ts",
+    "tsc": "tsc",
+    "clean": "rimraf build",
+    "build": "yarn run clean && yarn run tsc --",
+    "watch": "yarn run build -- -w",
+    "watchAndRunAndroid": "concurrently \"yarn run watch\" \"yarn run android\"",
+    "buildRunAndroid": "yarn run build && yarn run watchAndRunAndroid ",
+    "watchAndRunIOS": "concurrently \"yarn run watch\" \"yarn run ios\"",
+    "buildRunIOS": "yarn run build && yarn run watchAndRunIOS ",
+    "watchAndStart": "concurrently \"yarn run watch\" \"yarn run start\"",
+    "buildAndStart": "yarn run build && yarn run watchAndStart "
   },
   "dependencies": {
-    "expo": "^30.0.1",
-    "jquery": "^3.3.1",
-    "react": "16.3.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "expo": "^31.0.2",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-vector-icons": "^6.0.2"
   },
-  "version": "1.0.0",
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lukepaoloni/movie-app.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lukepaoloni/movie-app/issues"
-  },
-  "homepage": "https://github.com/lukepaoloni/movie-app#readme",
-  "description": ""
+  "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "@types/react": "^16.7.6",
+    "@types/react-dom": "^16.0.9",
+    "@types/react-native": "^0.57.8",
+    "@types/react-test-renderer": "^16.0.3",
+    "babel-preset-expo": "^5.0.0",
+    "concurrently": "^4.0.1",
+    "react-native-typescript-transformer": "^1.2.10",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  }
 }
