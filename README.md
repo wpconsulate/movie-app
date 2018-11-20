@@ -96,6 +96,11 @@ Some helpful commands you will need to use to commit the changes you've made. (U
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
+## Common Issues
+when running npm if you get the message "device is not ready"
+check [user-aliases.cmd] of cmber
+Usually saved here "E:\Applications\Cmder\config" 
+
 ## Authors
 
 * **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
