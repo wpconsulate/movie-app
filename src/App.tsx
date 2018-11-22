@@ -1,13 +1,15 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React,  { Component } from 'react';
+import RootStack from './Navigation';
+import { createAppContainer } from 'react-navigation';
 
+const AppContainer = createAppContainer(RootStack);
+class App extends Component {
 
-function App(name: string) {
-  return (
-    <View>
-    <Text>{name}</Text>
-  </View>
-  )
+  render() {
+    return (
+      <AppContainer />
+    );
+  }
 }
 
 export default App;

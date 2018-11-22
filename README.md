@@ -96,8 +96,21 @@ Some helpful commands you will need to use to commit the changes you've made. (U
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
+## Common Issues
+when running npm if you get the message "device is not ready"
+check [user-aliases.cmd] of cmber
+Usually saved here "E:\Applications\Cmder\config"
+
+1. Issue: `import { createAppContainer } from 'react-navigation';` - Module '"f:/Projects/MobileApps/MovieApp/node_modules/@types/react-navigation/index"' has no exported member 'createAppContainer'. [2305]
+    
+    Fix: Navigate to the @types/react-navigation/index.d.ts file and export the member. and in the typed function createAppContainer
+    
+    `
+        export function createAppContainer(
+            routeConfigMap: NavigationRouteConfig
+        ): NavigationContainer;
+    
+    `
+
+
 ## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
