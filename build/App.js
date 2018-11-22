@@ -1,18 +1,18 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import Hello from "./components/Hello";
-export default class App extends React.Component {
+import React, { Component } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Home from './screens/Home';
+class App extends Component {
     render() {
-        return (React.createElement(View, { style: styles.container },
-            React.createElement(Hello, { name: "Luke", enthusiasmLevel: 2 })));
+        return (React.createElement(View, { style: styles.HomeView },
+            React.createElement(Home, null)));
     }
 }
 const styles = StyleSheet.create({
-    container: {
+    HomeView: {
         flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center"
+        paddingTop: 25,
+        backgroundColor: '#000000',
     }
 });
+export default App;
 //# sourceMappingURL=App.js.map
