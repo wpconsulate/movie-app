@@ -30,6 +30,7 @@
     "react-navigation": "^3.0.0"
   },
   "devDependencies": {
+    "@types/expo": "^31.0.0",
     "@types/jest": "^23.3.9",
     "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",
