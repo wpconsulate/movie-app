@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Image, ViewStyle, ImageStyle, ImageBackground, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, Image, ViewStyle, ImageStyle, TextStyle } from 'react-native';
 
 interface IProps {
     colour?: string
