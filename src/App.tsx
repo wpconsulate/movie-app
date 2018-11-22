@@ -1,26 +1,15 @@
-import React, { Component } from 'react'
-import { View, ViewStyle, StyleSheet } from 'react-native';
-import Home from './screens/Home';
+import React,  { Component } from 'react';
+import RootStack from './Navigation';
+import { createAppContainer } from 'react-navigation';
 
+const AppContainer = createAppContainer(RootStack);
 class App extends Component {
-    render() {
-        return (
-            <View style={styles.HomeView}>
-                <Home />
-            </View>
-        )
-    }
-}
 
-interface IStyles{
-    HomeView: ViewStyle
+  render() {
+    return (
+      <AppContainer />
+    );
+  }
 }
-const styles = StyleSheet.create<IStyles>({
-    HomeView: {
-        flex:1,
-        paddingTop: 25,
-        backgroundColor: '#000000',
-    }
-  });
 
 export default App;
