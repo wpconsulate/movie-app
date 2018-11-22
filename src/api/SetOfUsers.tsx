@@ -1,7 +1,8 @@
-import User from './User';
+import User from './User/User';
 
 class SetOfUsers extends Array<User>{
-        constructor() {
+    
+    constructor() {
         super();
     }
 
@@ -10,30 +11,32 @@ class SetOfUsers extends Array<User>{
     }
     
     public removeUser(aNum: number) {
-        if(this.findUserByID(aNum) != 0){
+        const user = this.findUserById(aNum);
+        if(user){
             super.slice(aNum);
         }       
     }
+
     public showUsers(){
         let list = 'Users: '
 
         this.forEach(element => {
             list = list += " "
-            list = list += element.getNickname();
+            list = list += element.getName();
             list = list += " -";
         });
 
         return list;
     }
 
-    public findUserByID(aNum: number): User {
-        let check = 0
-        this.forEach((element: User) => {
-            if(element.getId() === aNum){
-                check = aNum;
+    public findUserById(id: number): User|null {
+        for (let i = 0; i < this.length; i++) {
+            if (this[i].getId() === id) {
+                return this[i];
             }
-        });
-        return check;
+        }
+
+        return null;
     }
 }
 export default SetOfUsers;

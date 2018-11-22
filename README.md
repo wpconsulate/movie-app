@@ -112,5 +112,8 @@ Usually saved here "E:\Applications\Cmder\config"
     
     `
 
+2. Issue: `'node' is not recognized as an internal or external command`
+
+    Fix: `npm config set scripts-prepend-node-path true` then try `npm install` again.
 
 ## Authors

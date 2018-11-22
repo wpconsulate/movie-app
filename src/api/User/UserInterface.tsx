@@ -1,16 +1,20 @@
 interface IUser {
     getId(): number;
     
-    setEmail(newEmail: string): void;
+    setEmail(email: string): void;
     getEmail(): string;
     
-	setNickname(newNickname: string): void;
-    getNickname() : string;
+	setUsername(username: string): void;
+    getUsername() : string;
     
 	setFirstName(newFirstName: string): void;
     getFirstName(): string;
     
-	setSurname(newSurname: string): void;
+	setSurname(surname: string): void;
     getSurname(): string;
+
+    getName(): string;
+
+    toString(): string;
 }
 export default IUser;

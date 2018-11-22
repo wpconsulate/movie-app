@@ -17,7 +17,7 @@ class HomeScreen extends Component<IProps> {
     };
 
     render() {
-        const { navigate } = this.props.navigation;
+        // const { navigate } = this.props.navigation;
         return (
             <View>
                 <Upcoming/>
