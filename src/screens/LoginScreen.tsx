@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native'
+import React, { Component } from "react";
+import { Container, Content, Text } from "native-base";
 
 class LoginScreen extends Component {
-
-    render() {
-        return (
-            <View>
-                <Text>Login Screen</Text>
-            </View>
-        )
-    }
+  static navigationOptions = {
+    title: "Login"
+  };
+  render() {
+    return (
+      <Container>
+        <Content>
+          <Text>Login Screen</Text>
+        </Content>
+      </Container>
+    );
+  }
 }
 
 export default LoginScreen;

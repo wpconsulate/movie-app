@@ -3,8 +3,8 @@
     "module": "es2015",
     "target": "es2015",
     "jsx": "react",
-    "rootDir": "src",
-    "outDir": "build",
+    "rootDir": "./src",
+    "outDir": "./build",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "sourceMap": true,
@@ -23,14 +23,16 @@
     "src/**/*.tsx",
     "node_modules/typescript/lib/lib.es6.d.ts"
   ],
-  "types": ["react", "react-dom", "react-native"],
+  "types": ["react", "react-dom", "react-native", "react-navigation"],
   "exclude": [
     "build",
     "node_modules",
     "jest.config.js",
     "App.js",
     "babel.config.js",
-    "rn-cli.config.js"
+    "rn-cli.config.js",
+    "./src/native-base-theme",
+    "assets"
   ],
   "compileOnSave": false
 }

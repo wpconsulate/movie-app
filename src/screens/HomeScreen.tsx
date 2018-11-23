@@ -1,54 +1,70 @@
-import React, { Component } from 'react';
-import { View, } from 'react-native';
-import { Button, Icon, Text } from 'native-base';
-import Upcoming from '../containers/Upcoming';
-import { NavigationActions } from 'react-navigation';
-import { Font } from 'expo';
+import React, { Component } from "react";
+import {
+  Button,
+  Icon,
+  Text,
+  StyleProvider,
+  Container,
+  Header,
+  Content
+} from "native-base";
+import Upcoming from "../containers/Upcoming";
+import { NavigationScreenProps } from "react-navigation";
+import getTheme from "../native-base-theme/components";
+import mmdb from "../native-base-theme/variables/mmdb";
+import { Constants } from "expo";
+import { SafeAreaView } from "react-native";
 
 interface IProps {
-    navigation: any
+  navigation: Object;
 }
 
 class HomeScreen extends Component<IProps> {
-
-    static navigationOptions = (navigation) => {
-        return {
-            headerLeft: (
-                <Button onPress={() => NavigationActions.navigate({ routeName:  'Login'})}>
-                    <Icon name='person' />
-                </Button>
-            ),
-            headerTitle: (
-                <Button onPress={() => NavigationActions.navigate({ routeName:  'Home'})}>
-                    <Text>mmdb</Text>
-                </Button>
-            ),
-            headerRight: (
-                <Button onPress={() => NavigationActions.navigate({ routeName:  'Search'})}>
-                    <Icon name='search' />
-                </Button>
-            ),
-        };
+  static navigationOptions = ({ navigation }: NavigationScreenProps) => {
+    return {
+      headerTransparent: true,
+      headerBackgroundTransitionPreset: "fade",
+      headerLeft: (
+        <StyleProvider style={getTheme(mmdb)}>
+          <Button onPress={() => navigation.navigate("Login")} transparent>
+            <Icon name="person" style={{ color: "#fff" }} />
+          </Button>
+        </StyleProvider>
+      ),
+      headerTitle: (
+        <StyleProvider style={getTheme(mmdb)}>
+          <Button onPress={() => navigation.navigate("Home")} transparent>
+            <Text
+              style={{ fontFamily: "PoppinsBold", color: "#fff", fontSize: 18 }}
+            >
+              mmdb
+            </Text>
+          </Button>
+        </StyleProvider>
+      ),
+      headerRight: (
+        <StyleProvider style={getTheme(mmdb)}>
+          <Button onPress={() => navigation.navigate("Search")} transparent>
+            <Icon name="search" style={{ color: "#fff" }} />
+          </Button>
+        </StyleProvider>
+      )
     };
+  };
 
-    async componentWillMount() {
-        await Font.loadAsync({
-          'Roboto': require('native-base/Fonts/Roboto.ttf'),
-          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-        });
-      }
-      
-
-    render() {
-        // const { navigate } = this.props.navigation;
-        return (
-            <View>
-                <Upcoming/>
-            </View>
-        )
-    }
+  render() {
+    return (
+      <Container
+        style={{
+          backgroundColor: "#181F52"
+        }}
+      >
+        <Header transparent />
+        <Content style={{ marginTop: 25 }}>
+          <Upcoming />
+        </Content>
+      </Container>
+    );
+  }
 }
 export default HomeScreen;
-
-
-
