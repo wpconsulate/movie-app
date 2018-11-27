@@ -12,8 +12,8 @@ import Upcoming from "../containers/Upcoming";
 import { NavigationScreenProps } from "react-navigation";
 import getTheme from "../native-base-theme/components";
 import mmdb from "../native-base-theme/variables/mmdb";
-import { Constants } from "expo";
-import { SafeAreaView } from "react-native";
+import SetOfMovies from '../api/SetOfMovies';
+import Movie from '../api/Movie/Movie';
 
 interface IProps {
   navigation: Object;
@@ -51,6 +51,17 @@ class HomeScreen extends Component<IProps> {
       )
     };
   };
+
+  private movies = new SetOfMovies();
+
+  async renderMovies() {
+    const setOfMovies = await this.movies.getUpcomingMovies();
+    console.log(setOfMovies);
+  }
+
+  componentDidMount() {
+    this.renderMovies();
+  }
 
   render() {
     return (

@@ -2,6 +2,8 @@ import MovieInterface from "./MovieInteface";
 
 class Movie implements MovieInterface {
 
+	static ENTITY = 'movie';
+
 	private id: number;
 	private overview: string;
 	private poster: string;

@@ -1,4 +1,5 @@
 import Movie from './Movie/Movie';
+import Config from 'react-native-config';
 
 class SetOfMovies extends Array<Movie> {
     constructor() {
@@ -16,6 +17,20 @@ class SetOfMovies extends Array<Movie> {
         } else  {
             return 'No movie was found'; // Potentially create a error class to return that instead.
         }     
+    }
+
+    public async getUpcomingMovies() {
+        try {
+            const response = await fetch(`${Config.BASE_URL+Movie.ENTITY}/upcoming?api_key=${Config.API_KEY}&language=en-US&page=1`);
+            const responseJson = await response.json();
+            responseJson.results.forEach((movie: Movie) => {
+                this.addMovie(movie);
+            });
+            return this;
+        } catch (error) {
+            console.log(error);
+        }
+        return null;
     }
 
     public showMovies(){
