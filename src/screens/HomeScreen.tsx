@@ -12,8 +12,7 @@ import Upcoming from "../containers/Upcoming";
 import { NavigationScreenProps } from "react-navigation";
 import getTheme from "../native-base-theme/components";
 import mmdb from "../native-base-theme/variables/mmdb";
-import { Constants } from "expo";
-import { SafeAreaView } from "react-native";
+import TopRated from "../containers/TopRated";
 
 interface IProps {
   navigation: Object;
@@ -60,8 +59,12 @@ class HomeScreen extends Component<IProps> {
         }}
       >
         <Header transparent />
-        <Content style={{ marginTop: 25 }}>
+        <Content>
           <Upcoming />
+          <TopRated 
+          style={{
+          backgroundColor: "#ffffff"
+        }} />
         </Content>
       </Container>
     );

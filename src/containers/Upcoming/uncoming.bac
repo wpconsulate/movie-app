@@ -18,7 +18,7 @@ class Upcoming extends React.Component {
                 <Pill text="gdfgfdgfdg"/>
                 <Pill text="adssdsadsadasilfhaidufieau"/>
                 <Pill text="rwe"/>
-                <MovieCard text="this is a card when movie picture will be stored"/>
+                <MovieCard text="Wonder Women"/>
             </View>
         );
     }
