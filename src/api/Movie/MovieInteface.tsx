@@ -10,6 +10,15 @@ interface MovieInterface {
     
 	setTitle(title: string): void;
 	getTitle(): string;
+
+	setOverview(overview: string): void;
+	getOverview(): string;
+
+	getPopularity(): number;
+
+	getReleaseDate(): Date;
+
+	getRevenue(): number;
 }
 
 export default MovieInterface;

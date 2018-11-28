@@ -8,12 +8,10 @@ import {
   Header,
   Content
 } from "native-base";
-import Upcoming from "../containers/Upcoming";
 import { NavigationScreenProps } from "react-navigation";
 import getTheme from "../native-base-theme/components";
 import mmdb from "../native-base-theme/variables/mmdb";
-import SetOfMovies from '../api/SetOfMovies';
-import Movie from '../api/Movie/Movie';
+import { Card } from '../components';
 
 interface IProps {
   navigation: Object;
@@ -51,18 +49,6 @@ class HomeScreen extends Component<IProps> {
       )
     };
   };
-
-  private movies = new SetOfMovies();
-
-  async renderMovies() {
-    const setOfMovies = await this.movies.getUpcomingMovies();
-    console.log(setOfMovies);
-  }
-
-  componentDidMount() {
-    this.renderMovies();
-  }
-
   render() {
     return (
       <Container
@@ -72,7 +58,7 @@ class HomeScreen extends Component<IProps> {
       >
         <Header transparent />
         <Content style={{ marginTop: 25 }}>
-          <Upcoming />
+          <Card title="Star Wars: The Last Jedi" bgImage="https://upload.wikimedia.org/wikipedia/en/7/7f/Star_Wars_The_Last_Jedi.jpg" height={400}  />
         </Content>
       </Container>
     );
