@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "es2015",
-    "target": "es2015",
+    "module": "es6",
+    "target": "es6",
     "jsx": "react",
     "rootDir": "./src",
     "outDir": "./build",
