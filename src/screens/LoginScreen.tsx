@@ -1,7 +1,20 @@
 import React, { Component } from 'react'
-import { Button, Input, Container, Text, Body } from 'native-base'
+import {
+  Button,
+  Icon,
+  Container,
+  Text,
+  Body,
+  Header,
+  StyleProvider,
+  Row,
+  Col,
+} from 'native-base'
 import Firebase from 'firebase'
-
+import getTheme from '../native-base-theme/components'
+import mmdb from '../native-base-theme/variables/mmdb'
+import { NavigationScreenProps } from 'react-navigation'
+import SvgUri from 'react-native-svg-uri'
 interface IState {
   error: string
   password: string
@@ -10,8 +23,29 @@ interface IState {
 }
 interface IProps {}
 class LoginScreen extends Component<IProps, IState> {
-  static navigationOptions = {
-    title: 'Login',
+  static navigationOptions = ({ navigation }: NavigationScreenProps) => {
+    return {
+      headerTransparent: true,
+      headerBackgroundTransitionPreset: 'fade',
+      headerLeft: (
+        <StyleProvider style={getTheme(mmdb)}>
+          <Button onPress={() => navigation.navigate('Home')} transparent>
+            <Icon name="close" style={{ color: '#fff' }} />
+          </Button>
+        </StyleProvider>
+      ),
+      headerTitle: (
+        <StyleProvider style={getTheme(mmdb)}>
+          <Button onPress={() => navigation.navigate('Home')} transparent>
+            <Text
+              style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
+            >
+              mmdb
+            </Text>
+          </Button>
+        </StyleProvider>
+      ),
+    }
   }
   constructor(props: IProps) {
     super(props)
@@ -64,33 +98,21 @@ class LoginScreen extends Component<IProps, IState> {
   render() {
     return (
       <Container>
-        <Body>
-          <Text>Login Screen</Text>
-          <Text
-            style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-          >
-            Username/Email
-          </Text>
-          <Input
-            style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-            onChangeText={email => this.setState({ email })}
-          />
-          <Text
-            style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-          >
-            Password
-          </Text>
-          <Input
-            style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-            onChangeText={password => this.setState({ password })}
-          />
-          <Button full light onPress={() => this.onLoginPress()}>
-            <Text>Login</Text>
-          </Button>
-
-          <Button full light onPress={() => this.onSignupPress()}>
-            <Text>Sign up</Text>
-          </Button>
+        {/* <Header transparent></Header> */}
+        <SvgUri
+          source={require('../../assets/red-blue-abstract.svg')}
+          width="100%"
+          height={85}
+        />
+        <Body style={{ marginTop: 50 }}>
+          <Row>
+            <Col>
+              <Text>Login</Text>
+            </Col>
+            <Col>
+              <Text>Sign in to your account</Text>
+            </Col>
+          </Row>
         </Body>
       </Container>
     )
