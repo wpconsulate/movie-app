@@ -34,7 +34,7 @@ class MovieCard extends Component<IProps> {
         return (
             <View style={shapes.card}>
                 <Image source={pic} style={shapes.image}/>
-                <Text style={shapes.text}>Wonder Women</Text>
+                <Text style={shapes.text}>{this.props.text}</Text>
             </View>
         )
     }

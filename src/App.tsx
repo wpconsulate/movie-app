@@ -23,6 +23,7 @@ class App extends Component<PropsInterface, StateInterface> {
         Poppins: require('../assets/fonts/Poppins/Regular.ttf'),
         PoppinsBold: require('../assets/fonts/Poppins/Bold.ttf'),
         PoppinsLight: require('../assets/fonts/Poppins/Light.ttf'),
+        PoppinsMedium: require('../assets/fonts/Poppins/Medium.ttf')
       })
       this.setState({ fontLoaded: true })
     } catch (error) {
