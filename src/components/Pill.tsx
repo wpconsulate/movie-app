@@ -13,7 +13,7 @@ class Pill extends Component<IProps> {
         const shapes = StyleSheet.create({
             pill: {
                 justifyContent: "center",
-                backgroundColor: "red",
+                backgroundColor: '#e0e0e0',
                 borderRadius: 16,
                 paddingLeft: 12,
                 paddingRight: 12,

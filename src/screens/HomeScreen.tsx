@@ -11,7 +11,7 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
-import Upcoming from '../containers/Upcoming'
+import { Upcoming, TopRated, Trending } from '../containers'
 
 interface IProps {
   navigation: Object
@@ -57,7 +57,11 @@ class HomeScreen extends Component<IProps> {
         }}
       >
         <Header transparent />
-        <Upcoming />
+        <Content>
+          <Upcoming />
+          <TopRated />
+          <Trending />
+        </Content>
       </Container>
     )
   }

@@ -46,7 +46,7 @@ class Movie implements MovieInterface {
 		this.poster_path = newPoster;
 	}
 
-	public getPoster(width?: string): string {
+	public getPoster(width?: string | number): string {
 		let posterWidth = (width) ? `w${width}` : 'original';
 		return Config.IMAGE_URL+posterWidth+this.poster_path;
 	}
@@ -55,7 +55,11 @@ class Movie implements MovieInterface {
 		this.title = newTitle;
 	}
 
-	public getTitle(): string {
+	public getTitle(excerpt?:number): string {
+		if(excerpt)
+		{
+			return this.title.substr(0, excerpt) + '...';
+		}
 		return this.title;
 	}
 
