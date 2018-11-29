@@ -21,6 +21,7 @@
     "buildAndStart": "yarn run build && yarn run watchAndStart "
   },
   "dependencies": {
+    "@firebase/polyfill": "^0.3.3",
     "@types/firebase": "^3.2.1",
     "expo": "^31.0.2",
     "firebase": "^5.5.9",

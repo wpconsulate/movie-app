@@ -33,8 +33,13 @@ class StackOfCards extends Component<IProps> {
         renderItem={this._renderItem.bind(this)}
         sliderWidth={this.props.sliderWidth}
         itemWidth={this.props.itemWidth}
-        layout={'tinder'}
-        firstItem={0}
+        layout={'stack'}
+        layoutCardOffset={18}
+        slideStyle={{
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          alignSelf: 'flex-start',
+        }}
       />
     )
   }

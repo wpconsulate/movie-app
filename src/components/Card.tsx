@@ -42,6 +42,7 @@ class Card extends Component<IProps> {
       view: {
         flex: 1,
         alignItems: 'center',
+        alignSelf: 'flex-start',
         justifyContent: 'center',
         width: '100%',
       },
@@ -88,7 +89,7 @@ class Card extends Component<IProps> {
             }}
           >
             <LinearGradient
-              colors={['rgba(226, 15, 15, 100)', 'rgba(226, 15, 15, 0.25)']}
+              colors={['rgba(226, 15, 15, 100)', 'rgba(226, 15, 15, 0.65)']}
               start={[0.5, 0.9]}
               end={[0.5, 0]}
               style={{
