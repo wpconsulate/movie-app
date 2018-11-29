@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native';
-import Pill from '../../components/pill';
-import MovieCard from '../../components/MovieCard';
+import { Pill, MovieCard } from '../components';
+
 class Upcoming extends React.Component {
     render() {
         const style = StyleSheet.create({

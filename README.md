@@ -116,4 +116,23 @@ Usually saved here "E:\Applications\Cmder\config"
 
     Fix: `npm config set scripts-prepend-node-path true` then try `npm install` again.
 
+3. virtualizedList type script error 'export class VirtualizedList<ItemT> extends React.Component<
+  VirtualizedListProps<ItemT>
+> {
+  scrollToEnd: (params?: { animated?: boolean }) => void;
+  scrollToIndex: (
+    params: {
+      animated?: boolean;
+      index: number;
+      viewOffset?: number;
+      viewPosition?: number;
+    }
+  ) => void;
+  scrollToItem: (
+    params: { animated?: boolean; item: ItemT; viewPosition?: number }
+  ) => void;
+  scrollToOffset: (params: { animated?: boolean; offset: number }) => void;
+  recordInteraction: () => void;
+}'
+    import that here 'E:\Applications\reactApp\movie-app\node_modules\@types\react-native\index.d.ts' yours may be different
 ## Authors
