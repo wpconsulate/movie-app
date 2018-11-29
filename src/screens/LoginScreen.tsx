@@ -1,26 +1,20 @@
 import React, { Component } from 'react'
 import {
-  Button,
-  Icon,
   Container,
   Text,
   Body,
   Header,
-  StyleProvider,
   Row,
   Col,
+  StyleProvider,
+  Button,
+  Icon,
 } from 'native-base'
-import Firebase from 'firebase'
+import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import SvgUri from 'react-native-svg-uri'
-interface IState {
-  error: string
-  password: string
-  email: string
-  isLoaded: boolean
-}
+interface IState {}
 interface IProps {}
 class LoginScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -47,62 +41,21 @@ class LoginScreen extends Component<IProps, IState> {
       ),
     }
   }
-  constructor(props: IProps) {
-    super(props)
-    const config = {
-      apiKey: 'AIzaSyBzJnfVx8xNOFa2RVXJHc3TgBPO4vtmJSE',
-      authDomain: 'movie-app-73c3a.firebaseapp.com',
-      databaseURL: 'https://movie-app-73c3a.firebaseio.com',
-      projectId: 'movie-app-73c3a',
-      storageBucket: 'movie-app-73c3a.appspot.com',
-      messagingSenderId: '852865426325',
-    }
-    Firebase.initializeApp(config)
-    this.state = {
-      error: '',
-      password: '',
-      email: '',
-      isLoaded: false,
-    }
-  }
-
-  onLoginPress() {
-    const { password, email } = this.state
-
-    Firebase.auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState({ error: '', isLoaded: true })
-        console.log('Signed in')
-      })
-      .catch(() => {
-        this.setState({ error: 'Authentication Failed', isLoaded: false })
-        console.error('Unable to sign in.')
-      })
-  }
-
-  onSignupPress() {
-    const { password, email } = this.state
-    Firebase.auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState({ error: '', isLoaded: true })
-        console.log('WORKS')
-      })
-      .catch(() => {
-        this.setState({ error: 'Authentication Failed', isLoaded: false })
-        console.log('FAILED')
-      })
-  }
 
   render() {
     return (
       <Container>
-        {/* <Header transparent></Header> */}
-        <SvgUri
-          source={require('../../assets/red-blue-abstract.svg')}
-          width="100%"
-          height={85}
+        <Header transparent />
+        <AutoHeightImage
+          source={require('../../assets/header.png')}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: -1,
+          }}
+          width={100}
         />
         <Body style={{ marginTop: 50 }}>
           <Row>
