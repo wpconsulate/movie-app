@@ -6,6 +6,7 @@ import {
   StyleProvider,
   Container,
   Header,
+  Content,
 } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
@@ -53,7 +54,6 @@ class HomeScreen extends Component<IProps> {
       <Container
         style={{
           backgroundColor: '#181F52',
-          paddingHorizontal: 25,
         }}
       >
         <Header transparent />

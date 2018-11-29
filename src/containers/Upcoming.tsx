@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Content, View, Text, Container } from 'native-base'
+import { View, Text } from 'native-base'
 import { StackOfCards } from '../components'
 import { SetOfMovies } from '../api'
 import { ActivityIndicator, Dimensions } from 'react-native'
@@ -34,9 +34,9 @@ class Upcoming extends Component<IProps, IState> {
     const deviceWidth = Dimensions.get('window').width
     const deviceHeight = Dimensions.get('window').height
 
-    const sliderWidth = Math.round(deviceWidth - 10)
+    const sliderWidth = Math.round(deviceWidth)
     const sliderHeight = Math.round(deviceHeight * 0.5)
-    const itemWidth = Math.round(sliderWidth - 10)
+    const itemWidth = Math.round(sliderWidth - 50)
 
     if (!isLoaded) {
       return (
@@ -52,8 +52,6 @@ class Upcoming extends Component<IProps, IState> {
           flexDirection: 'row',
           flexWrap: 'wrap',
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'flex-start',
         }}
       >
         <View style={{ width: '100%' }}>
@@ -72,15 +70,13 @@ class Upcoming extends Component<IProps, IState> {
           style={{
             width: '100%',
             height: sliderHeight,
-            alignItems: 'flex-start',
-            justifyContent: 'flex-start',
           }}
         >
           <StackOfCards
             data={upcomingMovies}
             height={sliderHeight}
             sliderWidth={sliderWidth}
-            itemWidth={sliderWidth}
+            itemWidth={itemWidth}
           />
         </View>
       </View>
