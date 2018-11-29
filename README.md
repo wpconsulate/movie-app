@@ -88,13 +88,13 @@ Some helpful commands you will need to use to commit the changes you've made. (U
 #### Pushing to the repository
 
 1. ```git add .```
-2. ```git commit -m "Added unit tests"```
+2. ```git commit -m "YOUR COMMENTS GOES HERE"```
 3. ```git push origin master```
 
 #### Pulling from the repository & then push to the repository
 
 1. ```git add .```
-2. ```git commit -m "Added unit tests"```
+2. ```git commit -m "YOUR COMMENTS GOES HERE"```
 3. ```git pull origin master```
 
 #### If you get CONFLICTS, open Visual Code (with the project inside), find the conflicts and fix them.
