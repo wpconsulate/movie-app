@@ -53,7 +53,7 @@ class HomeScreen extends Component<IProps> {
     return (
       <Container
         style={{
-          backgroundColor: '#181F52',
+          backgroundColor: '#12152D',
         }}
       >
         <Header transparent />

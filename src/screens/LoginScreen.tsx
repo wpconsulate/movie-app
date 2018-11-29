@@ -2,18 +2,23 @@ import React, { Component } from 'react'
 import {
   Container,
   Text,
-  Body,
+  Content,
   Header,
   Row,
   Col,
   StyleProvider,
   Button,
   Icon,
+  Input,
+  Form,
+  Item,
+  Label,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
+import { Dimensions } from 'react-native'
 interface IState {}
 interface IProps {}
 class LoginScreen extends Component<IProps, IState> {
@@ -53,20 +58,58 @@ class LoginScreen extends Component<IProps, IState> {
             top: 0,
             left: 0,
             right: 0,
-            zIndex: -1,
+            width: '100%',
           }}
-          width={100}
+          width={Dimensions.get('window').width}
         />
-        <Body style={{ marginTop: 50 }}>
-          <Row>
+        <Content
+          style={{ position: 'relative', top: '10%', paddingHorizontal: 30 }}
+        >
+          <Row
+            style={{ alignItems: 'center', justifyContent: 'space-between' }}
+          >
             <Col>
-              <Text>Login</Text>
+              <Text
+                style={{
+                  fontFamily: 'PoppinsBold',
+                  fontSize: 26,
+                  color: '#12152D',
+                }}
+              >
+                Login
+              </Text>
             </Col>
             <Col>
-              <Text>Sign in to your account</Text>
+              <Text
+                style={{
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 12,
+                  color: '#696969',
+                }}
+              >
+                Sign in to your account
+              </Text>
             </Col>
           </Row>
-        </Body>
+          <Row>
+            <Col>
+              <Form>
+                <Item floatingLabel style={{ marginLeft: 0, marginTop: 30 }}>
+                  <Label>EMAIL</Label>
+                  <Input label="EMAIL" autoFocus keyboardType="email-address" />
+                </Item>
+                <Item floatingLabel style={{ marginLeft: 0, marginTop: 30 }}>
+                  <Label>PASSWORD</Label>
+                  <Input
+                    label="PASSWORD"
+                    keyboardType="visible-password"
+                    secureTextEntry
+                  />
+                </Item>
+              </Form>
+            </Col>
+          </Row>
+        </Content>
       </Container>
     )
   }

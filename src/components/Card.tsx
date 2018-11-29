@@ -42,7 +42,6 @@ class Card extends Component<IProps> {
       view: {
         flex: 1,
         alignItems: 'center',
-        // alignSelf: 'flex-start',
         justifyContent: 'center',
         width: '100%',
       },
