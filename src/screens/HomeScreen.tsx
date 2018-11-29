@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Button,
   Icon,
@@ -16,26 +16,25 @@ import Upcoming from '../containers/Upcoming';
 import Trending from "../containers/Trending";
 
 interface IProps {
-  navigation: Object;
+  navigation: Object
 }
-
 class HomeScreen extends Component<IProps> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
       headerTransparent: true,
-      headerBackgroundTransitionPreset: "fade",
+      headerBackgroundTransitionPreset: 'fade',
       headerLeft: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate("Login")} transparent>
-            <Icon name="person" style={{ color: "#fff" }} />
+          <Button onPress={() => navigation.navigate('Login')} transparent>
+            <Icon name="person" style={{ color: '#fff' }} />
           </Button>
         </StyleProvider>
       ),
       headerTitle: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate("Home")} transparent>
+          <Button onPress={() => navigation.navigate('Home')} transparent>
             <Text
-              style={{ fontFamily: "PoppinsBold", color: "#fff", fontSize: 18 }}
+              style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
             >
               mmdb
             </Text>
@@ -44,18 +43,20 @@ class HomeScreen extends Component<IProps> {
       ),
       headerRight: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate("Search")} transparent>
-            <Icon name="search" style={{ color: "#fff" }} />
+          <Button onPress={() => navigation.navigate('Search')} transparent>
+            <Icon name="search" style={{ color: '#fff' }} />
           </Button>
         </StyleProvider>
-      )
-    };
-  };
+      ),
+    }
+  }
+
   render() {
     return (
       <Container
         style={{
-          backgroundColor: "#181F52"
+          backgroundColor: '#181F52',
+          paddingHorizontal: 25,
         }}
       >
         <Header transparent />
@@ -65,7 +66,7 @@ class HomeScreen extends Component<IProps> {
           <Trending/>
         </Content>
       </Container>
-    );
+    )
   }
 }
-export default HomeScreen;
+export default HomeScreen

@@ -25,4 +25,4 @@ class Upcoming extends React.Component {
 } 
 
 
-export default Upcoming;
+export default Upcoming

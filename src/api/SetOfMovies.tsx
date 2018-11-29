@@ -1,23 +1,23 @@
-import Movie from './Movie/Movie';
-import Config from '../Config';
+import Movie from './Movie/Movie'
+import Config from '../Config'
 
 class SetOfMovies extends Array<Movie> {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super()
+  }
 
-    public addMovie(movie: any) {
-        super.push(new Movie(movie));
-    }
+  public addMovie(movie: any) {
+    super.push(new Movie(movie))
+  }
 
-    public removeMovie(aNum: number): void|string {
-        const movie = this.findMovieById(aNum);
-        if(movie){
-            super.slice(aNum);
-        } else  {
-            return 'No movie was found'; // Potentially create a error class to return that instead.
-        }     
+  public removeMovie(aNum: number): void | string {
+    const movie = this.findMovieById(aNum)
+    if (movie) {
+      super.slice(aNum)
+    } else {
+      return 'No movie was found' // Potentially create a error class to return that instead.
     }
+  }
 
     public async getUpcoming():Promise<SetOfMovies>|null {
         try {
@@ -48,7 +48,7 @@ class SetOfMovies extends Array<Movie> {
         }
         return null;
     }
-
+    
     public async getTrending():Promise<SetOfMovies>|null {
         const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`;
         
@@ -65,29 +65,27 @@ class SetOfMovies extends Array<Movie> {
         return null;
     }
 
+  public showMovies() {
+    let list = 'Users: '
 
-    public showMovies(){
-        let list = 'Users: '
+    this.forEach(element => {
+      list = list += ' '
+      list = list += element.getTitle()
+      list = list += ' -'
+    })
 
-        this.forEach((element) => {
-            list = list += " "
-            list = list += element.getTitle();
-            list = list += " -";
-        });
+    return list
+  }
 
-        return list;
+  public findMovieById(id: number): Movie | null {
+    for (let i = 0; i < this.length; i++) {
+      if (this[i].getId() === id) {
+        return this[i]
+      }
     }
 
-    public findMovieById(id: number): Movie|null {
-        for (let i = 0; i < this.length; i++) {
-            if (this[i].getId() === id) {
-                return this[i];
-            }
-        }
-
-        return null;
-    }
-
+    return null
+  }
 }
 
-export default SetOfMovies;
+export default SetOfMovies
