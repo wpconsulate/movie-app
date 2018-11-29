@@ -6,14 +6,12 @@ import {
   StyleProvider,
   Container,
   Header,
-  Content
-} from "native-base";
-import { NavigationScreenProps } from "react-navigation";
-import getTheme from "../native-base-theme/components";
-import mmdb from "../native-base-theme/variables/mmdb";
-import TopRated from '../containers/TopRated';
-import Upcoming from '../containers/Upcoming';
-import Trending from "../containers/Trending";
+  Content,
+} from 'native-base'
+import { NavigationScreenProps } from 'react-navigation'
+import getTheme from '../native-base-theme/components'
+import mmdb from '../native-base-theme/variables/mmdb'
+import { Upcoming, TopRated, Trending } from '../containers'
 
 interface IProps {
   navigation: Object
@@ -56,14 +54,13 @@ class HomeScreen extends Component<IProps> {
       <Container
         style={{
           backgroundColor: '#181F52',
-          paddingHorizontal: 25,
         }}
       >
         <Header transparent />
         <Content>
           <Upcoming />
           <TopRated />
-          <Trending/>
+          <Trending />
         </Content>
       </Container>
     )

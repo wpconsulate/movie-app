@@ -42,7 +42,7 @@ class Card extends Component<IProps> {
       view: {
         flex: 1,
         alignItems: 'center',
-        alignSelf: 'flex-start',
+        // alignSelf: 'flex-start',
         justifyContent: 'center',
         width: '100%',
       },
@@ -72,7 +72,7 @@ class Card extends Component<IProps> {
       <View style={styles.view}>
         <NativeCard
           style={{
-            width: width ? width : '90%',
+            width: width ? width : '100%',
             height: height,
             borderRadius: 16,
             borderColor: 'transparent',
