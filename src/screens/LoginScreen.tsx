@@ -13,6 +13,7 @@ import {
   Form,
   Item,
   Label,
+  View,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -21,6 +22,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions } from 'react-native'
 interface IState {}
 interface IProps {}
+
 class LoginScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -62,9 +64,7 @@ class LoginScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <Content
-          style={{ position: 'relative', top: '10%', paddingHorizontal: 30 }}
-        >
+        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
@@ -83,7 +83,7 @@ class LoginScreen extends Component<IProps, IState> {
               <Text
                 style={{
                   fontFamily: 'PoppinsMedium',
-                  fontSize: 12,
+                  fontSize: 14,
                   color: '#696969',
                 }}
               >
@@ -91,22 +91,130 @@ class LoginScreen extends Component<IProps, IState> {
               </Text>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginTop: 30 }}>
             <Col>
               <Form>
-                <Item floatingLabel style={{ marginLeft: 0, marginTop: 30 }}>
-                  <Label>EMAIL</Label>
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
+                    EMAIL
+                  </Label>
                   <Input label="EMAIL" autoFocus keyboardType="email-address" />
                 </Item>
-                <Item floatingLabel style={{ marginLeft: 0, marginTop: 30 }}>
-                  <Label>PASSWORD</Label>
-                  <Input
-                    label="PASSWORD"
-                    keyboardType="visible-password"
-                    secureTextEntry
-                  />
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
+                    PASSWORD
+                  </Label>
+                  <Row>
+                    <Input
+                      label="PASSWORD"
+                      keyboardType="visible-password"
+                      secureTextEntry
+                    />
+                    <Button transparent>
+                      <Text
+                        style={{
+                          color: '#E20F0F',
+                          fontFamily: 'PoppinsMedium',
+                          fontSize: 12,
+                        }}
+                      >
+                        Show
+                      </Text>
+                    </Button>
+                  </Row>
                 </Item>
+                <Row
+                  style={{ alignItems: 'center', justifyContent: 'flex-end' }}
+                >
+                  <Col style={{ alignSelf: 'flex-end' }}>
+                    <Button transparent>
+                      <Text
+                        style={{
+                          color: '#12152D',
+                          fontFamily: 'PoppinsMedium',
+                          fontSize: 12,
+                        }}
+                      >
+                        Forgot password?
+                      </Text>
+                    </Button>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginTop: 40,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Col style={{ maxWidth: 250 }}>
+                    <Button
+                      rounded
+                      primary
+                      block
+                      style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
+                    >
+                      <Text>Login</Text>
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
+            </Col>
+          </Row>
+          <Row
+            style={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: 20,
+            }}
+          >
+            <Col>
+              <Text>Don't have an account?</Text>
+            </Col>
+            <Col>
+              <Button transparent>
+                <Text>Register now</Text>
+              </Button>
+            </Col>
+          </Row>
+          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Col>
+              <View />
+            </Col>
+            <Col>
+              <Text>OR WITH</Text>
+            </Col>
+            <Col>
+              <View />
+            </Col>
+          </Row>
+          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Col>
+              <Button rounded primary>
+                <Icon type="FontAwesome" name="facebook" />
+              </Button>
+            </Col>
+            <Col>
+              <Button rounded primary>
+                <Icon type="FontAwesome" name="google-plus" />
+              </Button>
+            </Col>
+            <Col>
+              <Button rounded primary>
+                <Icon type="FontAwesome" name="twitter" />
+              </Button>
             </Col>
           </Row>
         </Content>
@@ -114,5 +222,4 @@ class LoginScreen extends Component<IProps, IState> {
     )
   }
 }
-
 export default LoginScreen
