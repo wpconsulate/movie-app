@@ -19,51 +19,57 @@ class SetOfMovies extends Array<Movie> {
     }
   }
 
-    public async getUpcoming():Promise<SetOfMovies>|null {
-        try {
-            const response = await fetch(`${Config.BASE_URL+Movie.ENTITY}/upcoming?api_key=${Config.API_KEY}&language=en-US&page=1`);
-            const responseJson = await response.json();
-            responseJson.results.forEach((movie: Movie) => {
-                this.addMovie(movie);
-            });
-            return this;
-        } catch (error) {
-            console.log(error);
-        }
-        return null;
+  public async getUpcoming(): Promise<SetOfMovies> | null {
+    try {
+      const response = await fetch(
+        `${Config.BASE_URL + Movie.ENTITY}/upcoming?api_key=${
+          Config.API_KEY
+        }&language=en-US&page=1`
+      )
+      const responseJson = await response.json()
+      responseJson.results.forEach((movie: Movie) => {
+        this.addMovie(movie)
+      })
+      return this
+    } catch (error) {
+      console.log(error)
     }
+    return null
+  }
 
-    public async getTopRated(page?: number):Promise<SetOfMovies>|null {
-        let pageNumber = (page) ? page : 1;
-        const url = `${Config.BASE_URL+Movie.ENTITY}/top_rated?api_key=${Config.API_KEY}&language=en-US&page=${pageNumber}`;
-        try {
-            const response = await fetch(url);
-            const responseJson = await response.json();
-            responseJson.results.forEach((movie: Movie) => {
-                this.addMovie(movie);
-            });
-            return this;
-        } catch (error) {
-            console.log(error);
-        }
-        return null;
+  public async getTopRated(page?: number): Promise<SetOfMovies> | null {
+    let pageNumber = page ? page : 1
+    const url = `${Config.BASE_URL + Movie.ENTITY}/top_rated?api_key=${
+      Config.API_KEY
+    }&language=en-US&page=${pageNumber}`
+    try {
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      responseJson.results.forEach((movie: Movie) => {
+        this.addMovie(movie)
+      })
+      return this
+    } catch (error) {
+      console.log(error)
     }
-    
-    public async getTrending():Promise<SetOfMovies>|null {
-        const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`;
-        
-        try {
-            const response = await fetch(url);
-            const responseJson = await response.json();
-            responseJson.results.forEach((movie: Movie) => {
-                this.addMovie(movie);
-            });
-            return this;
-        } catch (error) {
-            console.log(error);
-        }
-        return null;
+    return null
+  }
+
+  public async getTrending(): Promise<SetOfMovies> | null {
+    const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`
+
+    try {
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      responseJson.results.forEach((movie: Movie) => {
+        this.addMovie(movie)
+      })
+      return this
+    } catch (error) {
+      console.log(error)
     }
+    return null
+  }
 
   public showMovies() {
     let list = 'Users: '
@@ -77,13 +83,16 @@ class SetOfMovies extends Array<Movie> {
     return list
   }
 
-  public findMovieById(id: number): Movie | null {
-    for (let i = 0; i < this.length; i++) {
-      if (this[i].getId() === id) {
-        return this[i]
-      }
-    }
+  public async findMovieById(id: number): Promise<Movie | null> {
+    const url = `${Config.BASE_URL}movie/${id}?api_key=${Config.API_KEY}`
 
+    try {
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      return new Movie(responseJson)
+    } catch (error) {
+      console.error(error)
+    }
     return null
   }
 }

@@ -22,6 +22,8 @@ class StackOfCards extends Component<IProps> {
         title={item.getTitle()}
         bgImage={item.getPoster()}
         height={this.props.height}
+        route={'MovieScreen'}
+        params={{ movieId: item.getId() }}
       />
     )
   }
