@@ -2,13 +2,27 @@ import React from 'react'
 import { View, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
 import SetOfMovies from '../api/SetOfMovies'
 import { Movie } from '../api'
-import { NavigationActions } from 'react-navigation'
-interface IProps {
+import {
+  NavigationInjectedProps,
+  withNavigation,
+  NavigationScreenProp,
+  NavigationRoute,
+  NavigationParams,
+} from 'react-navigation'
+interface IProps extends NavigationInjectedProps {
   data: SetOfMovies
   title: String
 }
-
-export default function MovieSlider(props: IProps) {
+function handleOnPress(
+  navigation: NavigationScreenProp<
+    NavigationRoute<NavigationParams>,
+    NavigationParams
+  >,
+  movie: Movie
+) {
+  navigation.push('Movie', { movieId: movie.getId() })
+}
+function MovieSlider(props: IProps) {
   const topRated = props.data
   return (
     <View>
@@ -28,12 +42,7 @@ export default function MovieSlider(props: IProps) {
             <TouchableOpacity
               style={{ alignItems: 'center', maxWidth: 100, margin: 10 }}
               key={movie.getId()}
-              onPress={() =>
-                NavigationActions.navigate({
-                  routeName: 'MovieScreen',
-                  params: { movieId: movie.getId() },
-                })
-              }
+              onPress={() => handleOnPress(props.navigation, movie)}
             >
               <Image
                 style={{ width: 100, height: 150, borderRadius: 10 }}
@@ -55,3 +64,4 @@ export default function MovieSlider(props: IProps) {
     </View>
   )
 }
+export default withNavigation(MovieSlider)

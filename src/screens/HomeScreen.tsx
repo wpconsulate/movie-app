@@ -13,10 +13,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { Upcoming, TopRated, Trending } from '../containers'
 
-interface IProps {
-  navigation: Object
-}
-class HomeScreen extends Component<IProps> {
+class HomeScreen extends Component<NavigationScreenProps> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
       headerTransparent: true,

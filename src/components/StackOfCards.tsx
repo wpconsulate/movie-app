@@ -3,8 +3,15 @@ import SetOfMovies from '../api/SetOfMovies'
 import Movie from '../api/Movie/Movie'
 import Card from './Card'
 import Carousel from 'react-native-snap-carousel'
+import {
+  NavigationInjectedProps,
+  withNavigation,
+  NavigationScreenProp,
+  NavigationRoute,
+  NavigationParams,
+} from 'react-navigation'
 
-interface IProps {
+interface IProps extends NavigationInjectedProps {
   data: Array<any> | SetOfMovies
   height: number
   sliderWidth: number
@@ -16,14 +23,24 @@ class StackOfCards extends Component<IProps> {
     super(props)
   }
 
+  _handleOnPress(
+    navigation: NavigationScreenProp<
+      NavigationRoute<NavigationParams>,
+      NavigationParams
+    >,
+    movie: Movie
+  ) {
+    console.log('pressed!')
+    navigation.push('Movie', { movieId: movie.getId() })
+  }
+
   _renderItem({ item }: { item: Movie }) {
     return (
       <Card
         title={item.getTitle()}
         bgImage={item.getPoster()}
         height={this.props.height}
-        route={'MovieScreen'}
-        params={{ movieId: item.getId() }}
+        onPress={() => this._handleOnPress(this.props.navigation, item)}
       />
     )
   }
@@ -47,4 +64,4 @@ class StackOfCards extends Component<IProps> {
   }
 }
 
-export default StackOfCards
+export default withNavigation(StackOfCards)
