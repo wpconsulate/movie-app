@@ -37,14 +37,7 @@ class Upcoming extends Component<IProps, IState> {
     const sliderWidth = Math.round(deviceWidth)
     const sliderHeight = Math.round(deviceHeight * 0.5)
     const itemWidth = Math.round(sliderWidth - 50)
-    console.log(
-      <StackOfCards
-        data={upcomingMovies}
-        height={sliderHeight}
-        sliderWidth={sliderWidth}
-        itemWidth={itemWidth}
-      />
-    )
+
     if (!isLoaded) {
       return (
         <View style={{ flex: 1, padding: 20 }}>

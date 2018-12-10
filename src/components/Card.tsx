@@ -7,21 +7,17 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
+  GestureResponderEvent,
 } from 'react-native'
 import { Card as NativeCard, CardItem, Body, Text, Button } from 'native-base'
 import SvgUri from 'react-native-svg-uri'
 import { LinearGradient } from 'expo'
-import { NavigationActions } from 'react-navigation'
-interface IParams {
-  movieId: number
-}
 interface IProps {
   title: string
   bgImage: string
   width?: number | string
   height: number | string
-  route: string
-  params: IParams
+  onPress?: (event: GestureResponderEvent) => void
 }
 
 interface IStyles {
@@ -36,7 +32,7 @@ class Card extends Component<IProps> {
     super(props)
   }
   render() {
-    const { width, title, bgImage, height, route, params } = this.props
+    const { width, title, bgImage, height } = this.props
 
     const styles = StyleSheet.create<IStyles>({
       view: {
@@ -67,13 +63,8 @@ class Card extends Component<IProps> {
       },
     })
 
-    const navigationAction = NavigationActions.navigate({
-      routeName: route,
-      params: params,
-    })
-
     return (
-      <TouchableOpacity onPress={() => navigationAction}>
+      <TouchableOpacity onPress={() => this.props.onPress}>
         <View style={styles.view}>
           <NativeCard
             style={{
