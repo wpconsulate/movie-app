@@ -10,7 +10,7 @@ interface MovieProperties {
   revenue: number
   genres: Array<IGenre>
   runtime: number
-  backdrop: string
+  backdrop_path: string
 }
 
 class Movie implements IMovie {
@@ -25,7 +25,7 @@ class Movie implements IMovie {
   private revenue: number
   private genres: Array<IGenre>
   private runtime: number
-  private backdrop: string
+  private backdrop_path: string
 
   constructor(movie: MovieProperties) {
     this.id = movie.id
@@ -36,7 +36,7 @@ class Movie implements IMovie {
     this.revenue = movie.revenue
     this.genres = movie.genres
     this.runtime = movie.runtime
-    this.backdrop = movie.backdrop
+    this.backdrop_path = movie.backdrop_path
   }
 
   public getId(): number {
@@ -99,7 +99,7 @@ class Movie implements IMovie {
 
   public getBackdrop(width?: string | number): string {
     let posterWidth = width ? `w${width}` : 'original'
-    return Config.IMAGE_URL + posterWidth + this.backdrop
+    return Config.IMAGE_URL + posterWidth + this.backdrop_path
   }
 }
 

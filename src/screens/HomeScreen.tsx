@@ -8,12 +8,18 @@ import {
   Header,
   Content,
 } from 'native-base'
+import { View, ActivityIndicator } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { Upcoming, TopRated, Trending } from '../containers'
-
-class HomeScreen extends Component<NavigationScreenProps> {
+import { Card } from '../components'
+import { SetOfMovies, Movie } from '../api'
+interface IState {
+  movie: Movie
+  isLoaded: boolean
+}
+class HomeScreen extends Component<NavigationScreenProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
       headerTransparent: true,
@@ -45,8 +51,37 @@ class HomeScreen extends Component<NavigationScreenProps> {
       ),
     }
   }
+  constructor(props: NavigationScreenProps) {
+    super(props)
+    this.state = {
+      movie: null,
+      isLoaded: false,
+    }
+  }
+  async componentWillMount() {
+    const movies = new SetOfMovies()
+    try {
+      const movie = await movies.findMovieById(181808)
+      this.setState({
+        isLoaded: true,
+        movie,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   render() {
+    const { isLoaded, movie } = this.state
+    const sliderWidth = Math.round(mmdb.deviceWidth)
+    const itemWidth = Math.round(sliderWidth - 50)
+    if (!isLoaded) {
+      return (
+        <Container>
+          <ActivityIndicator />
+        </Container>
+      )
+    }
     return (
       <Container
         style={{
@@ -55,7 +90,18 @@ class HomeScreen extends Component<NavigationScreenProps> {
       >
         <Header transparent />
         <Content>
-          <Upcoming />
+          {/* <Upcoming /> */}
+          <View>
+            <Card
+              title={movie.getTitle()}
+              bgImage={movie.getPoster()}
+              height={itemWidth}
+              width={itemWidth}
+              onPress
+              routeName="Movie"
+              params={{ movieId: movie.getId() }}
+            />
+          </View>
           <TopRated />
           <Trending />
         </Content>

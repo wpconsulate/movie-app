@@ -7,17 +7,22 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-  GestureResponderEvent,
 } from 'react-native'
+import { NavigationInjectedProps, withNavigation } from 'react-navigation'
 import { Card as NativeCard, CardItem, Body, Text, Button } from 'native-base'
 import SvgUri from 'react-native-svg-uri'
 import { LinearGradient } from 'expo'
-interface IProps {
+interface ICardParams {
+  movieId: number
+}
+interface IProps extends NavigationInjectedProps {
   title: string
   bgImage: string
   width?: number | string
   height: number | string
-  onPress?: (event: GestureResponderEvent) => void
+  onPress?: boolean
+  routeName?: string
+  params?: ICardParams
 }
 
 interface IStyles {
@@ -32,7 +37,16 @@ class Card extends Component<IProps> {
     super(props)
   }
   render() {
-    const { width, title, bgImage, height } = this.props
+    const {
+      width,
+      title,
+      bgImage,
+      height,
+      navigation,
+      routeName,
+      params,
+      onPress,
+    } = this.props
 
     const styles = StyleSheet.create<IStyles>({
       view: {
@@ -62,9 +76,11 @@ class Card extends Component<IProps> {
         marginTop: 50,
       },
     })
-
+    console.log(this.props.navigation)
     return (
-      <TouchableOpacity onPress={() => this.props.onPress}>
+      <TouchableOpacity
+        onPress={() => (onPress ? navigation.push(routeName, params) : {})}
+      >
         <View style={styles.view}>
           <NativeCard
             style={{
@@ -129,4 +145,4 @@ class Card extends Component<IProps> {
     )
   }
 }
-export default Card
+export default withNavigation(Card)
