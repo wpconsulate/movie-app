@@ -11,8 +11,8 @@ export default function MovieSlider(props:IProps){
     const topRated = props.data;
     return(
     <View>
-        <Text style={{color: 'white', fontSize:20, marginLeft:5, fontFamily:'PoppinsBold'}}>{props.title}</Text>
-        <ScrollView horizontal>
+      <Text style={{color: 'white', fontSize:20, marginLeft:5, fontFamily:'PoppinsBold'}}>{props.title}</Text>
+      <ScrollView horizontal>
         {topRated.map((movie:Movie) => {
         return(
           <View style={{alignItems:'center', maxWidth:100, margin:10}} key={movie.getId()}>

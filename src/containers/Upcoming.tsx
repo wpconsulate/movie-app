@@ -35,7 +35,7 @@ class Upcoming extends Component<IProps, IState> {
     const deviceHeight = Dimensions.get('window').height
 
     const sliderWidth = Math.round(deviceWidth)
-    const sliderHeight = Math.round(deviceHeight * 0.5)
+    const sliderHeight = Math.round(deviceHeight * 0.6)
     const itemWidth = Math.round(sliderWidth - 50)
 
     if (!isLoaded) {

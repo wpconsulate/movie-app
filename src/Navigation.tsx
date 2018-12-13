@@ -13,7 +13,7 @@ const RootStack = createStackNavigator(
     Profile: ProfileScreen
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "Profile",
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight

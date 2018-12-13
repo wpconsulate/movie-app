@@ -1,27 +1,21 @@
-import React, { Component } from 'react'
-import {
-  Text,
-  Container,
-  Content
-} from "native-base";
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import ProfilePic from '../components/ProfilePic'
+import UserStats from '../components/UserStats'
 
-interface IProps {
-  navigation: Object
-}
-export default class ProfileScreen extends Component<IProps> {
-  
+export default class ProfileScreen extends React.Component {
   render() {
     return (
-      <Container
-        style={{
-          backgroundColor: '#000000',
-          paddingHorizontal: 25,
-        }}
-      >
-        <Content>
-            <Text>dsfsafdsfdsafdsa</Text>
-        </Content>
-      </Container>
-    )
+      <View style={{flex:1, backgroundColor:'#535FB2',padding:5, paddingTop:0}}>
+            <Text style={{alignSelf: 'center', fontSize:20}}>My Profile</Text>
+        <View style={{flexDirection:'row', alignItems:"center"}}>
+          <ProfilePic/>
+          <UserStats/>
+        </View>
+
+      </View>
+      
+            
+    );
   }
 }
