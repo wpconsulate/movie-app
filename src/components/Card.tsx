@@ -76,7 +76,6 @@ class Card extends Component<IProps> {
         marginTop: 50,
       },
     })
-    console.log(this.props.navigation)
     return (
       <TouchableOpacity
         onPress={() => (onPress ? navigation.push(routeName, params) : {})}
