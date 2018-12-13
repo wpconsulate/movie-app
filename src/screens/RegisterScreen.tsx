@@ -19,16 +19,17 @@ import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { Dimensions, Alert } from 'react-native'
-import { Authentication } from '../api'
-
+import { Dimensions, Alert, ActivityIndicator } from 'react-native'
+import { Authentication, Database } from '../api'
 interface IState {
   email: string
   password: string
+  name: string
+  isLoaded: boolean
 }
 interface IProps extends NavigationScreenProps {}
 
-class LoginScreen extends Component<IProps, IState> {
+class RegisterScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
       headerTransparent: true,
@@ -53,31 +54,45 @@ class LoginScreen extends Component<IProps, IState> {
       ),
     }
   }
-  private auth: Authentication
+
+  auth: Authentication
+  database: Database
 
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
       email: null,
       password: null,
+      name: null,
+      isLoaded: true,
     }
     this.auth = new Authentication()
+    this.database = new Database()
   }
-
-  onLoginPress() {
-    const { email, password } = this.state
+  onRegisterPress() {
+    const { email, password, name } = this.state
+    this.setState({ isLoaded: false })
     this.auth
-      .login(email, password)
+      .register(email, password, {
+        email,
+        name,
+      })
       .then(() => {
-        Alert.alert('Successfully logged in!')
-        // Go to profile page.
+        this.setState({ isLoaded: true })
+        Alert.alert('Successfully registered!')
       })
       .catch(error => {
         Alert.alert(error.message)
       })
   }
-
   render() {
+    if (!this.state.isLoaded) {
+      return (
+        <Container>
+          <ActivityIndicator />
+        </Container>
+      )
+    }
     return (
       <Container>
         <Header transparent />
@@ -104,7 +119,7 @@ class LoginScreen extends Component<IProps, IState> {
                   color: '#12152D',
                 }}
               >
-                Login
+                Register
               </Text>
             </Col>
             <Col>
@@ -115,7 +130,7 @@ class LoginScreen extends Component<IProps, IState> {
                   color: '#696969',
                 }}
               >
-                Sign in to your account
+                Sign up for a new account
               </Text>
             </Col>
           </Row>
@@ -130,13 +145,31 @@ class LoginScreen extends Component<IProps, IState> {
                       color: '#696969',
                     }}
                   >
+                    YOUR NAME
+                  </Label>
+                  <Input
+                    label="YOUR NAME"
+                    autoFocus
+                    keyboardType="name-phone-pad"
+                    value={this.state.name}
+                    onChangeText={text => {
+                      this.setState({ name: text })
+                    }}
+                  />
+                </Item>
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
                     EMAIL
                   </Label>
                   <Input
                     label="EMAIL"
-                    autoFocus
                     keyboardType="email-address"
-                    autoCorrect
                     value={this.state.email}
                     onChangeText={text => {
                       this.setState({ email: text })
@@ -176,23 +209,22 @@ class LoginScreen extends Component<IProps, IState> {
                     </Button>
                   </Row>
                 </Item>
-                <Row
-                  style={{ alignItems: 'center', justifyContent: 'flex-end' }}
-                >
-                  <Col style={{ alignSelf: 'flex-end' }}>
-                    <Button transparent>
-                      <Text
-                        style={{
-                          color: '#12152D',
-                          fontFamily: 'PoppinsMedium',
-                          fontSize: 12,
-                        }}
-                      >
-                        Forgot password?
-                      </Text>
-                    </Button>
-                  </Col>
-                </Row>
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
+                    CONFIRM PASSWORD
+                  </Label>
+                  <Input
+                    label="CONFIRM PASSWORD"
+                    keyboardType="visible-password"
+                    secureTextEntry
+                  />
+                </Item>
                 <Row
                   style={{
                     marginTop: 40,
@@ -205,10 +237,10 @@ class LoginScreen extends Component<IProps, IState> {
                       rounded
                       primary
                       block
-                      onPress={() => this.onLoginPress()}
+                      onPress={() => this.onRegisterPress()}
                       style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                     >
-                      <Text>Login</Text>
+                      <Text>Create Account</Text>
                     </Button>
                   </Col>
                 </Row>
@@ -223,16 +255,16 @@ class LoginScreen extends Component<IProps, IState> {
             }}
           >
             <Col>
-              <Text>Don't have an account?</Text>
+              <Text>Already a user?</Text>
             </Col>
             <Col>
               <Button
                 transparent
                 onPress={() => {
-                  this.props.navigation.navigate('Register')
+                  this.props.navigation.navigate('Login')
                 }}
               >
-                <Text>Register now</Text>
+                <Text>Login now</Text>
               </Button>
             </Col>
           </Row>
@@ -269,4 +301,4 @@ class LoginScreen extends Component<IProps, IState> {
     )
   }
 }
-export default LoginScreen
+export default RegisterScreen

@@ -5,23 +5,24 @@ import {
   ViewStyle,
   ImageStyle,
   TextStyle,
-} from 'react-native'
-import {
-  Card as NativeCard,
+  TouchableOpacity,
   View,
-  CardItem,
-  Body,
-  Text,
-  Button,
-} from 'native-base'
+} from 'react-native'
+import { NavigationInjectedProps, withNavigation } from 'react-navigation'
+import { Card as NativeCard, CardItem, Body, Text, Button } from 'native-base'
 import SvgUri from 'react-native-svg-uri'
 import { LinearGradient } from 'expo'
-
-interface IProps {
+interface ICardParams {
+  movieId: number
+}
+interface IProps extends NavigationInjectedProps {
   title: string
   bgImage: string
   width?: number | string
   height: number | string
+  onPress?: boolean
+  routeName?: string
+  params?: ICardParams
 }
 
 interface IStyles {
@@ -36,13 +37,21 @@ class Card extends Component<IProps> {
     super(props)
   }
   render() {
-    const { width, title, bgImage, height } = this.props
+    const {
+      width,
+      title,
+      bgImage,
+      height,
+      navigation,
+      routeName,
+      params,
+      onPress,
+    } = this.props
 
     const styles = StyleSheet.create<IStyles>({
       view: {
         flex: 1,
         alignItems: 'center',
-        // alignSelf: 'flex-start',
         justifyContent: 'center',
         width: '100%',
       },
@@ -67,69 +76,72 @@ class Card extends Component<IProps> {
         marginTop: 50,
       },
     })
-
     return (
-      <View style={styles.view}>
-        <NativeCard
-          style={{
-            width: width ? width : '100%',
-            height: height,
-            borderRadius: 16,
-            borderColor: 'transparent',
-            backgroundColor: 'transparent',
-          }}
-        >
-          <ImageBackground
-            source={{ uri: bgImage }}
-            style={styles.imageBackground}
-            imageStyle={{
+      <TouchableOpacity
+        onPress={() => (onPress ? navigation.push(routeName, params) : {})}
+      >
+        <View style={styles.view}>
+          <NativeCard
+            style={{
+              width: width ? width : '100%',
+              height: height,
               borderRadius: 16,
               borderColor: 'transparent',
               backgroundColor: 'transparent',
             }}
           >
-            <LinearGradient
-              colors={['rgba(226, 15, 15, 100)', 'rgba(226, 15, 15, 0.65)']}
-              start={[0.5, 0.9]}
-              end={[0.5, 0]}
-              style={{
-                position: 'absolute',
-                flex: 1,
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: '100%',
-                height: '100%',
+            <ImageBackground
+              source={{ uri: bgImage }}
+              style={styles.imageBackground}
+              imageStyle={{
                 borderRadius: 16,
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
               }}
-            />
-            <CardItem style={styles.cardItem}>
-              <Body
+            >
+              <LinearGradient
+                colors={['rgba(226, 15, 15, 100)', 'rgba(226, 15, 15, 0.65)']}
+                start={[0.5, 0.9]}
+                end={[0.5, 0]}
                 style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                  maxWidth: '60%',
+                  position: 'absolute',
+                  flex: 1,
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 16,
                 }}
-              >
-                <Button
-                  transparent
-                  style={{ width: 85, height: 85, alignSelf: 'center' }}
+              />
+              <CardItem style={styles.cardItem}>
+                <Body
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    maxWidth: '60%',
+                  }}
                 >
-                  <SvgUri
-                    source={require('../../assets/icons/play-button.svg')}
-                    width={85}
-                    height={85}
-                  />
-                </Button>
-                <Text style={styles.text}>{title}</Text>
-              </Body>
-            </CardItem>
-          </ImageBackground>
-        </NativeCard>
-      </View>
+                  <Button
+                    transparent
+                    style={{ width: 85, height: 85, alignSelf: 'center' }}
+                  >
+                    <SvgUri
+                      source={require('../../assets/icons/play-button.svg')}
+                      width={85}
+                      height={85}
+                    />
+                  </Button>
+                  <Text style={styles.text}>{title}</Text>
+                </Body>
+              </CardItem>
+            </ImageBackground>
+          </NativeCard>
+        </View>
+      </TouchableOpacity>
     )
   }
 }
-export default Card
+export default withNavigation(Card)

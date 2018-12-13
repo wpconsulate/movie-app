@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MyInstaClone",
+    "name": "Mmdb",
     "description": "This project is really great.",
-    "slug": "MyInstaClone",
+    "slug": "mmdb",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],
@@ -17,9 +17,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     }

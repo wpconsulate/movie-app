@@ -3,6 +3,8 @@ import RootStack from './Navigation'
 import { createAppContainer } from 'react-navigation'
 import * as Expo from 'expo'
 const AppContainer = createAppContainer(RootStack)
+import Config from './Config'
+import * as firebase from 'firebase'
 
 interface StateInterface {
   fontLoaded: boolean
@@ -12,6 +14,15 @@ interface PropsInterface {}
 class App extends Component<PropsInterface, StateInterface> {
   constructor(props: PropsInterface) {
     super(props)
+    const config = {
+      apiKey: Config.FIREBASE_API_KEY,
+      authDomain: Config.FIREBASE_AUTH_DOMAIN,
+      databaseURL: Config.FIREBASE_DATABASE_URL,
+      projectId: Config.FIREBASE_PROJECT_ID,
+      storageBucket: Config.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: Config.FIREBASE_MESSAGE_SENDER_ID,
+    }
+    firebase.initializeApp(config)
     this.state = {
       fontLoaded: false,
     }
@@ -23,11 +34,12 @@ class App extends Component<PropsInterface, StateInterface> {
         Poppins: require('../assets/fonts/Poppins/Regular.ttf'),
         PoppinsBold: require('../assets/fonts/Poppins/Bold.ttf'),
         PoppinsLight: require('../assets/fonts/Poppins/Light.ttf'),
-        PoppinsMedium: require('../assets/fonts/Poppins/Medium.ttf')
+        PoppinsMedium: require('../assets/fonts/Poppins/Medium.ttf'),
+        PoppinsSemiBold: require('../assets/fonts/Poppins/SemiBold.ttf'),
       })
       this.setState({ fontLoaded: true })
     } catch (error) {
-      console.log('Error loading fonts.', error)
+      console.error(error)
     }
   }
   render() {

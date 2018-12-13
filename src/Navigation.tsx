@@ -1,26 +1,30 @@
-import { createStackNavigator } from "react-navigation";
-import HomeScreen from "./screens/HomeScreen";
-import LoginScreen from "./screens/LoginScreen";
-import SearchScreen from "./screens/SearchScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import { Constants } from "expo";
+import { createStackNavigator } from 'react-navigation'
+import { Constants } from 'expo'
+import {
+  HomeScreen,
+  LoginScreen,
+  RegisterScreen,
+  SearchScreen,
+  MovieScreen,
+} from './screens'
 
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
     Login: LoginScreen,
+    Register: RegisterScreen,
     Search: SearchScreen,
-    Profile: ProfileScreen
+    Movie: MovieScreen,
   },
   {
-    initialRouteName: "Profile",
+    initialRouteName: 'Home',
     navigationOptions: {
       headerStyle: {
-        marginTop: Constants.statusBarHeight
+        marginTop: Constants.statusBarHeight,
       },
-      headerTransparent: true
-    }
+      headerTransparent: true,
+    },
   }
-);
+)
 
-export default RootStack;
+export default RootStack

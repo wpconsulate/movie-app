@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import SetOfMovies from '../api/SetOfMovies'
-import Movie from '../api/Movie/Movie'
+import { SetOfMovies, Movie } from '../api'
 import Card from './Card'
 import Carousel from 'react-native-snap-carousel'
+import { NavigationInjectedProps, withNavigation } from 'react-navigation'
 
-interface IProps {
+interface IProps extends NavigationInjectedProps {
   data: Array<any> | SetOfMovies
   height: number
   sliderWidth: number
@@ -15,13 +15,15 @@ class StackOfCards extends Component<IProps> {
   constructor(props: IProps) {
     super(props)
   }
-
   _renderItem({ item }: { item: Movie }) {
     return (
       <Card
         title={item.getTitle()}
         bgImage={item.getPoster()}
         height={this.props.height}
+        onPress
+        routeName="Movie"
+        params={{ movieId: item.getId() }}
       />
     )
   }
@@ -36,13 +38,16 @@ class StackOfCards extends Component<IProps> {
         layout={'stack'}
         layoutCardOffset={18}
         slideStyle={{
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start',
-          alignSelf: 'flex-start',
+          // alignItems: 'flex-start',
+          justifyContent: 'center',
+        }}
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       />
     )
   }
 }
 
-export default StackOfCards
+export default withNavigation(StackOfCards)
