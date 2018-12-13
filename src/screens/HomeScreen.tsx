@@ -90,7 +90,7 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
       >
         <Header transparent />
         <Content>
-          {/* <Upcoming /> */}
+          <Upcoming />
           <View>
             <Card
               title={movie.getTitle()}

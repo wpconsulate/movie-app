@@ -19,8 +19,13 @@ import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
+import { Database } from '../api'
 import { Dimensions } from 'react-native'
-interface IState {}
+interface IState {
+  email: string
+  password: string
+  isLoggedIn: boolean
+}
 interface IProps {}
 
 class LoginScreen extends Component<IProps, IState> {
@@ -48,8 +53,24 @@ class LoginScreen extends Component<IProps, IState> {
       ),
     }
   }
+  private database = new Database()
+  constructor(props: IProps) {
+    super(props)
+    this.state = {
+      email: null,
+      password: null,
+      isLoggedIn: false,
+    }
+    this.database.write('users', {
+      lukepaoloni: {
+        first_name: 'Luke',
+        surname: 'Paoloni',
+      },
+    })
+  }
 
   render() {
+    const { email, password } = this.state
     return (
       <Container>
         <Header transparent />
@@ -104,7 +125,14 @@ class LoginScreen extends Component<IProps, IState> {
                   >
                     EMAIL
                   </Label>
-                  <Input label="EMAIL" autoFocus keyboardType="email-address" />
+                  <Input
+                    label="EMAIL"
+                    autoFocus
+                    keyboardType="email-address"
+                    autoCorrect
+                    value={email}
+                    onChangeText={email => this.setState({ email })}
+                  />
                 </Item>
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
@@ -121,6 +149,8 @@ class LoginScreen extends Component<IProps, IState> {
                       label="PASSWORD"
                       keyboardType="visible-password"
                       secureTextEntry
+                      value={password}
+                      onChangeText={password => this.setState({ password })}
                     />
                     <Button transparent>
                       <Text
