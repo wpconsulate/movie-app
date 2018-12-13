@@ -12,7 +12,7 @@ import { View, ActivityIndicator } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
-import { Upcoming, TopRated, Trending } from '../containers'
+import { TopRated, Trending } from '../containers'
 import { Card } from '../components'
 import { SetOfMovies, Movie } from '../api'
 interface IState {

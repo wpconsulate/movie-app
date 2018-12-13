@@ -21,7 +21,7 @@ import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
 import { Genres } from '../components'
-import { ActivityIndicator, ImageBackground, View } from 'react-native'
+import { ActivityIndicator, ImageBackground, View, TouchableOpacity, Image } from 'react-native'
 import { LinearGradient } from 'expo'
 import SvgUri from 'react-native-svg-uri'
 import { formatDate } from '../lib'
@@ -36,6 +36,8 @@ interface IProps {
 interface IState {
   movie: Movie | null
   isLoaded: boolean
+  menuOpen: boolean
+  menuOpacity: number
 }
 
 export default class MovieScreen extends Component<IProps, IState> {
@@ -62,6 +64,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     this.state = {
       movie: null,
       isLoaded: false,
+      menuOpen: false,
+      menuOpacity: 0,
     }
   }
 
@@ -74,8 +78,15 @@ export default class MovieScreen extends Component<IProps, IState> {
     })
   }
 
+
+  componentWillUnmount(){
+    this.setState({ isLoaded: false, menuOpacity: 0 })
+  }
+
+
+
   render() {
-    const { movie, isLoaded } = this.state
+    const { movie, isLoaded, menuOpen, menuOpacity } = this.state
 
     if (!isLoaded) {
       return (
@@ -87,10 +98,11 @@ export default class MovieScreen extends Component<IProps, IState> {
     return (
       <Container
         style={{
-          backgroundColor: '#12152D',
+          flex: 1,
+          backgroundColor: '#12152D',        
         }}
-      >
-        <View style={{ height: mmdb.isIphoneX ? '55%' : '55%' }}>
+      >       
+        <View style={{ height: mmdb.isIphoneX ? '55%' : '55%'}}>
           <ImageBackground
             source={{
               uri: movie.getBackdrop(),
@@ -106,7 +118,6 @@ export default class MovieScreen extends Component<IProps, IState> {
               end={[0.5, 0]}
               style={{
                 position: 'absolute',
-                flex: 1,
                 left: 0,
                 right: 0,
                 top: 0,
@@ -116,10 +127,10 @@ export default class MovieScreen extends Component<IProps, IState> {
               }}
             />
             <Header transparent />
-            <View style={{ width: '100%', marginTop: 50 }}>
+            <View style={{ width: '100%', marginTop: 50, flexDirection: "row" , flex: 1}}>
               <Button
                 transparent
-                style={{ width: 85, height: 85, alignSelf: 'center' }}
+                style={{ width: 85, height: 85,  alignSelf: 'flex-start', marginLeft: 'auto', marginRight: 'auto' }}
               >
                 <SvgUri
                   source={require('../../assets/icons/play-button.svg')}
@@ -127,8 +138,31 @@ export default class MovieScreen extends Component<IProps, IState> {
                   height={85}
                 />
               </Button>
+              
+
+                {/* side menu that changes the opacity of the 3 buttons - would like to change
+                them to animated */}
+              <TouchableOpacity  onPress={() => {
+                    if(this.state.menuOpacity == 0 ){
+                      this.setState({ menuOpacity: 1, menuOpen: false})
+                    }else {
+                      this.setState({ menuOpacity: 0, menuOpen: true})
+                    }}}>
+                 <Image 
+                 style={{ 
+                  height: 60, 
+                  width: 30 ,
+                  borderTopLeftRadius:  10,
+                  borderBottomLeftRadius: 10,                     
+                  alignSelf: 'center',
+                }}
+                
+                 source={require('../../assets/icons/SideBar.png')}
+                 />                 
+              </TouchableOpacity>
+
             </View>
-            <Content style={{ maxWidth: '70%' }}>
+            <Content style={{ maxWidth: '70%', marginTop: 50,}}>
               <Row>
                 <Col>
                   <H1
@@ -165,7 +199,69 @@ export default class MovieScreen extends Component<IProps, IState> {
               </Row>
             </Content>
           </ImageBackground>
+
+          {/* 3 Menu Buttons */}
+          <TouchableOpacity
+            disabled={menuOpen}
+            style={{                   
+              left: 0, 
+              top: -150,
+            }}>
+                 <Image 
+                 style={{
+                  opacity: menuOpacity,                  
+                  height: 60, 
+                  width: 60 ,
+                  borderRadius: 30,    
+                  alignSelf: 'center',
+                  justifyContent: 'center',                  
+                }}
+                 source={require('../../assets/icons/addWatchButton.png')}
+                 />
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={menuOpen}
+            style={{                   
+              left: 0, 
+              top: -150,
+            }}>
+                 <Image 
+                 style={{
+                  opacity: menuOpacity,
+                  height: 60, 
+                  width: 60 ,
+                  borderRadius: 30,    
+                  alignSelf: 'center',
+                  justifyContent: 'center',                  
+                }}
+                 source={require('../../assets/icons/thumbsUpMovieButton.png')}
+                 />
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={menuOpen}
+            style={{                   
+              left: 0, 
+              top: -150,
+            }}>
+                 <Image 
+                 style={{
+                  opacity: menuOpacity,
+                  height: 60, 
+                  width: 60 ,
+                  borderRadius: 30,    
+                  alignSelf: 'center',
+                  justifyContent: 'center',                  
+                }}
+                 source={require('../../assets/icons/shareButton.png')}
+                 />
+          </TouchableOpacity>
+
+
+
         </View>
+     
+
+      
       </Container>
     )
   }
