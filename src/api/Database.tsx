@@ -1,7 +1,7 @@
 import * as firebase from 'firebase'
 
 class Database {
-  private database: firebase.database.Database
+  database: firebase.database.Database
   constructor() {
     this.database = firebase.app().database()
   }

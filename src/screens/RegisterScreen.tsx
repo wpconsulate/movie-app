@@ -20,7 +20,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
-import { Authentication, Database } from '../api'
+import { Authentication, Database, User } from '../api'
 interface IState {
   email: string
   password: string
@@ -66,9 +66,11 @@ class RegisterScreen extends Component<IProps, IState> {
       name: null,
       isLoaded: true,
     }
+    
     this.auth = new Authentication()
     this.database = new Database()
   }
+  // user = new User('', 'test');
   onRegisterPress() {
     const { email, password, name } = this.state
     this.setState({ isLoaded: false })
