@@ -1,18 +1,13 @@
 import Config from '../../Config'
-import { IMovie, IGenre } from './Interfaces'
+import {
+  IMovie,
+  IGenre,
+  IProperties,
+  IImage,
+  IBackdrop,
+  IPoster,
+} from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
-interface MovieProperties {
-  id: number
-  title: string
-  poster_path: string
-  popularity: number
-  release_date: string
-  revenue: number
-  genres: Array<IGenre>
-  runtime: number
-  backdrop_path: string
-  overview: string
-}
 
 class Movie implements IMovie {
   static ENTITY = 'movie'
@@ -28,7 +23,7 @@ class Movie implements IMovie {
   private runtime: number
   private backdrop_path: string
 
-  constructor(movie: MovieProperties) {
+  constructor(movie: IProperties) {
     this.id = movie.id
     this.title = movie.title
     this.poster_path = movie.poster_path
@@ -102,6 +97,81 @@ class Movie implements IMovie {
   public getBackdrop(width?: string | number): string {
     let posterWidth = width ? `w${width}` : 'original'
     return Config.IMAGE_URL + posterWidth + this.backdrop_path
+  }
+
+  public async getBackdrops() {
+    let images = new Array<IBackdrop>()
+
+    const url = `${Config.BASE_URL}${
+      Movie.ENTITY
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
+
+    try {
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      const backdrops = responseJson.backdrops
+
+      if (backdrops.length < 100) {
+        backdrops.forEach((item: any) => {
+          if (item.file_path) images.push({ url: item.file_path })
+        })
+      } else {
+        backdrops.forEach((item: any) => {
+          item.forEach((value: any) => {
+            if (value.file_path) images.push({ url: value.file_path })
+          })
+        })
+      }
+
+      return images
+    } catch (error) {
+      console.log('getBackdrops', error)
+      return null
+    }
+  }
+
+  public async getPosters() {
+    let images = new Array<IPoster>()
+
+    const url = `${Config.BASE_URL}${
+      Movie.ENTITY
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
+
+    try {
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      const posters = responseJson.posters
+
+      posters.forEach((item: any) => {
+        if (item.file_path) images.push({ url: item.file_path })
+      })
+
+      return images
+    } catch (error) {
+      console.log('getPosters', error)
+      return null
+    }
+  }
+
+  public async getImages(limit?: number): Promise<Array<IImage>> | null {
+    let images = new Array<IImage>()
+    limit = limit ? limit : 15
+    try {
+      const backdrops = await this.getBackdrops()
+      const posters = await this.getPosters()
+
+      for (let i = 0; i <= limit; i++) {
+        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
+        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
+
+        images.push({ url: backdropUrl })
+        images.push({ url: posterUrl })
+      }
+      return images
+    } catch (error) {
+      console.log('Movie::getImages()', error)
+      return null
+    }
   }
 }
 

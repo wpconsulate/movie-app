@@ -4,7 +4,6 @@ import {
   Icon,
   StyleProvider,
   Container,
-  Header,
   Content,
   H1,
   Text,
@@ -18,16 +17,12 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import { Genres } from '../components'
-import {
-  ActivityIndicator,
-  ImageBackground,
-  View,
-  ScrollView,
-} from 'react-native'
+import { Genres, Slider } from '../components'
+import { ActivityIndicator, ImageBackground, View } from 'react-native'
 import { LinearGradient } from 'expo'
 import SvgUri from 'react-native-svg-uri'
 import { formatDate } from '../lib'
+import { IImage } from '../api/Movie/Interfaces'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -39,6 +34,7 @@ interface IProps {
 interface IState {
   movie: Movie | null
   isLoaded: boolean
+  images: Array<IImage>
 }
 
 export default class MovieScreen extends Component<IProps, IState> {
@@ -65,20 +61,24 @@ export default class MovieScreen extends Component<IProps, IState> {
     this.state = {
       movie: null,
       isLoaded: false,
+      images: null,
     }
   }
 
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
+    const images = await movie.getImages(5)
+    console.log(images)
     this.setState({
       movie,
+      images,
       isLoaded: true,
     })
   }
 
   render() {
-    const { movie, isLoaded } = this.state
+    const { movie, isLoaded, images } = this.state
 
     if (!isLoaded) {
       return (
@@ -232,6 +232,18 @@ export default class MovieScreen extends Component<IProps, IState> {
                 {movie.getOverview()}
               </Text>
             </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
+                }}
+              >
+                Photos
+              </Text>
+            </View>
+            <Slider images={images} />
           </View>
         </Content>
       </Container>
