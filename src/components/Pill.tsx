@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native';
 
 interface IProps {
-    colour?: string
-    text: string
+    colour: string
+    text?: string
 }
 
 class Pill extends Component<IProps> {
@@ -13,7 +13,7 @@ class Pill extends Component<IProps> {
         const shapes = StyleSheet.create({
             pill: {
                 justifyContent: "center",
-                backgroundColor: '#e0e0e0',
+                backgroundColor: this.props.colour,
                 borderRadius: 16,
                 paddingLeft: 12,
                 paddingRight: 12,
