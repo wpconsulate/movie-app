@@ -2,14 +2,12 @@ import * as firebase from 'firebase'
 
 class Database {
   private database: firebase.database.Database
-
   constructor() {
-    this.database = firebase.database()
+    this.database = firebase.app().database()
   }
 
-  write(collection: string, data: any) {
-    const usersRef = this.database.ref().child(collection)
-    usersRef.set(data)
+  public write(collection: string, data: object) {
+    this.database.ref(collection).set(data)
   }
 }
 export default Database

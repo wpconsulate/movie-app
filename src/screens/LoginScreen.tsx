@@ -19,14 +19,14 @@ import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { Database } from '../api'
-import { Dimensions } from 'react-native'
+import { Dimensions, Alert } from 'react-native'
+import { Authentication } from '../api'
+
 interface IState {
   email: string
   password: string
-  isLoggedIn: boolean
 }
-interface IProps {}
+interface IProps extends NavigationScreenProps {}
 
 class LoginScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -53,20 +53,28 @@ class LoginScreen extends Component<IProps, IState> {
       ),
     }
   }
-  private database = new Database()
-  constructor(props: IProps) {
+  private auth: Authentication
+
+  constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
       email: null,
       password: null,
-      isLoggedIn: false,
     }
-    this.database.write('users', {
-      lukepaoloni: {
-        first_name: 'Luke',
-        surname: 'Paoloni',
-      },
-    })
+    this.auth = new Authentication()
+  }
+
+  onLoginPress() {
+    const { email, password } = this.state
+    this.auth
+      .login(email, password)
+      .then(() => {
+        Alert.alert('Successfully logged in!')
+        // Go to profile page.
+      })
+      .catch((error: any) => {
+        Alert.alert(error.message)
+      })
   }
 
   render() {
@@ -131,7 +139,9 @@ class LoginScreen extends Component<IProps, IState> {
                     keyboardType="email-address"
                     autoCorrect
                     value={email}
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={text => {
+                      this.setState({ email: text })
+                    }}
                   />
                 </Item>
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
@@ -150,7 +160,9 @@ class LoginScreen extends Component<IProps, IState> {
                       keyboardType="visible-password"
                       secureTextEntry
                       value={password}
-                      onChangeText={password => this.setState({ password })}
+                      onChangeText={text => {
+                        this.setState({ password: text })
+                      }}
                     />
                     <Button transparent>
                       <Text
@@ -194,6 +206,7 @@ class LoginScreen extends Component<IProps, IState> {
                       rounded
                       primary
                       block
+                      onPress={() => this.onLoginPress()}
                       style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                     >
                       <Text>Login</Text>
@@ -214,7 +227,12 @@ class LoginScreen extends Component<IProps, IState> {
               <Text>Don't have an account?</Text>
             </Col>
             <Col>
-              <Button transparent>
+              <Button
+                transparent
+                onPress={() => {
+                  this.props.navigation.navigate('Register')
+                }}
+              >
                 <Text>Register now</Text>
               </Button>
             </Col>

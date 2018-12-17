@@ -11,6 +11,7 @@ interface MovieProperties {
   genres: Array<IGenre>
   runtime: number
   backdrop_path: string
+  overview: string
 }
 
 class Movie implements IMovie {
@@ -37,6 +38,7 @@ class Movie implements IMovie {
     this.genres = movie.genres
     this.runtime = movie.runtime
     this.backdrop_path = movie.backdrop_path
+    this.overview = movie.overview
   }
 
   public getId(): number {

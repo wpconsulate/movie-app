@@ -17,7 +17,7 @@ const RootStack = createStackNavigator(
     Movie: MovieScreen,
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Movie',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,

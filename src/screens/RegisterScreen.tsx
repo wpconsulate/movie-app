@@ -19,9 +19,15 @@ import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { Dimensions } from 'react-native'
-interface IState {}
-interface IProps {}
+import { Dimensions, Alert, ActivityIndicator } from 'react-native'
+import { Authentication, Database } from '../api'
+interface IState {
+  email: string
+  password: string
+  name: string
+  isLoaded: boolean
+}
+interface IProps extends NavigationScreenProps {}
 
 class RegisterScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -49,7 +55,44 @@ class RegisterScreen extends Component<IProps, IState> {
     }
   }
 
+  auth: Authentication
+  database: Database
+
+  constructor(props: NavigationScreenProps) {
+    super(props)
+    this.state = {
+      email: null,
+      password: null,
+      name: null,
+      isLoaded: true,
+    }
+    this.auth = new Authentication()
+    this.database = new Database()
+  }
+  onRegisterPress() {
+    const { email, password, name } = this.state
+    this.setState({ isLoaded: false })
+    this.auth
+      .register(email, password, {
+        email,
+        name,
+      })
+      .then(() => {
+        this.setState({ isLoaded: true })
+        Alert.alert('Successfully registered!')
+      })
+      .catch(error => {
+        Alert.alert(error.message)
+      })
+  }
   render() {
+    if (!this.state.isLoaded) {
+      return (
+        <Container>
+          <ActivityIndicator />
+        </Container>
+      )
+    }
     return (
       <Container>
         <Header transparent />
@@ -108,6 +151,10 @@ class RegisterScreen extends Component<IProps, IState> {
                     label="YOUR NAME"
                     autoFocus
                     keyboardType="name-phone-pad"
+                    value={this.state.name}
+                    onChangeText={text => {
+                      this.setState({ name: text })
+                    }}
                   />
                 </Item>
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
@@ -120,7 +167,14 @@ class RegisterScreen extends Component<IProps, IState> {
                   >
                     EMAIL
                   </Label>
-                  <Input label="EMAIL" keyboardType="email-address" />
+                  <Input
+                    label="EMAIL"
+                    keyboardType="email-address"
+                    value={this.state.email}
+                    onChangeText={text => {
+                      this.setState({ email: text })
+                    }}
+                  />
                 </Item>
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
@@ -137,6 +191,10 @@ class RegisterScreen extends Component<IProps, IState> {
                       label="PASSWORD"
                       keyboardType="visible-password"
                       secureTextEntry
+                      value={this.state.password}
+                      onChangeText={text => {
+                        this.setState({ password: text })
+                      }}
                     />
                     <Button transparent>
                       <Text
@@ -179,6 +237,7 @@ class RegisterScreen extends Component<IProps, IState> {
                       rounded
                       primary
                       block
+                      onPress={() => this.onRegisterPress()}
                       style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                     >
                       <Text>Create Account</Text>
@@ -199,7 +258,12 @@ class RegisterScreen extends Component<IProps, IState> {
               <Text>Already a user?</Text>
             </Col>
             <Col>
-              <Button transparent>
+              <Button
+                transparent
+                onPress={() => {
+                  this.props.navigation.navigate('Login')
+                }}
+              >
                 <Text>Login now</Text>
               </Button>
             </Col>
