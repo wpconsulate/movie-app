@@ -4,4 +4,5 @@ import Pill from './Pill'
 import StackOfCards from './StackOfCards'
 import Genres from './Genres'
 import Slider from './Slider'
-export { Card, Logo, Pill, StackOfCards, Genres, Slider }
+import PlayButton from './PlayButton'
+export { Card, Logo, Pill, StackOfCards, Genres, Slider, PlayButton }

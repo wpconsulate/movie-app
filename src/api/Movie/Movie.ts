@@ -125,7 +125,7 @@ class Movie implements IMovie {
 
       return images
     } catch (error) {
-      console.log('getBackdrops', error)
+      console.log('Movie::getBackdrops()', error)
       return null
     }
   }
@@ -148,7 +148,7 @@ class Movie implements IMovie {
 
       return images
     } catch (error) {
-      console.log('getPosters', error)
+      console.log('Movie::getPosters()', error)
       return null
     }
   }
