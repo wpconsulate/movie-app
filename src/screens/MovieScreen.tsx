@@ -18,7 +18,13 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import { PlayButton, Genres, Slider } from '../components'
+import {
+  PlayButton,
+  Genres,
+  Slider,
+  MovieSidebar,
+  MovieSidebarButton,
+} from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -26,8 +32,6 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
-  TouchableOpacity,
-  Image,
 } from 'react-native'
 import { LinearGradient } from 'expo'
 
@@ -45,6 +49,7 @@ interface IState {
   movie: Movie | null
   isLoaded: boolean
   images: Array<IImage>
+  castImages: Array<IImage>
   menuOpen: boolean
   menuOpacity: number
 }
@@ -79,6 +84,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: false,
       images: null,
       menuOpen: false,
+      castImages: null,
       menuOpacity: null,
     }
   }
@@ -86,18 +92,32 @@ export default class MovieScreen extends Component<IProps, IState> {
   async componentDidMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
-    const images = await movie.getImages(5)
+    const images = await movie.getImages(5, { type: 'backdrops' })
+    const casts = await movie.getCasts()
+    let castImages = new Array<IImage>()
+
+    casts.forEach(cast => {
+      castImages.push({ url: cast.getImage() })
+    })
     this.setState({
       movie,
       images,
       isLoaded: true,
       menuOpen: false,
       menuOpacity: 0,
+      castImages,
     })
   }
 
   render() {
-    const { movie, isLoaded, images, menuOpen, menuOpacity } = this.state
+    const {
+      movie,
+      isLoaded,
+      images,
+      castImages,
+      menuOpen,
+      menuOpacity,
+    } = this.state
 
     if (!isLoaded) {
       return (
@@ -112,128 +132,118 @@ export default class MovieScreen extends Component<IProps, IState> {
           backgroundColor: '#12152D',
         }}
       >
-        <Header transparent translucent iosBarStyle="light-content" noShadow />
-        <Content style={{ flex: 1, paddingHorizontal: 15 }}>
-          <View style={{ height: mmdb.isIphoneX ? '55%' : '55%' }}>
-            <ImageBackground
-              source={{
-                uri: movie.getBackdrop(),
-              }}
+        <Header
+          transparent
+          translucent
+          iosBarStyle="light-content"
+          noShadow
+          style={{
+            position: 'absolute',
+            zIndex: -2,
+          }}
+        />
+        <MovieSidebarButton />
+        {/* <MovieSidebar open={menuOpen} opacity={menuOpacity} /> */}
+        <Content style={{ flex: 1 }}>
+          <Backdrop uri={movie.getBackdrop()} />
+          <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
+            <PlayContainer />
+            <Title title={movie.getTitle()} />
+            <GenreContainer genres={movie.getGenres(true, 3)} />
+            <ReleaseDateRuntime
+              date={formatDate(movie.getReleaseDate())}
+              time={movie.getRuntime()}
+            />
+            <Storyline content={movie.getOverview()} />
+            <View
               style={{
-                width: '100%',
-                height: '100%',
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+                marginBottom: 40,
               }}
             >
-              <LinearGradient
-                colors={['rgba(18, 21, 45, 100)', 'rgba(18, 21, 45, 0.04)']}
-                start={[0.5, 1]}
-                end={[0.5, 0]}
+              <Text
                 style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
                   width: '100%',
-                  height: '100%',
                 }}
-              />
-            </ImageBackground>
-          </View>
-          <PlayContainer />
-          <Title title={movie.getTitle()} />
-          <GenreContainer genres={movie.getGenres(true, 3)} />
-          <ReleaseDateRuntime
-            date={formatDate(movie.getReleaseDate())}
-            time={movie.getRuntime()}
-          />
-          <Storyline content={movie.getOverview()} />
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: 1,
-              flexWrap: 'wrap',
-              marginTop: 40,
-            }}
-          >
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'PoppinsMedium',
-                marginBottom: 10,
-                width: '100%',
-              }}
-            >
-              Photos
-            </Text>
+              >
+                Photos
+              </Text>
 
-            <Slider images={images} />
-            <TouchableOpacity
-              disabled={menuOpen}
+              <Slider images={images} borderRadius={9} />
+            </View>
+            <View
               style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                height: 60,
-                width: 60,
-                top: 100,
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+                marginBottom: 40,
               }}
             >
-              <Image
+              <Text
                 style={{
-                  opacity: menuOpacity,
-                  height: 60,
-                  width: 60,
-                  borderRadius: 30,
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
+                  width: '100%',
                 }}
-                source={require('../../assets/icons/addWatchButton.png')}
+              >
+                Cast
+              </Text>
+
+              <Slider
+                images={castImages}
+                borderRadius={37.5}
+                height={75}
+                width={75}
               />
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={menuOpen}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                height: 60,
-                width: 60,
-                top: 170,
-              }}
-            >
-              <Image
-                style={{
-                  opacity: menuOpacity,
-                  height: 60,
-                  width: 60,
-                  borderRadius: 30,
-                }}
-                source={require('../../assets/icons/thumbsUpMovieButton.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={menuOpen}
-              style={{
-                alignSelf: 'center',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                height: 60,
-                width: 60,
-                top: 240,
-              }}
-            >
-              <Image
-                style={{
-                  opacity: menuOpacity,
-                  height: 60,
-                  width: 60,
-                  borderRadius: 30,
-                }}
-                source={require('../../assets/icons/shareButton.png')}
-              />
-            </TouchableOpacity>
+            </View>
           </View>
         </Content>
       </Container>
     )
   }
+}
+// movie.getBackdrop()
+function Backdrop(props: any) {
+  return (
+    <View
+      style={{
+        height: mmdb.isIphoneX ? '55%' : '55%',
+        width: mmdb.deviceWidth,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <ImageBackground
+        source={{
+          uri: props.uri,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <LinearGradient
+          colors={['rgba(18, 21, 45, 100)', 'rgba(18, 21, 45, 0.04)']}
+          start={[0.5, 1]}
+          end={[0.5, 0]}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      </ImageBackground>
+    </View>
+  )
 }
 
 function ReleaseDateRuntime(props: any) {

@@ -8,7 +8,10 @@ import {
   IPoster,
 } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
-
+import Cast from './../Cast/Cast'
+interface IParams {
+  type?: 'backdrops' | 'posters'
+}
 class Movie implements IMovie {
   static ENTITY = 'movie'
 
@@ -153,7 +156,10 @@ class Movie implements IMovie {
     }
   }
 
-  public async getImages(limit?: number): Promise<Array<IImage>> | null {
+  public async getImages(
+    limit?: number,
+    params?: IParams
+  ): Promise<Array<IImage>> | null {
     let images = new Array<IImage>()
     limit = limit ? limit : 15
     try {
@@ -163,13 +169,40 @@ class Movie implements IMovie {
       for (let i = 0; i <= limit; i++) {
         const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
         const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-
-        images.push({ url: backdropUrl })
-        images.push({ url: posterUrl })
+        switch (params.type.toLowerCase()) {
+          case 'backdrops':
+            images.push({ url: backdropUrl })
+            break
+          case 'posters':
+            images.push({ url: posterUrl })
+            break
+          default:
+            images.push({ url: backdropUrl })
+            images.push({ url: posterUrl })
+        }
       }
+
       return images
     } catch (error) {
       console.log('Movie::getImages()', error)
+      return null
+    }
+  }
+
+  public async getCasts(): Promise<Array<Cast> | null> {
+    try {
+      let setOfCasts = new Array<Cast>()
+      const url = `${Config.BASE_URL}movie/${this.id}/credits?api_key=${
+        Config.API_KEY
+      }`
+      const response = await fetch(url)
+      const responseJson = await response.json()
+      responseJson.cast.forEach((cast: any) => {
+        setOfCasts.push(new Cast(cast))
+      })
+      return setOfCasts
+    } catch (error) {
+      console.error(error)
       return null
     }
   }

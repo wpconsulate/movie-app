@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
-import SetOfMovies from '../api/SetOfMovies'
+import SetOfMovies from '../api/Collection/SetOfMovies'
 import { Movie } from '../api'
 import {
   NavigationInjectedProps,

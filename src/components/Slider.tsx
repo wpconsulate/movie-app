@@ -10,6 +10,9 @@ interface IDataParams {
 
 interface IProps {
   images: Array<IDataParams>
+  borderRadius?: number
+  width?: number | string
+  height?: number | string
 }
 interface IState {
   isModalOpened: boolean
@@ -43,6 +46,7 @@ class Slider extends Component<IProps, IState> {
   }
 
   render() {
+    const { borderRadius, images, height, width } = this.props
     return (
       <View
         style={{
@@ -51,14 +55,16 @@ class Slider extends Component<IProps, IState> {
         }}
       >
         <ScrollView horizontal={true}>
-          {this.props.images.map((item: IDataParams, index: number) => {
+          {images.map((item: IDataParams, index: number) => {
             return (
               <TouchableOpacity onPress={() => this.onPress(index)} key={index}>
                 <Image
                   source={{ uri: item.url }}
                   style={{
-                    height: item.height ? item.height : 100,
-                    width: item.width ? item.width : 50,
+                    height: height ? height : 75,
+                    width: width ? width : 100,
+                    marginRight: 15,
+                    borderRadius: borderRadius ? borderRadius : 0,
                   }}
                 />
               </TouchableOpacity>

@@ -1,5 +1,5 @@
-import Movie from './Movie/Movie'
-import Config from '../Config'
+import Movie from '../Movie/Movie'
+import Config from '../../Config'
 
 class SetOfMovies extends Array<Movie> {
   constructor() {

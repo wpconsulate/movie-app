@@ -4,4 +4,5 @@ import IBackdrop from './Backdrop'
 import IPoster from './Poster'
 import IProperties from './Properties'
 import IImage from './Image'
-export { IGenre, IMovie, IBackdrop, IPoster, IProperties, IImage }
+import ICast from '../../Cast/ICast'
+export { IGenre, IMovie, IBackdrop, IPoster, IProperties, IImage, ICast }
