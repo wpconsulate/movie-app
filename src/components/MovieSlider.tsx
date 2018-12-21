@@ -25,7 +25,7 @@ function handleOnPress(
 function MovieSlider(props: IProps) {
   const topRated = props.data
   return (
-    <View>
+    <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
       <Text
         style={{
           color: 'white',

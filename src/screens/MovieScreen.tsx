@@ -18,13 +18,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import {
-  PlayButton,
-  Genres,
-  Slider,
-  MovieSidebar,
-  MovieSidebarButton,
-} from '../components'
+import { PlayButton, Genres, Slider, MovieSidebar } from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -32,6 +26,8 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  TouchableOpacity,
+  Image,
 } from 'react-native'
 import { LinearGradient } from 'expo'
 
@@ -50,8 +46,7 @@ interface IState {
   isLoaded: boolean
   images: Array<IImage>
   castImages: Array<IImage>
-  menuOpen: boolean
-  menuOpacity: number
+  showMenu: boolean
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -83,9 +78,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       movie: null,
       isLoaded: false,
       images: null,
-      menuOpen: false,
+      showMenu: false,
       castImages: null,
-      menuOpacity: null,
     }
   }
 
@@ -103,21 +97,12 @@ export default class MovieScreen extends Component<IProps, IState> {
       movie,
       images,
       isLoaded: true,
-      menuOpen: false,
-      menuOpacity: 0,
       castImages,
     })
   }
 
   render() {
-    const {
-      movie,
-      isLoaded,
-      images,
-      castImages,
-      menuOpen,
-      menuOpacity,
-    } = this.state
+    const { movie, isLoaded, images, castImages, showMenu } = this.state
 
     if (!isLoaded) {
       return (
@@ -142,8 +127,43 @@ export default class MovieScreen extends Component<IProps, IState> {
             zIndex: -2,
           }}
         />
-        <MovieSidebarButton />
-        {/* <MovieSidebar open={menuOpen} opacity={menuOpacity} /> */}
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: '15%',
+            height: 100,
+            width: 35,
+            backgroundColor: '#12152D',
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            zIndex: 15,
+            justifyContent: 'center',
+            shadowColor: 'rgba(0, 0, 0, 0.32)',
+            shadowOffset: {
+              width: -5,
+              height: 2,
+            },
+            shadowOpacity: 10,
+          }}
+          onPress={() => {
+            if (this.state.showMenu) {
+              this.setState({ showMenu: false })
+            } else {
+              this.setState({ showMenu: true })
+            }
+          }}
+        >
+          <Image
+            style={{
+              height: 60,
+              width: 30,
+              alignSelf: 'center',
+            }}
+            source={require('../../assets/icons/SideBar.png')}
+          />
+        </TouchableOpacity>
+        <MovieSidebar show={showMenu} />
         <Content style={{ flex: 1 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
@@ -161,7 +181,6 @@ export default class MovieScreen extends Component<IProps, IState> {
                 flex: 1,
                 flexWrap: 'wrap',
                 marginTop: 40,
-                marginBottom: 40,
               }}
             >
               <Text
@@ -183,7 +202,6 @@ export default class MovieScreen extends Component<IProps, IState> {
                 flex: 1,
                 flexWrap: 'wrap',
                 marginTop: 40,
-                marginBottom: 40,
               }}
             >
               <Text
@@ -196,7 +214,6 @@ export default class MovieScreen extends Component<IProps, IState> {
               >
                 Cast
               </Text>
-
               <Slider
                 images={castImages}
                 borderRadius={37.5}

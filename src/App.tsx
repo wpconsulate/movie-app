@@ -36,6 +36,7 @@ class App extends Component<PropsInterface, StateInterface> {
         PoppinsLight: require('../assets/fonts/Poppins/Light.ttf'),
         PoppinsMedium: require('../assets/fonts/Poppins/Medium.ttf'),
         PoppinsSemiBold: require('../assets/fonts/Poppins/SemiBold.ttf'),
+        Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       })
       this.setState({ fontLoaded: true })
     } catch (error) {
