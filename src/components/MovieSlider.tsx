@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, ScrollView, Text, TouchableOpacity } from 'react-native'
-import SetOfMovies from '../api/SetOfMovies'
+import SetOfMovies from '../api/Collection/SetOfMovies'
 import { Movie } from '../api'
 import {
   NavigationInjectedProps,
@@ -25,7 +25,7 @@ function handleOnPress(
 function MovieSlider(props: IProps) {
   const topRated = props.data
   return (
-    <View>
+    <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
       <Text
         style={{
           color: 'white',

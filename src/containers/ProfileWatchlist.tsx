@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, View } from 'react-native'
-import Watchlist from '../api/Watchlist'
+import Watchlist from '../api/Collection/Watchlist'
 import WatchlistCard from '../components/WatchlistCard'
 // import { SetOfMovies } from '../api';
-// import { TopRated } from '.';
 
 interface IProps {}
 

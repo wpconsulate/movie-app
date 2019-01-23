@@ -72,12 +72,13 @@ class LoginScreen extends Component<IProps, IState> {
         Alert.alert('Successfully logged in!')
         this.props.navigation.navigate("ProfileScreen")
       })
-      .catch(error => {
+      .catch((error: any) => {
         Alert.alert(error.message)
       })
   }
 
   render() {
+    const { email, password } = this.state
     return (
       <Container>
         <Header transparent />
@@ -137,7 +138,7 @@ class LoginScreen extends Component<IProps, IState> {
                     autoFocus
                     keyboardType="email-address"
                     autoCorrect
-                    value={this.state.email}
+                    value={email}
                     onChangeText={text => {
                       this.setState({ email: text })
                     }}
@@ -158,7 +159,7 @@ class LoginScreen extends Component<IProps, IState> {
                       label="PASSWORD"
                       keyboardType="visible-password"
                       secureTextEntry
-                      value={this.state.password}
+                      value={password}
                       onChangeText={text => {
                         this.setState({ password: text })
                       }}

@@ -54,7 +54,7 @@ class Upcoming extends Component<IProps, IState> {
           flex: 1,
         }}
       >
-        <View style={{ width: '100%' }}>
+        <View style={{ width: '100%', paddingHorizontal: 15 }}>
           <Text
             style={{
               fontFamily: 'PoppinsBold',

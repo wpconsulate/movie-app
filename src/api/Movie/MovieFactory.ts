@@ -1,6 +1,6 @@
 import Model from '../Model'
 import Movie from './Movie'
-import SetOfMovies from '../SetOfMovies'
+import { SetOfMovies } from '../Collection';
 // import IProperties from './Interfaces/Movie'
 class MovieFactory extends Model{
     ENTITY = Movie.ENTITY;

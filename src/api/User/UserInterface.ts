@@ -8,7 +8,5 @@ interface IUser {
   getName(): string
 
   getName(): string
-
-  toString(): string
 }
 export default IUser

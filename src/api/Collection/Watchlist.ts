@@ -1,8 +1,7 @@
 // import SetOfMovies from "./SetOfMovies";
-import { Database } from ".";
-import User from "./User/User";
+import { Database, SetOfMovies } from "..";
+import User from "../User/User";
 import SetOfUsers from "./SetOfUsers";
-import SetOfMovies from "./SetOfMovies";
 // import Movie from "./Movie/Movie";
 
 class Watchlist extends SetOfMovies {           //Currently Working on Profile Screen continue from there

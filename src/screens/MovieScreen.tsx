@@ -4,12 +4,10 @@ import {
   Icon,
   StyleProvider,
   Container,
-  Header,
   Content,
-  Row,
-  Col,
   H1,
   Text,
+  Header,
 } from 'native-base'
 import {
   NavigationScreenProp,
@@ -20,11 +18,21 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import { Genres } from '../components'
-import { ActivityIndicator, ImageBackground, View } from 'react-native'
+import { PlayButton, Genres, Slider, MovieSidebar } from '../components'
+import {
+  ActivityIndicator,
+  ImageBackground,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+  TouchableOpacity,
+  Image,
+} from 'react-native'
 import { LinearGradient } from 'expo'
-import SvgUri from 'react-native-svg-uri'
+
 import { formatDate } from '../lib'
+import { IImage } from '../api/Movie/Interfaces'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -36,8 +44,15 @@ interface IProps {
 interface IState {
   movie: Movie | null
   isLoaded: boolean
+  images: Array<IImage>
+  castImages: Array<IImage>
+  showMenu: boolean
 }
-
+interface IStyle {
+  playButtonView: ViewStyle
+  titleView: ViewStyle
+  title: TextStyle
+}
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -62,20 +77,32 @@ export default class MovieScreen extends Component<IProps, IState> {
     this.state = {
       movie: null,
       isLoaded: false,
+      images: null,
+      showMenu: false,
+      castImages: null,
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
+    const images = await movie.getImages(5, { type: 'backdrops' })
+    const casts = await movie.getCasts()
+    let castImages = new Array<IImage>()
+
+    casts.forEach(cast => {
+      castImages.push({ url: cast.getImage() })
+    })
     this.setState({
       movie,
+      images,
       isLoaded: true,
+      castImages,
     })
   }
 
   render() {
-    const { movie, isLoaded } = this.state
+    const { movie, isLoaded, images, castImages, showMenu } = this.state
 
     if (!isLoaded) {
       return (
@@ -90,83 +117,285 @@ export default class MovieScreen extends Component<IProps, IState> {
           backgroundColor: '#12152D',
         }}
       >
-        <View style={{ height: mmdb.isIphoneX ? '55%' : '55%' }}>
-          <ImageBackground
-            source={{
-              uri: movie.getBackdrop(),
-            }}
+        <Header
+          transparent
+          translucent
+          iosBarStyle="light-content"
+          noShadow
+          style={{
+            position: 'absolute',
+            zIndex: -2,
+          }}
+        />
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: '15%',
+            height: 100,
+            width: 35,
+            backgroundColor: '#12152D',
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            zIndex: 15,
+            justifyContent: 'center',
+            shadowColor: 'rgba(0, 0, 0, 0.32)',
+            shadowOffset: {
+              width: -5,
+              height: 2,
+            },
+            shadowOpacity: 10,
+          }}
+          onPress={() => {
+            if (this.state.showMenu) {
+              this.setState({ showMenu: false })
+            } else {
+              this.setState({ showMenu: true })
+            }
+          }}
+        >
+          <Image
             style={{
-              width: '100%',
-              height: '100%',
+              height: 60,
+              width: 30,
+              alignSelf: 'center',
             }}
-          >
-            <LinearGradient
-              colors={['rgba(18, 21, 45, 100)', 'rgba(18, 21, 45, 0.04)']}
-              start={[0.5, 1]}
-              end={[0.5, 0]}
-              style={{
-                position: 'absolute',
-                flex: 1,
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                width: '100%',
-                height: '100%',
-              }}
+            source={require('../../assets/icons/SideBar.png')}
+          />
+        </TouchableOpacity>
+        <MovieSidebar show={showMenu} />
+        <Content style={{ flex: 1 }}>
+          <Backdrop uri={movie.getBackdrop()} />
+          <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
+            <PlayContainer />
+            <Title title={movie.getTitle()} />
+            <GenreContainer genres={movie.getGenres(true, 3)} />
+            <ReleaseDateRuntime
+              date={formatDate(movie.getReleaseDate())}
+              time={movie.getRuntime()}
             />
-            <Header transparent />
-            <View style={{ width: '100%', marginTop: 50 }}>
-              <Button
-                transparent
-                style={{ width: 85, height: 85, alignSelf: 'center' }}
+            <Storyline content={movie.getOverview()} />
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
+                  width: '100%',
+                }}
               >
-                <SvgUri
-                  source={require('../../assets/icons/play-button.svg')}
-                  width={85}
-                  height={85}
-                />
-              </Button>
+                Photos
+              </Text>
+
+              <Slider images={images} borderRadius={9} />
             </View>
-            <Content style={{ maxWidth: '70%' }}>
-              <Row>
-                <Col>
-                  <H1
-                    style={{
-                      fontFamily: 'PoppinsSemiBold',
-                      color: '#fff',
-                      fontSize: 32,
-                    }}
-                  >
-                    {movie.getTitle()}
-                  </H1>
-                </Col>
-              </Row>
-              <Genres genres={movie.getGenres(true, 3)} />
-              <Row style={{ alignItems: 'center' }}>
-                <Col style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Icon
-                    type="SimpleLineIcons"
-                    name="calendar"
-                    style={{ color: '#fff' }}
-                  />
-                  <Text style={{ color: '#fff' }}>
-                    {formatDate(movie.getReleaseDate())}
-                  </Text>
-                </Col>
-                <Col style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Icon
-                    type="EvilIcons"
-                    name="clock"
-                    style={{ color: '#fff' }}
-                  />
-                  <Text style={{ color: '#fff' }}>{movie.getRuntime()}</Text>
-                </Col>
-              </Row>
-            </Content>
-          </ImageBackground>
-        </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }}
+            >
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
+                  width: '100%',
+                }}
+              >
+                Cast
+              </Text>
+              <Slider
+                images={castImages}
+                borderRadius={37.5}
+                height={75}
+                width={75}
+              />
+            </View>
+          </View>
+        </Content>
       </Container>
     )
   }
 }
+// movie.getBackdrop()
+function Backdrop(props: any) {
+  return (
+    <View
+      style={{
+        height: mmdb.isIphoneX ? '55%' : '55%',
+        width: mmdb.deviceWidth,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <ImageBackground
+        source={{
+          uri: props.uri,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <LinearGradient
+          colors={['rgba(18, 21, 45, 100)', 'rgba(18, 21, 45, 0.04)']}
+          start={[0.5, 1]}
+          end={[0.5, 0]}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      </ImageBackground>
+    </View>
+  )
+}
+
+function ReleaseDateRuntime(props: any) {
+  return (
+    <View
+      style={{
+        alignContent: 'center',
+        flexDirection: 'row',
+        flex: 1,
+        marginTop: 40,
+      }}
+    >
+      <ReleaseDate date={props.date} />
+      <Runtime time={props.time} />
+    </View>
+  )
+}
+
+function ReleaseDate(props: any) {
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+      }}
+    >
+      <View style={{ marginHorizontal: 5 }}>
+        <Icon
+          type="SimpleLineIcons"
+          name="calendar"
+          style={{ color: '#fff' }}
+        />
+      </View>
+      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}>
+        {props.date}
+      </Text>
+    </View>
+  )
+}
+
+function Runtime(props: any) {
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        marginLeft: 10,
+      }}
+    >
+      <View style={{ marginHorizontal: 5 }}>
+        <Icon type="EvilIcons" name="clock" style={{ color: '#fff' }} />
+      </View>
+      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}>
+        {props.time}
+      </Text>
+    </View>
+  )
+}
+
+function Storyline(props: any) {
+  return (
+    <View
+      style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 40 }}
+    >
+      <Text
+        style={{
+          color: 'white',
+          fontFamily: 'PoppinsMedium',
+          marginBottom: 10,
+          width: '100%',
+        }}
+      >
+        Storyline
+      </Text>
+      <Text
+        style={{
+          color: 'white',
+          fontFamily: 'PoppinsLight',
+          fontSize: 13,
+          width: '100%',
+        }}
+      >
+        {props.content}
+      </Text>
+    </View>
+  )
+}
+
+function PlayContainer() {
+  return (
+    <View style={styles.playButtonView}>
+      <PlayButton />
+    </View>
+  )
+}
+
+function Title(props: any) {
+  return (
+    <View style={styles.titleView}>
+      <H1 style={styles.title}>{props.title}</H1>
+    </View>
+  )
+}
+
+function GenreContainer(props: any) {
+  return (
+    <View style={{ marginTop: 20, flexDirection: 'row' }}>
+      <Genres genres={props.genres} />
+    </View>
+  )
+}
+
+const styles = StyleSheet.create<IStyle>({
+  playButtonView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 80,
+  },
+  titleView: {
+    maxWidth: 250,
+    marginTop: 50,
+    flexDirection: 'row',
+  },
+  title: {
+    fontFamily: 'PoppinsSemiBold',
+    color: '#fff',
+    fontSize: 32,
+    padding: 5,
+    lineHeight: 50,
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+})

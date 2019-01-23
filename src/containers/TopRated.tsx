@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, View } from 'react-native'
-import SetOfMovies from '../api/SetOfMovies'
+import SetOfMovies from '../api/Collection/SetOfMovies'
 import MovieSlider from '../components/MovieSlider'
 
 interface IProps {}

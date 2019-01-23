@@ -21,7 +21,7 @@ class HomeScreen extends Component<NavigationScreenProps> {
       headerBackgroundTransitionPreset: 'fade',
       headerLeft: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Profile')} transparent>
+          <Button onPress={() => navigation.navigate('Login')} transparent>
             <Icon name="person" style={{ color: '#fff' }} />
           </Button>
         </StyleProvider>

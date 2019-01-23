@@ -7,7 +7,7 @@ import {
   withNavigation,
 } from 'react-navigation'
 // import { SetOfMovies } from "../api";
-import Watchlist from "../api/Watchlist";
+import Watchlist from "../api/Collection/Watchlist";
 // import { TopRated } from "../containers";
   
 interface IProps extends NavigationInjectedProps {
