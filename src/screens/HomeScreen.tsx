@@ -12,6 +12,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { Upcoming, TopRated, Trending } from '../containers'
+// import Alert from 'react-native'
 
 class HomeScreen extends Component<NavigationScreenProps> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -48,7 +49,10 @@ class HomeScreen extends Component<NavigationScreenProps> {
   constructor(props: NavigationScreenProps) {
     super(props)
   }
+
+  
   render() {
+    // const {navigate} = this.props.navigation;
     return (
       <Container
         style={{

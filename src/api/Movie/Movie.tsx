@@ -1,6 +1,7 @@
 import Config from '../../Config'
 import { IMovie, IGenre } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
+
 interface MovieProperties {
   id: number
   title: string
@@ -30,14 +31,68 @@ class Movie implements IMovie {
   constructor(movie: MovieProperties) {
     this.id = movie.id
     this.title = movie.title
-    this.poster_path = movie.poster_path
-    this.popularity = movie.popularity
-    this.release_date = movie.release_date
-    this.revenue = movie.revenue
-    this.genres = movie.genres
-    this.runtime = movie.runtime
-    this.backdrop_path = movie.backdrop_path
+
+    if(movie.poster_path == undefined)
+    {
+      this.poster_path = null
+    }
+    else{
+      this.poster_path = movie.poster_path
+    }
+
+    if(movie.popularity === undefined)
+    {
+      this.popularity = null
+    }
+    else{
+      this.popularity = movie.popularity
+    }
+
+    if(movie.release_date == undefined)
+    {
+      this.release_date = null
+    }
+    else{
+      this.release_date = movie.release_date
+    }
+
+    if(movie.revenue == undefined)
+    {
+      this.revenue = null
+    }
+    else{
+      this.revenue = movie.revenue
+    }
+
+    if(movie.genres == undefined)
+    {
+      this.genres = null
+    }
+    else{
+      this.genres = movie.genres
+    }
+
+    if(movie.runtime == undefined)
+    {
+      this.runtime = null
+    }
+    else{
+      this.runtime = movie.runtime
+    }
+
+    if(movie.backdrop_path == undefined)
+    {
+      this.backdrop_path = null
+    }
+    else{
+      this.backdrop_path = movie.backdrop_path
+    }
+    
+    
   }
+
+  
+
 
   public getId(): number {
     return this.id

@@ -20,7 +20,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
-import { Authentication, Database, User } from '../api'
+import { Authentication, Database } from '../api'
 interface IState {
   email: string
   password: string

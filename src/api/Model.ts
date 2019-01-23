@@ -2,14 +2,17 @@ import Database from './Database'
 
 abstract class Model extends Database {
     ENTITY :string;
-    create(data : object){
+    async create(data : object){
         this.database.ref(this.ENTITY).set(data)
     }
-    delete(key : string){
+    async delete(data : object){
         var results = this.database.ref(this.ENTITY);          
-        results.child(key).remove();  
+        results.child(data.toString()).remove();  
     };
-    update(data : object){
+    async update(data : object){
+        this.database.ref(this.ENTITY).set(data)
+    };
+    async updateLabel(data : object){
         this.database.ref(this.ENTITY).set(data)
     };
 }

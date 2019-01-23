@@ -70,7 +70,7 @@ class LoginScreen extends Component<IProps, IState> {
       .login(email, password)
       .then(() => {
         Alert.alert('Successfully logged in!')
-        // Go to profile page.
+        this.props.navigation.navigate("ProfileScreen")
       })
       .catch(error => {
         Alert.alert(error.message)
