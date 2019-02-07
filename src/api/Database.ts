@@ -1,7 +1,7 @@
 import { database } from 'firebase'
 
 class Database {
-  public database: firebase.database.Database
+  database: firebase.database.Database
   constructor() {
     this.database = database()
   }
@@ -15,12 +15,16 @@ class Database {
   }
 
   public read(collection: string) {
-    let items: database.DataSnapshot[] = [];
-    this.database.ref(collection).on('value', (snapshot) => {
-      items.push(snapshot.val())
-    }, (error: any) => {
-      console.error(error)
-    })
+    let items: database.DataSnapshot[] = []
+    this.database.ref(collection).on(
+      'value',
+      snapshot => {
+        items.push(snapshot.val())
+      },
+      (error: any) => {
+        console.error(error)
+      }
+    )
     return items
   }
 }

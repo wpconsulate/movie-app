@@ -66,9 +66,11 @@ class RegisterScreen extends Component<IProps, IState> {
       name: null,
       isLoaded: true,
     }
+    
     this.auth = new Authentication()
     this.database = new Database()
   }
+  // user = new User('', 'test');
   onRegisterPress() {
     const { email, password, name } = this.state
     this.setState({ isLoaded: false })

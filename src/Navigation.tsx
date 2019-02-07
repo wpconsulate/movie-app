@@ -6,6 +6,7 @@ import {
   RegisterScreen,
   SearchScreen,
   MovieScreen,
+  ProfileScreen,
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -15,6 +16,7 @@ const RootStack = createStackNavigator(
     Register: RegisterScreen,
     Search: SearchScreen,
     Movie: MovieScreen,
+    Profile: ProfileScreen,
   },
   {
     initialRouteName: 'Search',

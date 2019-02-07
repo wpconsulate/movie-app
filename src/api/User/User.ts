@@ -1,20 +1,52 @@
 import IUser from './UserInterface'
+<<<<<<< HEAD
 import Database from '../Database';
+=======
+import Model from '../Model'
+// import Watchlist from '../Watchlist';
+>>>>>>> b8b779e922f66a6281185003fa07df733e469092
 
-class User implements IUser {
+interface UserProperties {
+  email: string
+  name: string
+  password: string
+}
+class User extends Model implements IUser  {
+  static ENTITY = 'users'
   private id: number
   private email: string
   private name: string
-  private db: Database
+  // private watchlist: Watchlist
 
+  
   constructor(email: string, name: string) {
+    super();
     this.email = email
     this.name = name
+    // this.watchlist = new Watchlist(this.id.toString())
+  }
+
+  public async create(data: UserProperties) {
+    return await this.database.ref(User.ENTITY).set(data);
+  }
+
+  public async update(data: UserProperties) {
+    var results = this.database.ref(User.ENTITY);          
+    return await results.child(this.id.toString()).update(data);  
+  }
+
+  public async delete() {
+    var results = this.database.ref(User.ENTITY);          
+    results.child(this.id.toString()).remove();   
   }
 
   public getId(): number {
     return this.id
   }
+
+  // public getWatchlist(): Watchlist {
+  //   return this.watchlist
+  // }
 
   public setEmail(newEmail: string): void {
     this.email = newEmail
