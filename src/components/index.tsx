@@ -7,6 +7,7 @@ import Slider from './Slider'
 import PlayButton from './PlayButton'
 import MovieSidebar from './MovieSidebar'
 import MovieSidebarButton from './MovieSidebarButton'
+import { Hits } from './hits';
 export {
   Card,
   Logo,
@@ -17,4 +18,5 @@ export {
   PlayButton,
   MovieSidebar,
   MovieSidebarButton,
+  Hits
 }

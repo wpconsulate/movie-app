@@ -1,9 +1,11 @@
 import IUser from './UserInterface'
+import Database from '../Database';
 
 class User implements IUser {
   private id: number
   private email: string
   private name: string
+  private db: Database
 
   constructor(email: string, name: string) {
     this.email = email
@@ -28,6 +30,14 @@ class User implements IUser {
 
   public getName(): string {
     return this.name
+  }
+
+  public getSnapshot(): firebase.database.DataSnapshot {
+    let snapshot: firebase.database.DataSnapshot = null;
+    this.db.getCollection('users').orderByChild('email').equalTo(this.email).on('value', (value) => {
+      snapshot = value
+    })
+    return snapshot
   }
 }
 

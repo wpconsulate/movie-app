@@ -1,13 +1,27 @@
-import * as firebase from 'firebase'
+import { database } from 'firebase'
 
 class Database {
-  private database: firebase.database.Database
+  public database: firebase.database.Database
   constructor() {
-    this.database = firebase.app().database()
+    this.database = database()
   }
 
-  public write(collection: string, data: object) {
-    this.database.ref(collection).set(data)
+  public getCollection(collection: string) {
+    return this.database.ref(collection)
+  }
+
+  public async write(collection: string, data: object) {
+    return await this.database.ref(collection).set(data)
+  }
+
+  public read(collection: string) {
+    let items: database.DataSnapshot[] = [];
+    this.database.ref(collection).on('value', (snapshot) => {
+      items.push(snapshot.val())
+    }, (error: any) => {
+      console.error(error)
+    })
+    return items
   }
 }
 export default Database
