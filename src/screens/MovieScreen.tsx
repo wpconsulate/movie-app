@@ -33,6 +33,7 @@ import { LinearGradient } from 'expo'
 
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
+import Review from '../components/ReviewTab';
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -47,6 +48,7 @@ interface IState {
   images: Array<IImage>
   castImages: Array<IImage>
   showMenu: boolean
+  tempText:string
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -80,6 +82,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       showMenu: false,
       castImages: null,
+      tempText: "salkjdblasfbasdbvdsvknaskd;vbdsakvbkdsadbv;ksadbv;kdsajbv;ksadbv;ksvdbksadnv;kjnsakv;jsdna;kvjbsakvjsba;kjvbsa;kjvbsa;kjvbksdbva;ksjbv;ksabdv;kjsbad;kvsbaj;vkdsvjbsadkvbjsa;kdvbjksabvksajbv;kjsadbv;ksbadvkjsbakvbdsakvj"
     }
   }
 
@@ -102,8 +105,12 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   render() {
-    const { movie, isLoaded, images, castImages, showMenu } = this.state
-
+    const { movie, isLoaded, images, castImages, showMenu, tempText } = this.state
+    let review = ''
+    if(tempText.length > 100)
+      review = tempText.substr(0,100) + '...';
+      else
+      review = tempText
     if (!isLoaded) {
       return (
         <Container>
@@ -221,6 +228,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                 width={75}
               />
             </View>
+            <Review url={'https://image.shutterstock.com/z/stock-vector-man-icon-vector-1040084344.jpg'} review={review} numberOfDays={2} username={'User name'}/>
           </View>
         </Content>
       </Container>
