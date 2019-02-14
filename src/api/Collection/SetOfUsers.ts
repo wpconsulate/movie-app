@@ -7,6 +7,11 @@ class SetOfUsers extends Array<User> {
 
   }
 
+  public getById(id: string) {
+    // implement method for this...
+    return id
+  }
+
   public addUser(aUser: User) {
     super.push(aUser)
   }

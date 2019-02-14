@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
   headerView: {
     minHeight: '20%',
     backgroundColor: '#E20F0F',
+    zIndex: 3,
   },
 })
 
@@ -145,17 +146,19 @@ class SearchScreen extends Component<any, State> {
         <View style={styles.headerView}>
           {/* Search card */}
           <View
-            style={{
-              marginTop: 100,
-              position: 'absolute',
-              left: '50%',
-              translateX: '-50%',
-              width: '90%',
-            }}
+            style={
+              {
+                marginTop: 100,
+                position: 'absolute',
+                width: '90%',
+                justifyContent: 'center',
+                alignSelf: 'center',
+              } as any
+            }
           >
             <Card
               style={{
-                maxWidth: '80%',
+                maxWidth: '100%',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -177,6 +180,7 @@ class SearchScreen extends Component<any, State> {
                   style={{
                     height: '100%',
                     alignSelf: 'center',
+                    minHeight: 50,
                   }}
                 />
                 {isLoading && <Spinner color="red" />}

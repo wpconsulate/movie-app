@@ -1,43 +1,38 @@
 import IUser from './UserInterface'
-<<<<<<< HEAD
-import Database from '../Database';
-=======
 import Model from '../Model'
 // import Watchlist from '../Watchlist';
->>>>>>> b8b779e922f66a6281185003fa07df733e469092
 
 interface UserProperties {
   email: string
   name: string
   password: string
 }
-class User extends Model implements IUser  {
+class User extends Model implements IUser {
   static ENTITY = 'users'
   private id: number
   private email: string
   private name: string
   // private watchlist: Watchlist
 
-  
   constructor(email: string, name: string) {
-    super();
+    super()
     this.email = email
     this.name = name
     // this.watchlist = new Watchlist(this.id.toString())
   }
 
   public async create(data: UserProperties) {
-    return await this.database.ref(User.ENTITY).set(data);
+    return await this.database.ref(User.ENTITY).set(data)
   }
 
   public async update(data: UserProperties) {
-    var results = this.database.ref(User.ENTITY);          
-    return await results.child(this.id.toString()).update(data);  
+    var results = this.database.ref(User.ENTITY)
+    return await results.child(this.id.toString()).update(data)
   }
 
   public async delete() {
-    var results = this.database.ref(User.ENTITY);          
-    results.child(this.id.toString()).remove();   
+    var results = this.database.ref(User.ENTITY)
+    results.child(this.id.toString()).remove()
   }
 
   public getId(): number {
@@ -65,10 +60,13 @@ class User extends Model implements IUser  {
   }
 
   public getSnapshot(): firebase.database.DataSnapshot {
-    let snapshot: firebase.database.DataSnapshot = null;
-    this.db.getCollection('users').orderByChild('email').equalTo(this.email).on('value', (value) => {
-      snapshot = value
-    })
+    let snapshot: firebase.database.DataSnapshot = null
+    this.database
+      .ref('users')
+      .equalTo(this.email)
+      .on('value', value => {
+        snapshot = value
+      })
     return snapshot
   }
 }
