@@ -48,7 +48,7 @@ interface IState {
   images: Array<IImage>
   castImages: Array<IImage>
   showMenu: boolean
-  tempText:string
+  reviewList:[]
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -82,7 +82,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       showMenu: false,
       castImages: null,
-      tempText: "salkjdblasfbasdbvdsvknaskd;vbdsakvbkdsadbv;ksadbv;kdsajbv;ksadbv;ksvdbksadnv;kjnsakv;jsdna;kvjbsakvjsba;kjvbsa;kjvbsa;kjvbksdbva;ksjbv;ksabdv;kjsbad;kvsbaj;vkdsvjbsadkvbjsa;kdvbjksabvksajbv;kjsadbv;ksbadvkjsbakvbdsakvj"
+      reviewList: null
     }
   }
 
@@ -92,7 +92,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     let castImages = new Array<IImage>()
-
+    
+    let review = await movie.getReview();
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
@@ -101,16 +102,13 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       isLoaded: true,
       castImages,
+      reviewList : review
     })
   }
 
   render() {
-    const { movie, isLoaded, images, castImages, showMenu, tempText } = this.state
-    let review = ''
-    if(tempText.length > 100)
-      review = tempText.substr(0,100) + '...';
-      else
-      review = tempText
+    const { movie, isLoaded, images, castImages, showMenu, reviewList } = this.state
+    
     if (!isLoaded) {
       return (
         <Container>
@@ -227,8 +225,13 @@ export default class MovieScreen extends Component<IProps, IState> {
                 height={75}
                 width={75}
               />
+              
             </View>
-            <Review url={'https://image.shutterstock.com/z/stock-vector-man-icon-vector-1040084344.jpg'} review={review} numberOfDays={2} username={'User name'}/>
+            {
+              reviewList.map((element: any)=>{
+                return <Review key={element.id} url={'something image'} review={element.content} numberOfDays={2} username={element.author}/>
+              })
+            }
           </View>
         </Content>
       </Container>

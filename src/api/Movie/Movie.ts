@@ -206,6 +206,22 @@ class Movie implements IMovie {
       return null
     }
   }
+  
+  public async getReview(): Promise<any> {
+    let reviewURL = Config.BASE_URL + "movie/" +this.id+ "/reviews?api_key="+Config.API_KEY;
+    let content = await fetch(reviewURL)
+    let parsedContent = await content.json();
+    interface reviewObject {
+      id: String
+      author: String,
+      content: String
+    }
+    let reviewList = new Array<reviewObject>()
+    parsedContent.results.forEach((element: any) =>{
+        reviewList.push({id:element.id, author: element.author, content: element.content})
+    })
+    return reviewList;
+  }
 }
 
 export default Movie

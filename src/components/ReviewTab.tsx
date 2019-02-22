@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Text,
   Col,
+  Row
 } from 'native-base'
 import {
   View,
@@ -9,15 +10,27 @@ import {
   Image,
 } from 'react-native'
 interface IProps {
-    review: string
+    review: String
     numberOfDays?: number
-    username: string
+    username: String
     url: string
 }
 
 export default function Review (props: IProps){
+  function text(txt: String){
+    return (
+    <View>
+      <Text style={{color:"white"}}>
+      {txt} 
+      </Text>
+    <TouchableOpacity style={{justifyContent:'flex-end'}}>
+    <Text style={{color:'red'}}>Read More</Text>
+    </TouchableOpacity>
+    </View>
+  )
+  }
   return(
-    <View style={{
+    <Row style={{
       flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 40
     }}>
     <Col style={{ backgroundColor: '#12152D', width:40, marginRight:15}}>
@@ -31,7 +44,7 @@ export default function Review (props: IProps){
           }}
         />
     </Col>
-    <Col style={{ backgroundColor: '#12152D', height: 200 }}>
+    <Col style={{ backgroundColor: '#12152D' }}>
     <Text
         style={{
           color: 'white',
@@ -50,19 +63,22 @@ export default function Review (props: IProps){
       >
         {props.numberOfDays} days ago
       </Text>
-    
-      <Text style={{color:"white"}}>
+      {
+        props.review.length > 100 ?
+        (text(props.review.substr(0,100) + '...')):
+        (
+          <Text style={{color:"white"}}>
+            {props.review}
+          </Text>
+        )
+      }
       
-      {props.review}
-      </Text>
 
-      <TouchableOpacity style={{justifyContent:'flex-end'}}>
-        <Text style={{color:'red'}}>Read More</Text>
-      </TouchableOpacity>
+      
     </Col>
     
    
         
-    </View>
+    </Row>
   )
 }
