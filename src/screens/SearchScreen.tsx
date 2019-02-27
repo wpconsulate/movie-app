@@ -1,208 +1,131 @@
-import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
-import { navigationOptions } from '../helpers/header'
-import { Input, Text, Spinner, Card, CardItem, Button } from 'native-base'
-import { SearchScreenState as State } from '../state/SearchScreenState'
-import axios from 'axios'
-import { Url } from '../api/Url'
+import React, { Component } from "react";
+import {AsyncStorage, ScrollView, TouchableOpacity} from 'react-native';
+import { Container, Header, Content, Input, Item,Text, Row, Grid, Col } from 'native-base';
+import { Pill } from "../components";
 
-const styles = StyleSheet.create({
-  headerView: {
-    minHeight: '20%',
-    backgroundColor: '#E20F0F',
-    zIndex: 3,
-  },
-})
-
-class ResultItem extends Component<any, any> {
-  onPress = (e: any) => {
-    e.preventDefault()
-    this.props.onPress(this.props.id)
-    console.log('pressed...', this.props)
-  }
-
-  render() {
-    return (
-      <Button block transparent onPress={this.onPress}>
-        <Text>
-          {this.props.name}{' '}
-          {this.props.releaseDate ? `(${this.props.releaseDate})` : null}
-        </Text>
-      </Button>
-    )
-  }
-}
-
-class SearchScreen extends Component<any, State> {
-  static navigationOptions = navigationOptions
-
-  private url: Url
-
-  constructor(props: any) {
+class SearchScreen extends Component<any,any> {
+  constructor(props: any){
     super(props)
-
-    this.state = {
-      searchInput: '',
-      isLoading: false,
-      results: null,
+    this.state={
+      userInput: "", //save when user types on search bar here
+      searchHistory:[]
     }
 
-    this.url = new Url()
+  }
+  static navigationOptions = {
+    title: "Search"
+  };
+
+  //get search history (if any) that display pill
+  async componentWillMount() {
+    let historyList = await this.getLocalHistory()
+    if(historyList.length>0){
+      this.populateStateWithSearchHistory(historyList)
+    }
   }
 
-  onChange = async (text: string) => {
-    const { searchInput } = this.state
-    this.setState({
-      searchInput: text,
-    })
+  //return: list of string, repersent search history
+  async getLocalHistory(){
+    let value = new Array()
+    value = await AsyncStorage.getAllKeys()
+    return value
+  }
 
-    if (searchInput.trim().length <= 2) {
-      this.setState({
-        results: null,
+  //populate search history with list of strings
+  populateStateWithSearchHistory(historyList: string[]){
+    const value = historyList
+      let history = new Array()
+      value.forEach(element=>{
+        history.push(element)
+        
       })
+      this.setState({searchHistory: history})
+  }
+
+  //record user input on search bar
+  onChange = (text: string) =>{
+    this.setState({userInput: text})
+  }
+
+  onsubmit = ()=>{
+    
+    this._retrieveData(this.state.userInput) //save search result if not saved already
+    this.setState({userInput: ""}) //clear search bar
+    
+  }
+
+  _storeData = async (userInput: string) => {
+    try {
+      await AsyncStorage.setItem(userInput, userInput);
+      let previousSearch = this.state.searchHistory
+      previousSearch.push(userInput)
+      this.setState({searchHistory: previousSearch})
+    } catch (error) {
+      console.log(error)
     }
-    if (searchInput.trim().length > 2) {
-      const url = this.url.getUrl('search/multi', [
-        {
-          param: 'query',
-          value: searchInput,
-        },
-      ])
-      this.setState({
-        isLoading: true,
-      })
-      try {
-        const response = await axios.get(url)
-        const data = response.data.results
-        let results:
-          | any[]
-          | { name: any; release_date: string; id: number }[] = []
-        data.forEach((item: any) => {
-          if (item.media_type === 'movie') {
-            results.push({
-              name: item.title,
-              id: item.id,
-              release_date: item.release_date
-                ? new Date(item.release_date).getFullYear().toString()
-                : null,
-            })
-          } else if (item.media_type === 'person') {
-            item.known_for.forEach((subItem: any) => {
-              if (subItem.media_type === 'movie') {
-                results.push({
-                  name: subItem.title,
-                  id: subItem.id,
-                  release_date: subItem.release_date
-                    ? new Date(subItem.release_date).getFullYear().toString()
-                    : null,
-                })
-              } else {
-                results.push({
-                  name: subItem.name,
-                  id: subItem.id,
-                  release_date: subItem.release_date
-                    ? new Date(subItem.release_date).getFullYear().toString()
-                    : null,
-                })
-              }
-            })
-          } else {
-            results.push({
-              name: item.name,
-              id: item.id,
-              release_date: item.release_date
-                ? new Date(item.release_date).getFullYear().toString()
-                : null,
-            })
-          }
-        })
-        this.setState({
-          results: results,
-          isLoading: false,
-        })
-      } catch (err) {
-        console.error(err)
+  };
+  _retrieveData = async (userInput: string) => {
+    try {
+      const value = await AsyncStorage.getItem(userInput);
+      if (value === null) {
+        this._storeData(userInput)
       }
+    } catch (error) {
+      // Error retrieving data
+      console.log("retrive didnt work")
+      
     }
+  };
+
+  //called by clear all button
+  clearSearchHistory = async () => {
+    await AsyncStorage.multiRemove(this.state.searchHistory)
+    this.setState({searchHistory: []})
   }
 
-  onPressItem = (id: number) => {
-    console.log('SearchScreen::onPressItem()', id)
+  //called tapping search history pills
+  searchHistoryOnPress(text:string){
+    this.setState({userInput: text}) //populate searchbar with selected search history
   }
-
-  _renderItem = ({ item }: any) => (
-    <ResultItem
-      id={item.id}
-      onPress={this.onPressItem}
-      releaseDate={item.release_date}
-      name={item.name}
-    />
-  )
-
   render() {
-    const { searchInput, isLoading, results } = this.state
     return (
-      <View>
-        <View style={styles.headerView}>
-          {/* Search card */}
-          <View
-            style={
-              {
-                marginTop: 100,
-                position: 'absolute',
-                width: '90%',
-                justifyContent: 'center',
-                alignSelf: 'center',
-              } as any
-            }
-          >
-            <Card
-              style={{
-                maxWidth: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <CardItem
-                header
-                style={{
-                  paddingLeft: 0,
-                  paddingBottom: 0,
-                  paddingRight: 0,
-                  paddingTop: 0,
-                  alignSelf: 'center',
-                }}
-              >
-                <Input
-                  placeholder="Search for a movie, actor or a user..."
-                  value={searchInput}
-                  onChangeText={this.onChange}
-                  style={{
-                    height: '100%',
-                    alignSelf: 'center',
-                    minHeight: 50,
-                  }}
-                />
-                {isLoading && <Spinner color="red" />}
-              </CardItem>
-              <ScrollView>
-                <View>
-                  <FlatList
-                    data={results}
-                    keyExtractor={(item: any) => item.id}
-                    renderItem={this._renderItem}
-                  />
-                </View>
-              </ScrollView>
-            </Card>
-          </View>
-        </View>
-        <View>
-          <Text>Suggestions & Search History Here...</Text>
-        </View>
-      </View>
-    )
+      <Container style={{backgroundColor: '#181F52'}}>
+        <Header />
+        <Content>
+          <Item regular>
+            <Input placeholder='Regular Textbox' onChangeText={this.onChange} onSubmitEditing={this.onsubmit} value={this.state.userInput} />         
+          </Item>
+          <Grid>
+            <Row>
+              <Col>
+              <Text style={{fontSize:30, color: 'white', fontWeight:"bold"}}>Search History</Text>
+              </Col>
+              <Col>
+              <TouchableOpacity onPress={this.clearSearchHistory}>
+                <Text style={{color:'red', fontSize:20, alignSelf:'flex-end', fontWeight:'200'}}>Clear</Text>
+              </TouchableOpacity>
+              </Col>
+            </Row>
+            <Row>
+            <ScrollView horizontal>
+          {
+            this.state.searchHistory ? this.state.searchHistory.map((e:any)=>{
+              return(
+                <TouchableOpacity key={e} onPress={()=>this.searchHistoryOnPress(e)}>
+
+                  <Pill text={e} colour={'#4F547E'} textColour={"white"}/>
+                </TouchableOpacity>
+              )
+            }) : ''
+          }
+          </ScrollView>
+            </Row>
+          </Grid>
+          
+        </Content>
+      </Container>
+    );
   }
 }
 
-export default SearchScreen
+export default SearchScreen;
