@@ -3,14 +3,26 @@ import { Container, Header, Content } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
 import { Upcoming, TopRated, Trending } from '../containers'
 import { navigationOptions } from '../helpers/header'
-
-class HomeScreen extends Component<NavigationScreenProps> {
+import {Switch} from 'react-native'
+import {StoreGlobal} from './globalStore'
+interface IState{
+  switch:boolean
+}
+class HomeScreen extends Component<NavigationScreenProps,IState> {
   static navigationOptions = navigationOptions
 
   constructor(props: NavigationScreenProps) {
     super(props)
+    this.state = {
+      switch: false
+    }
   }
 
+  onchange = () =>{
+    
+    this.setState({switch: !this.state.switch})
+    StoreGlobal({type:'set',key:'access',value:!this.state.switch})
+  }
   render() {
     // const {navigate} = this.props.navigation;
     return (
@@ -21,9 +33,11 @@ class HomeScreen extends Component<NavigationScreenProps> {
       >
         <Header transparent />
         <Content>
-          <Upcoming />
+          <Switch onValueChange = {this.onchange}
+                  value = {this.state.switch}/>
+          {/* <Upcoming /> */}
           <TopRated />
-          <Trending />
+          {/* <Trending /> */}
         </Content>
       </Container>
     )

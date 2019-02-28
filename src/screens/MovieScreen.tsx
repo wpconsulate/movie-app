@@ -33,6 +33,8 @@ import { LinearGradient } from 'expo'
 
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
+import Review from '../components/ReviewTab'
+import { StoreGlobal } from './globalStore'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -47,12 +49,14 @@ interface IState {
   images: Array<IImage>
   castImages: Array<IImage>
   showMenu: boolean
+  reviewList: []
 }
 interface IStyle {
   playButtonView: ViewStyle
   titleView: ViewStyle
   title: TextStyle
 }
+var accessTxtSize = 0
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -80,16 +84,24 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       showMenu: false,
       castImages: null,
+      reviewList: null,
     }
   }
 
   async componentWillMount() {
+    let accessibility = StoreGlobal({ type: 'get', key: 'access' })
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     let castImages = new Array<IImage>()
 
+    let review = await movie.getReview()
+    let txtSize = 0
+    if (accessibility == true) {
+      txtSize = 40
+    }
+    accessTxtSize = txtSize
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
@@ -98,11 +110,19 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       isLoaded: true,
       castImages,
+      reviewList: review,
     })
   }
 
   render() {
-    const { movie, isLoaded, images, castImages, showMenu } = this.state
+    const {
+      movie,
+      isLoaded,
+      images,
+      castImages,
+      showMenu,
+      reviewList,
+    } = this.state
 
     if (!isLoaded) {
       return (
@@ -221,6 +241,17 @@ export default class MovieScreen extends Component<IProps, IState> {
                 width={75}
               />
             </View>
+            {reviewList.map((element: any) => {
+              return (
+                <Review
+                  key={element.id}
+                  url={'something image'}
+                  review={element.content}
+                  numberOfDays={2}
+                  username={element.author}
+                />
+              )
+            })}
           </View>
         </Content>
       </Container>
@@ -341,7 +372,7 @@ function Storyline(props: any) {
         style={{
           color: 'white',
           fontFamily: 'PoppinsLight',
-          fontSize: 13,
+          fontSize: 13 | accessTxtSize,
           width: '100%',
         }}
       >

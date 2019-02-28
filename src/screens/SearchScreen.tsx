@@ -1,8 +1,25 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  AsyncStorage,
+} from 'react-native'
 import { navigationOptions } from '../helpers/header'
-import { Input, Text, Spinner, Card, CardItem, Button } from 'native-base'
+import {
+  Input,
+  Text,
+  Spinner,
+  Card,
+  CardItem,
+  Button,
+  Row,
+  Col,
+} from 'native-base'
 import { SearchScreenState as State } from '../state/SearchScreenState'
+import { Pill } from '../components'
 import { withNavigation } from 'react-navigation'
 import Search from '../api/Search'
 
@@ -44,6 +61,7 @@ class SearchScreen extends Component<any, State> {
       searchInput: '',
       isLoading: false,
       results: null,
+      searchHistory: null,
     }
 
     this.search = new Search()
@@ -94,6 +112,17 @@ class SearchScreen extends Component<any, State> {
   onSubmit = () => {
     const { searchInput } = this.state
     this.props.navigation.push('Results', { query: searchInput })
+  }
+
+  searchHistoryOnPress = (text: string) => {
+    this.setState({
+      searchInput: text,
+    })
+  }
+
+  clearSearchHistory = async () => {
+    await AsyncStorage.multiRemove(this.state.searchHistory)
+    this.setState({ searchHistory: [] })
   }
 
   render() {
@@ -157,7 +186,49 @@ class SearchScreen extends Component<any, State> {
           </View>
         </View>
         <View>
-          <Text>Suggestions & Search History Here...</Text>
+          <Row>
+            <Col>
+              <Text
+                style={{ fontSize: 30, color: 'white', fontWeight: 'bold' }}
+              >
+                Search History
+              </Text>
+            </Col>
+            <Col>
+              <TouchableOpacity onPress={this.clearSearchHistory}>
+                <Text
+                  style={{
+                    color: 'red',
+                    fontSize: 20,
+                    alignSelf: 'flex-end',
+                    fontWeight: '200',
+                  }}
+                >
+                  Clear
+                </Text>
+              </TouchableOpacity>
+            </Col>
+          </Row>
+          <Row>
+            <ScrollView horizontal>
+              {this.state.searchHistory
+                ? this.state.searchHistory.map((e: any) => {
+                    return (
+                      <TouchableOpacity
+                        key={e}
+                        onPress={() => this.searchHistoryOnPress(e)}
+                      >
+                        <Pill
+                          text={e}
+                          colour={'#4F547E'}
+                          textColour={'white'}
+                        />
+                      </TouchableOpacity>
+                    )
+                  })
+                : ''}
+            </ScrollView>
+          </Row>
         </View>
       </View>
     )
