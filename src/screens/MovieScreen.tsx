@@ -34,6 +34,7 @@ import { LinearGradient } from 'expo'
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab';
+import {StoreGlobal} from './globalStore'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -55,6 +56,7 @@ interface IStyle {
   titleView: ViewStyle
   title: TextStyle
 }
+var accessTxtSize = 0
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -87,6 +89,7 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   async componentDidMount() {
+    let accessibility = StoreGlobal({type:'get',key:'access'})
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
@@ -94,6 +97,11 @@ export default class MovieScreen extends Component<IProps, IState> {
     let castImages = new Array<IImage>()
     
     let review = await movie.getReview();
+    let txtSize = 0
+    if(accessibility == true){
+      txtSize = 40 
+    }
+    accessTxtSize = txtSize
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
@@ -352,7 +360,7 @@ function Storyline(props: any) {
         style={{
           color: 'white',
           fontFamily: 'PoppinsLight',
-          fontSize: 13,
+          fontSize: 13| accessTxtSize,
           width: '100%',
         }}
       >

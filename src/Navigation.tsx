@@ -19,7 +19,7 @@ const RootStack = createStackNavigator(
     Profile: ProfileScreen,
   },
   {
-    initialRouteName: 'Search',
+    initialRouteName: 'Home',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,
