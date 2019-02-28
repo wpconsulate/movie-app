@@ -83,7 +83,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })

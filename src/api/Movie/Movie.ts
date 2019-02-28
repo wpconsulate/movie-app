@@ -109,28 +109,23 @@ class Movie implements IMovie {
       Movie.ENTITY
     }/${this.getId()}/images?api_key=${Config.API_KEY}`
 
-    try {
-      const response = await fetch(url)
-      const responseJson = await response.json()
-      const backdrops = responseJson.backdrops
+    const response = await fetch(url)
+    const responseJson = await response.json()
+    const backdrops = responseJson.backdrops
 
-      if (backdrops.length < 100) {
-        backdrops.forEach((item: any) => {
-          if (item.file_path) images.push({ url: item.file_path })
+    if (backdrops.length < 100) {
+      backdrops.forEach((item: any) => {
+        if (item.file_path) images.push({ url: item.file_path })
+      })
+    } else {
+      backdrops.forEach((item: any) => {
+        item.forEach((value: any) => {
+          if (value.file_path) images.push({ url: value.file_path })
         })
-      } else {
-        backdrops.forEach((item: any) => {
-          item.forEach((value: any) => {
-            if (value.file_path) images.push({ url: value.file_path })
-          })
-        })
-      }
-
-      return images
-    } catch (error) {
-      console.log('Movie::getBackdrops()', error)
-      return null
+      })
     }
+
+    return images
   }
 
   public async getPosters() {
@@ -139,54 +134,43 @@ class Movie implements IMovie {
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
     }/${this.getId()}/images?api_key=${Config.API_KEY}`
+    const response = await fetch(url)
+    const responseJson = await response.json()
+    const posters = responseJson.posters
 
-    try {
-      const response = await fetch(url)
-      const responseJson = await response.json()
-      const posters = responseJson.posters
+    posters.forEach((item: any) => {
+      if (item.file_path) images.push({ url: item.file_path })
+    })
 
-      posters.forEach((item: any) => {
-        if (item.file_path) images.push({ url: item.file_path })
-      })
-
-      return images
-    } catch (error) {
-      console.log('Movie::getPosters()', error)
-      return null
-    }
+    return images
   }
 
   public async getImages(
     limit?: number,
     params?: IParams
-  ): Promise<Array<IImage>> | null {
+  ): Promise<Array<IImage>> {
     let images = new Array<IImage>()
     limit = limit ? limit : 15
-    try {
-      const backdrops = await this.getBackdrops()
-      const posters = await this.getPosters()
+    const backdrops = await this.getBackdrops()
+    const posters = await this.getPosters()
 
-      for (let i = 0; i <= limit; i++) {
-        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
-        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-        switch (params.type.toLowerCase()) {
-          case 'backdrops':
-            images.push({ url: backdropUrl })
-            break
-          case 'posters':
-            images.push({ url: posterUrl })
-            break
-          default:
-            images.push({ url: backdropUrl })
-            images.push({ url: posterUrl })
-        }
+    for (let i = 0; i < backdrops.length && limit; i++) {
+      const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
+      const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
+      switch (params.type.toLowerCase()) {
+        case 'backdrops':
+          images.push({ url: backdropUrl })
+          break
+        case 'posters':
+          images.push({ url: posterUrl })
+          break
+        default:
+          images.push({ url: backdropUrl })
+          images.push({ url: posterUrl })
       }
-
-      return images
-    } catch (error) {
-      console.log('Movie::getImages()', error)
-      return null
     }
+
+    return images
   }
 
   public async getCasts(): Promise<Array<Cast> | null> {

@@ -14,10 +14,9 @@ class User extends Model implements IUser {
   private name: string
   // private watchlist: Watchlist
 
-  constructor(email: string, name: string) {
+  constructor(properties: any) {
     super()
-    this.email = email
-    this.name = name
+    Object.assign(this, properties)
     // this.watchlist = new Watchlist(this.id.toString())
   }
 

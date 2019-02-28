@@ -5,12 +5,13 @@ import { Card } from 'react-native-elements'
 import { NavigationInjectedProps, withNavigation } from 'react-navigation'
 // import { SetOfMovies } from "../api";
 import Watchlist from '../api/Collection/Watchlist'
+import { SetOfMovies } from '../api'
 // import { TopRated } from "../containers";
 
 interface IProps extends NavigationInjectedProps {
   //data: SetOfMovies
   title: String
-  data: Watchlist
+  data: Watchlist | SetOfMovies
 }
 
 function renderStars(stars: number) {

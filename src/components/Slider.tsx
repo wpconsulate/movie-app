@@ -55,21 +55,26 @@ class Slider extends Component<IProps, IState> {
         }}
       >
         <ScrollView horizontal={true}>
-          {images.map((item: IDataParams, index: number) => {
-            return (
-              <TouchableOpacity onPress={() => this.onPress(index)} key={index}>
-                <Image
-                  source={{ uri: item.url }}
-                  style={{
-                    height: height ? height : 75,
-                    width: width ? width : 100,
-                    marginRight: 15,
-                    borderRadius: borderRadius ? borderRadius : 0,
-                  }}
-                />
-              </TouchableOpacity>
-            )
-          })}
+          {images
+            ? images.map((item: IDataParams, index: number) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => this.onPress(index)}
+                    key={index}
+                  >
+                    <Image
+                      source={{ uri: item.url }}
+                      style={{
+                        height: height ? height : 75,
+                        width: width ? width : 100,
+                        marginRight: 15,
+                        borderRadius: borderRadius ? borderRadius : 0,
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              })
+            : ''}
           <Modal
             visible={this.state.isModalOpened}
             transparent={true}
