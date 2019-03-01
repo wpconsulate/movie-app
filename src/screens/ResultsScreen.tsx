@@ -13,10 +13,8 @@ import SetOfMovies from '../api/Collection/SetOfMovies'
 import { IResultsScreenState as IState } from '../state/ResultsScreenState'
 import Search from '../api/Search'
 import Movie from '../api/Movie/Movie'
-import { AirbnbRating } from 'react-native-ratings'
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Image } from 'react-native';
 import FitImage from 'react-native-fit-image'
-
 class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
 
@@ -80,9 +78,24 @@ class ResultsScreen extends Component<any, IState> {
 const numOfColumns = 4
 class Movies extends React.Component<any, any> {
 
+  _renderStars = (stars: number) => {
+    let starsArray = []
+
+    for (let i = 0; i < 5; i++) {
+      if (stars <= i) {
+        starsArray.push(<Image source={require('../../assets/empty-star.png')} />)
+      } else {
+        starsArray.push(<Image source={require('../../assets/star.png')} />)
+      }
+    }
+
+
+    return starsArray
+  }
+
   _renderItem = ({ item }: { item: Movie }) => {
     return (
-      <Col size={3} style={{ margin: 5 }}>
+      <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
         <FitImage
           source={{ uri: item.getPoster() }}
           resizeMethod="scale"
@@ -92,7 +105,6 @@ class Movies extends React.Component<any, any> {
         <Text
           style={{
             marginTop: 5,
-            marginBottom: 10,
             color: '#fff',
             textAlign: 'center',
             fontSize: 10
@@ -102,10 +114,7 @@ class Movies extends React.Component<any, any> {
         </Text>
         {/* <Row>{this._renderStars(item.getPopularity())}</Row> */}
         <Row style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-          <AirbnbRating
-            showRating={false}
-            defaultRating={item.getPopularity()}
-          />
+          {this._renderStars(item.getPopularity())}
         </Row>
       </Col>
     )

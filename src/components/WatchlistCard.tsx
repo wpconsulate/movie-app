@@ -19,9 +19,9 @@ function renderStars(stars: number) {
 
   for (let i = 0; i < 5; i++) {
     if (stars <= i) {
-      starsArray.push(<Image source={require('../../assets/EmptyStar.png')} />)
+      starsArray.push(<Image source={require('../../assets/empty-star.png')} />)
     } else {
-      starsArray.push(<Image source={require('../../assets/Star.png')} />)
+      starsArray.push(<Image source={require('../../assets/star.png')} />)
     }
   }
 

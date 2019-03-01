@@ -45,7 +45,7 @@
     "react-native-elements": "^0.19.1",
     "react-native-fit-image": "^1.5.4",
     "react-native-image-zoom-viewer": "^2.2.24",
-    "react-native-ratings": "^6.3.0",
+    "react-native-ratings": "https://github.com/lukepaoloni/react-native-ratings.git",
     "react-native-snap-carousel": "^3.7.5",
     "react-native-svg-charts": "^5.2.0",
     "react-native-svg-uri": "^1.2.3",

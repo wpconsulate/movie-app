@@ -33,6 +33,7 @@
     "babel.config.js",
     "rn-cli.config.js",
     "./src/native-base-theme",
+    "./src/lib/react-native-ratings",
     "assets"
   ],
   "compileOnSave": false
