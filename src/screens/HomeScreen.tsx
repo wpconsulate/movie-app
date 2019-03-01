@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Container, Header, Content } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
-import { Upcoming, TopRated, Trending } from '../containers'
+import { TopRated } from '../containers'
 import { navigationOptions } from '../helpers/header'
-import {Switch} from 'react-native'
-import {StoreGlobal} from './globalStore'
-interface IState{
-  switch:boolean
+import { Switch } from 'react-native'
+import { StoreGlobal } from './globalStore'
+interface IState {
+  switch: boolean
 }
-class HomeScreen extends Component<NavigationScreenProps,IState> {
+class HomeScreen extends Component<NavigationScreenProps, IState> {
   static navigationOptions = navigationOptions
 
   constructor(props: NavigationScreenProps) {
@@ -18,10 +18,10 @@ class HomeScreen extends Component<NavigationScreenProps,IState> {
     }
   }
 
-  onchange = () =>{
-    
-    this.setState({switch: !this.state.switch})
-    StoreGlobal({type:'set',key:'access',value:!this.state.switch})
+  onchange = () => {
+
+    this.setState({ switch: !this.state.switch })
+    StoreGlobal({ type: 'set', key: 'access', value: !this.state.switch })
   }
   render() {
     // const {navigate} = this.props.navigation;
@@ -33,8 +33,8 @@ class HomeScreen extends Component<NavigationScreenProps,IState> {
       >
         <Header transparent />
         <Content>
-          <Switch onValueChange = {this.onchange}
-                  value = {this.state.switch}/>
+          <Switch onValueChange={this.onchange}
+            value={this.state.switch} />
           {/* <Upcoming /> */}
           <TopRated />
           {/* <Trending /> */}

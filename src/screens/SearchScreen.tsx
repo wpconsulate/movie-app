@@ -19,7 +19,6 @@ import {
   Col,
 } from 'native-base'
 import { SearchScreenState as State } from '../state/SearchScreenState'
-import { Pill } from '../components'
 import { withNavigation } from 'react-navigation'
 import Search from '../api/Search'
 
@@ -210,7 +209,7 @@ class SearchScreen extends Component<any, State> {
             </Col>
           </Row>
           <Row>
-            <ScrollView horizontal>
+            {/* <ScrollView horizontal>
               {this.state.searchHistory
                 ? this.state.searchHistory.map((e: any) => {
                     return (
@@ -227,7 +226,7 @@ class SearchScreen extends Component<any, State> {
                     )
                   })
                 : ''}
-            </ScrollView>
+            </ScrollView> */}
           </Row>
         </View>
       </View>

@@ -13,7 +13,8 @@ import SetOfMovies from '../api/Collection/SetOfMovies'
 import { IResultsScreenState as IState } from '../state/ResultsScreenState'
 import Search from '../api/Search'
 import Movie from '../api/Movie/Movie'
-import { View, FlatList, Image } from 'react-native'
+import { AirbnbRating } from 'react-native-ratings'
+import { View, FlatList } from 'react-native';
 import FitImage from 'react-native-fit-image'
 
 class ResultsScreen extends Component<any, IState> {
@@ -33,8 +34,8 @@ class ResultsScreen extends Component<any, IState> {
       isLoading: true,
     })
     try {
-      const query = await this.props.navigation.getParam('query')
-      const results = await this.search.search(query)
+      // const query = await this.props.navigation.getParam('query')
+      const results = await this.search.search('test')
       results.forEach((result: any) => {
         if (result.title && result.poster_path)
           this.setOfMovies.addMovie(result)
@@ -68,51 +69,46 @@ class ResultsScreen extends Component<any, IState> {
               data={this.setOfMovies}
             />
           ) : (
-            ''
-          )}
+                ''
+              )}
         </Content>
       </Container>
     )
   }
 }
+
+const numOfColumns = 4
 class Movies extends React.Component<any, any> {
+
   _renderItem = ({ item }: { item: Movie }) => {
     return (
-      <View style={{ flex: 1 }}>
+      <Col size={3} style={{ margin: 5 }}>
         <FitImage
           source={{ uri: item.getPoster() }}
           resizeMethod="scale"
           resizeMode="contain"
-          borderRadius={24}
+          borderRadius={8}
         />
         <Text
           style={{
+            marginTop: 5,
             marginBottom: 10,
             color: '#fff',
             textAlign: 'center',
+            fontSize: 10
           }}
         >
-          {item.getTitle(7)}
+          {item.getTitle()}
         </Text>
         {/* <Row>{this._renderStars(item.getPopularity())}</Row> */}
-      </View>
+        <Row style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+          <AirbnbRating
+            showRating={false}
+            defaultRating={item.getPopularity()}
+          />
+        </Row>
+      </Col>
     )
-  }
-
-  _renderStars = (stars: number) => {
-    let starsArray = []
-
-    for (let i = 0; i < 5; i++) {
-      if (stars <= i) {
-        starsArray.push(
-          <Image source={require('../../assets/EmptyStar.png')} />
-        )
-      } else {
-        starsArray.push(<Image source={require('../../assets/Star.png')} />)
-      }
-    }
-
-    return starsArray
   }
 
   render() {
@@ -146,21 +142,12 @@ class Movies extends React.Component<any, any> {
             </Row>
           </Col>
         </Row>
-        <Row style={{ marginTop: 30 }}>
-          <FlatList
-            contentContainerStyle={
-              {
-                // flex: 1,
-                // justifyContent: 'space-around', // Seems to not work and doesn't show anything
-                // alignItems: 'center',
-              }
-            }
-            numColumns={3}
-            data={this.props.data}
-            keyExtractor={item => item.getId().toString()}
-            renderItem={this._renderItem}
-          />
-        </Row>
+        <FlatList
+          numColumns={numOfColumns}
+          data={this.props.data}
+          keyExtractor={(item: Movie) => item.getId().toString()}
+          renderItem={this._renderItem}
+        />
       </View>
     )
   }
