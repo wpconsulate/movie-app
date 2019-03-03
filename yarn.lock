@@ -5460,6 +5460,13 @@ react-native-elements@^0.19.1:
     opencollective "^1.0.3"
     prop-types "^15.5.8"
 
+react-native-fit-image@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/react-native-fit-image/-/react-native-fit-image-1.5.4.tgz#73d2fccc7ad902cf2ffcd008a2a74749ad50134a"
+  integrity sha512-wNHlGdDWsUU31qlM5SsvZrMH4eXBZt586FQNXFRFuOiXVqdA++6Xait7aiZ+5vxglgqLf+zzSnoICn0NEvDfrw==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-gesture-handler@1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.9.tgz#ddec4d19d51cb6fb54df6eca792ebd76aaef083f"
@@ -5511,6 +5518,13 @@ react-native-maps@*:
 react-native-maps@expo/react-native-maps#v0.22.1-exp.0:
   version "0.22.1"
   resolved "https://codeload.github.com/expo/react-native-maps/tar.gz/e6f98ff7272e5d0a7fe974a41f28593af2d77bb2"
+
+"react-native-ratings@https://github.com/lukepaoloni/react-native-ratings.git":
+  version "6.3.0"
+  resolved "https://github.com/lukepaoloni/react-native-ratings.git#9aadf108350c22fbc36a54cef0577919e875038e"
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.5.10"
 
 react-native-reanimated@1.0.0-alpha.10:
   version "1.0.0-alpha.10"

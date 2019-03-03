@@ -5,12 +5,13 @@ import { Card } from 'react-native-elements'
 import { NavigationInjectedProps, withNavigation } from 'react-navigation'
 // import { SetOfMovies } from "../api";
 import Watchlist from '../api/Collection/Watchlist'
+import { SetOfMovies } from '../api'
 // import { TopRated } from "../containers";
 
 interface IProps extends NavigationInjectedProps {
   //data: SetOfMovies
   title: String
-  data: Watchlist
+  data: Watchlist | SetOfMovies
 }
 
 function renderStars(stars: number) {
@@ -18,9 +19,9 @@ function renderStars(stars: number) {
 
   for (let i = 0; i < 5; i++) {
     if (stars <= i) {
-      starsArray.push(<Image source={require('../../assets/EmptyStar.png')} />)
+      starsArray.push(<Image source={require('../../assets/empty-star.png')} />)
     } else {
-      starsArray.push(<Image source={require('../../assets/Star.png')} />)
+      starsArray.push(<Image source={require('../../assets/star.png')} />)
     }
   }
 

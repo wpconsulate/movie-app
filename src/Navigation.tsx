@@ -7,6 +7,7 @@ import {
   SearchScreen,
   MovieScreen,
   ProfileScreen,
+  ResultsScreen,
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -17,9 +18,10 @@ const RootStack = createStackNavigator(
     Search: SearchScreen,
     Movie: MovieScreen,
     Profile: ProfileScreen,
+    Results: ResultsScreen,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Results',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,
