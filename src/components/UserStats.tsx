@@ -2,6 +2,7 @@ import React from 'react'
 import { StackedBarChart } from 'react-native-svg-charts'
 import { View, Text } from 'native-base'
 import { StyleSheet } from 'react-native'
+import {Row, Col} from 'native-base'
 
 //given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
@@ -29,10 +30,8 @@ function StatsKey(props: IProps) {
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <View style={styles.view} />
       <Text
-        style={[
-          { marginLeft: 10, flex: 3, fontFamily: 'PoppinsMedium' },
-          styles.text,
-        ]}
+        style={
+          { marginLeft: 10, flex: 3, fontFamily: 'PoppinsMedium' , color: "white"}}
       >
         {props.text}{' '}
       </Text>
@@ -46,8 +45,7 @@ export default class UserStats extends React.PureComponent {
     const style = StyleSheet.create({
       parent: {
         flex: 1,
-        flexDriection: 'row',
-        marginLeft: 10,
+        marginLeft: 10
       },
     })
     const data = [
@@ -82,6 +80,28 @@ export default class UserStats extends React.PureComponent {
         <StatsKey text="Completed" colour="#56CCF2" total="100" />
         <StatsKey text="Dropped" colour="#FF0000" total="7" />
         <StatsKey text="Plan To Watch" colour="#C4C4C4" total="15" />
+        {/* <Container> */}
+        <Row>
+          <Col>
+          <Text>Total Entries:{data[0].Completed + data[0].Watching + data[0].Dropped + data[0].PlanToWatch}</Text>
+          <Text>Review:19</Text>
+          </Col>
+
+          <Col >
+          <Text>Days:200</Text>
+          <Text>Hours:1400</Text> 
+          <Row>
+         <Col>
+          <Text>Online: Now</Text>
+          <Text>Joined: 12/02/2019</Text>
+         </Col>
+        </Row>       
+          </Col>
+          
+        </Row>
+        
+        {/* </Container> */}
+        
       </View>
     )
   }

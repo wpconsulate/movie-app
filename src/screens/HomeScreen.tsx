@@ -35,9 +35,9 @@ class HomeScreen extends Component<NavigationScreenProps,IState> {
         <Content>
           <Switch onValueChange = {this.onchange}
                   value = {this.state.switch}/>
-          {/* <Upcoming /> */}
+          <Upcoming />
           <TopRated />
-          {/* <Trending /> */}
+          <Trending />
         </Content>
       </Container>
     )

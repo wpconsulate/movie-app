@@ -57,6 +57,7 @@ interface IStyle {
   title: TextStyle
 }
 var accessTxtSize = 0
+var accessBcColour = 'transparent'
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -99,7 +100,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     let review = await movie.getReview();
     let txtSize = 0
     if(accessibility == true){
-      txtSize = 40 
+      txtSize = 15;
+      accessBcColour = 'black'
     }
     accessTxtSize = txtSize
     casts.forEach(cast => {
@@ -362,6 +364,7 @@ function Storyline(props: any) {
           fontFamily: 'PoppinsLight',
           fontSize: 13| accessTxtSize,
           width: '100%',
+          backgroundColor: accessBcColour
         }}
       >
         {props.content}
