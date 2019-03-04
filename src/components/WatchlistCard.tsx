@@ -21,7 +21,7 @@ function renderStars(stars: number) {
     if (stars <= i) {
       starsArray.push(<Image source={require('../../assets/empty-star.png')} />)
     } else {
-      starsArray.push(<Image source={require('../../assets/star.png')} />)
+      starsArray.push(<Image source={require('../../assets/Star.png')} />)
     }
   }
 
