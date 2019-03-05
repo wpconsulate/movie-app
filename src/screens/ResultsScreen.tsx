@@ -6,7 +6,7 @@ import {
   Row,
   Col,
   Text,
-  Icon
+  Grid
 } from 'native-base'
 import SetOfMovies from '../api/Collection/SetOfMovies'
 import { IResultsScreenState as IState } from '../state/ResultsScreenState'
@@ -14,7 +14,7 @@ import Search from '../api/Search'
 import { TouchableOpacity, StatusBar } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import Movies from '../containers/Movies';
-import { Header } from 'native-base';
+import { Header} from 'native-base';
 const navigationOptions: any = () => ({
   headerTransparent: true,
   headerMode: 'none',
@@ -69,6 +69,7 @@ class ResultsScreen extends Component<any, IState> {
             :
             <React.Fragment>
               <Header transparent iosBarStyle="light-content" style={{ flexDirection: 'row' }}>
+              <Grid>
                 <Row style={{ marginTop: 5, alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
                   <Col>
                     <TouchableOpacity>
@@ -85,11 +86,12 @@ class ResultsScreen extends Component<any, IState> {
                     >Showing {this.state.movies.length} results for</Text>
                   </Col>
                 </Row>
-                <Row style={{ justifyContent: 'center', alignSelf: 'stretch', width: '100%' }}>
+                <Row style={{alignItem: 'canter', width: '100%'}}>
                   <Col>
-                    <Text style={{ textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
+                    <Text style={{alignSelf:'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
                   </Col>
                 </Row>
+                </Grid>
               </Header>
               <Content style={{ paddingLeft: 20, paddingRight: 20 }}>
                 {this.state.isLoading ? (

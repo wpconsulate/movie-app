@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon, Col, Text, Row } from 'native-base';
+import { Col, Text, Row } from 'native-base';
 import Movie from '../api/Movie/Movie';
 import { TouchableOpacity, View, FlatList } from 'react-native';
 import FitImage from 'react-native-fit-image';
@@ -41,7 +41,7 @@ class Movies extends React.Component<any, any> {
         // Show popup
     }
 
-    _renderItem = ({ item, index }: { item: Movie | any, index: number }) => {
+    _renderItem = ({ item }: { item: Movie | any, index: number }) => {
         if (item.empty) {
             return <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }} />
         }
