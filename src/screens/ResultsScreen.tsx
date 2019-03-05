@@ -1,23 +1,28 @@
 import React, { Component } from 'react'
 import {
   Container,
-  Header,
   Content,
   Spinner,
   Row,
   Col,
   Text,
+  Icon
 } from 'native-base'
-import { navigationOptions } from '../helpers/header'
 import SetOfMovies from '../api/Collection/SetOfMovies'
 import { IResultsScreenState as IState } from '../state/ResultsScreenState'
 import Search from '../api/Search'
-import Movie from '../api/Movie/Movie'
-import { View, FlatList, Image } from 'react-native';
-import FitImage from 'react-native-fit-image'
+import { TouchableOpacity, StatusBar } from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather'
+import Movies from '../containers/Movies';
+import { Header } from 'native-base';
+const navigationOptions: any = () => ({
+  headerTransparent: true,
+  headerMode: 'none',
+  header: null as any
+})
+
 class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
-
   private setOfMovies: SetOfMovies
   private search: Search
 
@@ -57,107 +62,50 @@ class ResultsScreen extends Component<any, IState> {
           backgroundColor: '#12152D',
         }}
       >
-        <Header transparent />
-        <Content style={{ padding: 20 }}>
-          {this.state.isLoading ? (
+        <StatusBar barStyle="light-content" />
+        {
+          this.state.isLoading ?
             <Spinner />
-          ) : this.state.movies ? (
-            <Movies
-              query={navigation.getParam('query')}
-              data={this.setOfMovies}
-            />
-          ) : (
-                ''
-              )}
-        </Content>
+            :
+            <React.Fragment>
+              <Header transparent iosBarStyle="light-content" style={{ flexDirection: 'row' }}>
+                <Row style={{ marginTop: 5, alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
+                  <Col>
+                    <TouchableOpacity>
+                      <FeatherIcon name="chevron-left" size={30} color="white" />
+                    </TouchableOpacity>
+                  </Col>
+                  <Col size={2} style={{ alignSelf: 'center' }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                      }}
+                    >Showing {this.state.movies.length} results for</Text>
+                  </Col>
+                </Row>
+                <Row style={{ justifyContent: 'center', alignSelf: 'stretch', width: '100%' }}>
+                  <Col>
+                    <Text style={{ textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
+                  </Col>
+                </Row>
+              </Header>
+              <Content style={{ paddingLeft: 20, paddingRight: 20 }}>
+                {this.state.isLoading ? (
+                  <Spinner />
+                ) : this.state.movies ? (
+                  <Movies
+                    query={navigation.getParam('query')}
+                    data={this.setOfMovies}
+                  />
+                ) : (
+                      ''
+                    )}
+              </Content>
+            </React.Fragment>
+        }
       </Container>
-    )
-  }
-}
-
-const numOfColumns = 4
-class Movies extends React.Component<any, any> {
-
-  _renderStars = (stars: number) => {
-    let starsArray = []
-
-    for (let i = 0; i < 5; i++) {
-      if (stars <= i) {
-        starsArray.push(<Image source={require('../../assets/empty-star.png')} />)
-      } else {
-        starsArray.push(<Image source={require('../../assets/Star.png')} />)
-      }
-    }
-
-
-    return starsArray
-  }
-
-  _renderItem = ({ item }: { item: Movie }) => {
-    return (
-      <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
-        <FitImage
-          source={{ uri: item.getPoster() }}
-          resizeMethod="scale"
-          resizeMode="contain"
-          borderRadius={8}
-        />
-        <Text
-          style={{
-            marginTop: 5,
-            color: '#fff',
-            textAlign: 'center',
-            fontSize: 10
-          }}
-        >
-          {item.getTitle()}
-        </Text>
-        {/* <Row>{this._renderStars(item.getPopularity())}</Row> */}
-        <Row style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-          {this._renderStars(item.getPopularity())}
-        </Row>
-      </Col>
-    )
-  }
-
-  render() {
-    return (
-      <View>
-        <Row>
-          <Col>
-            <Row
-              style={{ flexWrap: 'wrap', alignItems: 'flex-start', flex: 1 }}
-            >
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  marginRight: 10,
-                }}
-              >
-                Showing {this.props.data.length} results for:
-              </Text>
-              <Text
-                style={{
-                  textTransform: 'capitalize',
-                  color: '#E20F0F',
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                }}
-              >
-                {this.props.query}
-              </Text>
-            </Row>
-          </Col>
-        </Row>
-        <FlatList
-          numColumns={numOfColumns}
-          data={this.props.data}
-          keyExtractor={(item: Movie) => item.getId().toString()}
-          renderItem={this._renderItem}
-        />
-      </View>
     )
   }
 }

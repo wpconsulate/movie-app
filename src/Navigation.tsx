@@ -21,7 +21,7 @@ const RootStack = createStackNavigator(
     Results: ResultsScreen,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Results',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,
