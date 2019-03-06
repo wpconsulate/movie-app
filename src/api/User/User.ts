@@ -1,6 +1,7 @@
 import IUser from './UserInterface'
 import Model from '../Model'
-// import Watchlist from '../Watchlist';
+import Watchlist from '../Collection/Watchlist';
+import { Movie } from '..';
 
 interface UserProperties {
   email: string
@@ -12,17 +13,22 @@ class User extends Model implements IUser  {
   private id: number
   private email: string
   private name: string
-  // private watchlist: Watchlist
+  private watchlist: Watchlist
+  private isOnline : Boolean
 
   
   constructor(email: string, name: string) {
     super();
     this.email = email
     this.name = name
-    // this.watchlist = new Watchlist(this.id.toString())
+    this.watchlist = new Watchlist(this.id.toString())
   }
 
   public async create(data: UserProperties) {
+    return await this.database.ref(User.ENTITY).set(data);
+  }
+
+  public async addMovieToList(data: Movie) {
     return await this.database.ref(User.ENTITY).set(data);
   }
 
@@ -40,10 +46,24 @@ class User extends Model implements IUser  {
     return this.id
   }
 
-  // public getWatchlist(): Watchlist {
-  //   return this.watchlist
-  // }
+  public getWatchlist(): Watchlist {
+    return this.watchlist
+  }
 
+  public getIsOnline(): Boolean {
+    return this.isOnline
+  }
+
+  public async getDetails() {
+    const value = await this.database.ref("users/" + this.id)
+    let jsonVar = JSON.stringify(value)
+    let User = JSON.parse(jsonVar)
+
+    this.setName = User.name
+    this.setEmail = User.email //Do this for all future additions that User gains
+    this.isOnline = User.isOnline
+    return this
+  }
   public setEmail(newEmail: string): void {
     this.email = newEmail
   }

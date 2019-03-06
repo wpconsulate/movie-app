@@ -11,7 +11,7 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
-import { Upcoming, TopRated, Trending } from '../containers'
+// import { Upcoming, TopRated, Trending } from '../containers'
 // import Alert from 'react-native'
 
 class HomeScreen extends Component<NavigationScreenProps> {
@@ -61,9 +61,9 @@ class HomeScreen extends Component<NavigationScreenProps> {
       >
         <Header transparent />
         <Content>
-          <Upcoming />
+          {/* <Upcoming />
           <TopRated />
-          <Trending />
+          <Trending />  */}
         </Content>
       </Container>
     )

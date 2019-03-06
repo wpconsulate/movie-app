@@ -57,7 +57,6 @@ class SetOfMovies extends Array<Movie> {
 
   public async getTrending(): Promise<SetOfMovies> | null {
     const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`
-
     try {
       const response = await fetch(url)
       const responseJson = await response.json()

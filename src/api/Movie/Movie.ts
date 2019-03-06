@@ -2,18 +2,20 @@ import Config from '../../Config'
 import {
   IMovie,
   IGenre,
-  IProperties,
   IImage,
   IBackdrop,
   IPoster,
 } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
 import Cast from './../Cast/Cast'
+// import Model from '../Model';
+import Database from '../Database';
+
 interface IParams {
   type?: 'backdrops' | 'posters'
 }
-class Movie implements IMovie {
-  static ENTITY = 'movie'
+class Movie extends Database implements IMovie {
+  static ENTITY = 'users'
 
   private id: number
   private overview: string
@@ -26,17 +28,9 @@ class Movie implements IMovie {
   private runtime: number
   private backdrop_path: string
 
-  constructor(movie: IProperties) {
-    this.id = movie.id
-    this.title = movie.title
-    this.poster_path = movie.poster_path
-    this.popularity = movie.popularity
-    this.release_date = movie.release_date
-    this.revenue = movie.revenue
-    this.genres = movie.genres
-    this.runtime = movie.runtime
-    this.backdrop_path = movie.backdrop_path
-    this.overview = movie.overview
+  constructor(movie: Partial<Movie>) {
+    super();
+    Object.assign(this, movie);
   }
 
   public getId(): number {
@@ -205,6 +199,16 @@ class Movie implements IMovie {
       console.error(error)
       return null
     }
+  }
+
+  public async AddToWatchlist(userId : number, type : String) {
+    return await this.database.ref(Movie.ENTITY + "/" + userId + "/watchlist/" + type).push(this.getData());
+  }
+
+  public getData()
+  {
+    const { backdrop_path,  title, popularity, poster_path, id} = this
+    return { backdrop_path, title, popularity, poster_path, id}
   }
 }
 

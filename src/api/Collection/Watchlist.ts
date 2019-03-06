@@ -6,7 +6,7 @@ import SetOfUsers from "./SetOfUsers";
 
 class Watchlist extends SetOfMovies {           //Currently Working on Profile Screen continue from there
     public SetOfMovie = new SetOfMovies()
-    static ENTITY = 'movie'
+    static ENTITY = 'user'
     private database = new Database()
     // private id: number
     private userId: string
@@ -18,10 +18,10 @@ class Watchlist extends SetOfMovies {           //Currently Working on Profile S
         this.userId = userId 
     }
 
-    public async getList() : Promise<Watchlist> {      
+    public async getList(userId : number, type : String) : Promise<SetOfMovies> {      
         // let movie;  
         let value;
-        value = await this.database.database.ref("movie").orderByChild('title').equalTo(this.userId).once('value', function(snap){
+        value = await this.database.database.ref("users/" + userId + "/watchlist/" + type).orderByChild('title').once('value', function(snap){
             //change the above to users/movie to make it the folders under the correct location -- this will work
             return value = snap.val()
         });
@@ -30,11 +30,11 @@ class Watchlist extends SetOfMovies {           //Currently Working on Profile S
 
         for(var key in arrayOfMovies)
         {
-            // console.log(arrayOfMovies[key]);
+            console.log(arrayOfMovies[key]);
             this.SetOfMovie.addMovie(arrayOfMovies[key]);
         }
         // return null
-        return this
+        return this.SetOfMovie
     }
 
     public getUser(): User {
