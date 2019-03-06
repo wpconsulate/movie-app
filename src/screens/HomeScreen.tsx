@@ -3,7 +3,6 @@ import { Container, Header, Content } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
 import { TopRated } from '../containers'
 import { navigationOptions } from '../helpers/header'
-import { Switch } from 'react-native'
 import { StoreGlobal } from './globalStore'
 import Upcoming from '../containers/Upcoming'
 import Trending from '../containers/Trending'
@@ -35,8 +34,6 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
       >
         <Header transparent />
         <Content>
-          <Switch onValueChange = {this.onchange}
-                  value = {this.state.switch}/>
           <Upcoming />
           <TopRated />
           <Trending />

@@ -4,6 +4,7 @@ import Movie from '../api/Movie/Movie';
 import { TouchableOpacity, View, FlatList } from 'react-native';
 import FitImage from 'react-native-fit-image';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import { withNavigation } from 'react-navigation';
 
 const numOfColumns = 4
 class Movies extends React.Component<any, any> {
@@ -41,12 +42,12 @@ class Movies extends React.Component<any, any> {
         // Show popup
     }
 
-    _renderItem = ({ item }: { item: Movie | any, index: number }) => {
+    _renderItem = ({ item, index }: { item: Movie | any, index: number }) => {
         if (item.empty) {
-            return <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }} />
+            return <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }} key={index.toString()} />
         }
         return (
-            <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }}>
+            <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }} key={index.toString()}>
                 <TouchableOpacity onPress={() => this.onPressItem(item.getId().toString())} onLongPress={this.onLongPressItem}>
                     <FitImage
                         source={{ uri: item.getPoster() }}
@@ -87,4 +88,4 @@ class Movies extends React.Component<any, any> {
         )
     }
 }
-export default Movies
+export default withNavigation(Movies)

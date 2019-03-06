@@ -14,7 +14,8 @@ import Search from '../api/Search'
 import { TouchableOpacity, StatusBar } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import Movies from '../containers/Movies';
-import { Header} from 'native-base';
+import { Header } from 'native-base';
+import { withNavigation } from 'react-navigation';
 const navigationOptions: any = () => ({
   headerTransparent: true,
   headerMode: 'none',
@@ -37,8 +38,8 @@ class ResultsScreen extends Component<any, IState> {
       isLoading: true,
     })
     try {
-      // const query = await this.props.navigation.getParam('query')
-      const results = await this.search.search('test')
+      const query = await this.props.navigation.getParam('query')
+      const results = await this.search.search(query)
       results.forEach((result: any) => {
         if (result.title && result.poster_path)
           this.setOfMovies.addMovie(result)
@@ -69,31 +70,33 @@ class ResultsScreen extends Component<any, IState> {
             :
             <React.Fragment>
               <Header transparent iosBarStyle="light-content" style={{ flexDirection: 'row' }}>
-              <Grid>
-                <Row style={{ marginTop: 5, alignItems: 'center', alignSelf: 'stretch', width: '100%' }}>
-                  <Col>
-                    <TouchableOpacity>
+                <Grid>
+                  <Row style={{ marginTop: 5, alignItems: 'center', height: '100%', width: '100%', flex: 1 }}>
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                       <FeatherIcon name="chevron-left" size={30} color="white" />
                     </TouchableOpacity>
-                  </Col>
-                  <Col size={2} style={{ alignSelf: 'center' }}>
                     <Text
                       style={{
                         color: 'white',
                         fontSize: 14,
                         fontWeight: 'bold',
+                        textAlign: 'center',
+                        alignSelf: 'center',
+                        marginRight: 5,
+                        flex: 1
                       }}
                     >Showing {this.state.movies.length} results for</Text>
-                  </Col>
-                </Row>
-                <Row style={{alignItem: 'canter', width: '100%'}}>
-                  <Col>
-                    <Text style={{alignSelf:'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
-                  </Col>
-                </Row>
+                  </Row>
                 </Grid>
               </Header>
               <Content style={{ paddingLeft: 20, paddingRight: 20 }}>
+                <Grid>
+                  <Row style={{ alignItems: 'center', width: '100%' }}>
+                    <Col>
+                      <Text style={{ alignSelf: 'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
+                    </Col>
+                  </Row>
+                </Grid>
                 {this.state.isLoading ? (
                   <Spinner />
                 ) : this.state.movies ? (
@@ -112,4 +115,4 @@ class ResultsScreen extends Component<any, IState> {
   }
 }
 
-export default ResultsScreen
+export default withNavigation(ResultsScreen)
