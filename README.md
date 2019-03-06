@@ -129,7 +129,7 @@ Usually saved here "E:\Applications\Cmder\config"
 
     Fix: `npm config set scripts-prepend-node-path true` then try `npm install` again.
 
-3. virtualizedList type script error 'export class VirtualizedList<ItemT> extends React.Component<
+3. Issue: `virtualizedList type script error 'export class VirtualizedList<ItemT> extends React.Component<
   VirtualizedListProps<ItemT>
 > {
   scrollToEnd: (params?: { animated?: boolean }) => void;
@@ -146,6 +146,7 @@ Usually saved here "E:\Applications\Cmder\config"
   ) => void;
   scrollToOffset: (params: { animated?: boolean; offset: number }) => void;
   recordInteraction: () => void;
-}'
-    import that here 'E:\Applications\reactApp\movie-app\node_modules\@types\react-native\index.d.ts' yours may be different
+}'`
+    
+   Fix: Ensure you've implemented `keyExtractor` on any `FlatList` and the return is a `string`. E.g. `<FlatList keyExtractor={(item: any, index: number) => index.toString()} />`
 ## Authors

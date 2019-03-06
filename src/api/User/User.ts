@@ -8,7 +8,7 @@ interface UserProperties {
   name: string
   password: string
 }
-class User extends Model implements IUser  {
+class User extends Model implements IUser {
   static ENTITY = 'users'
   private id: number
   private email: string
@@ -16,16 +16,14 @@ class User extends Model implements IUser  {
   private watchlist: Watchlist
   private isOnline : Boolean
 
-  
-  constructor(email: string, name: string) {
-    super();
-    this.email = email
-    this.name = name
-    this.watchlist = new Watchlist(this.id.toString())
+  constructor(properties: any) {
+    super()
+    Object.assign(this, properties)
+    // this.watchlist = new Watchlist(this.id.toString())
   }
 
   public async create(data: UserProperties) {
-    return await this.database.ref(User.ENTITY).set(data);
+    return await this.database.ref(User.ENTITY).set(data)
   }
 
   public async addMovieToList(data: Movie) {
@@ -33,13 +31,13 @@ class User extends Model implements IUser  {
   }
 
   public async update(data: UserProperties) {
-    var results = this.database.ref(User.ENTITY);          
-    return await results.child(this.id.toString()).update(data);  
+    var results = this.database.ref(User.ENTITY)
+    return await results.child(this.id.toString()).update(data)
   }
 
   public async delete() {
-    var results = this.database.ref(User.ENTITY);          
-    results.child(this.id.toString()).remove();   
+    var results = this.database.ref(User.ENTITY)
+    results.child(this.id.toString()).remove()
   }
 
   public getId(): number {
@@ -78,6 +76,17 @@ class User extends Model implements IUser  {
 
   public getName(): string {
     return this.name
+  }
+
+  public getSnapshot(): firebase.database.DataSnapshot {
+    let snapshot: firebase.database.DataSnapshot = null
+    this.database
+      .ref('users')
+      .equalTo(this.email)
+      .on('value', value => {
+        snapshot = value
+      })
+    return snapshot
   }
 }
 

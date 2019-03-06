@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 interface IProps {
     colour: string
+    textColour?: string
     text?: string
 }
 
@@ -25,7 +26,7 @@ class Pill extends Component<IProps> {
 
         return (
             <View style={[shapes.pill]}>
-                <Text>{this.props.text}</Text>
+                <Text style={{color: this.props.textColour}}>{this.props.text}</Text>
             </View>
         )
     }

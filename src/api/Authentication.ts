@@ -27,8 +27,9 @@ class Authentication {
     this.database.write('users/' + userId, data)
     return user
   }
-  public getCurrentUser(){
-    return this.auth.currentUser
+  public getCurrentUser() {
+    const user = this.auth.currentUser
+    return user
   }
 }
 export default Authentication
