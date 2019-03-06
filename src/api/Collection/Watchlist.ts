@@ -19,11 +19,12 @@ class Watchlist extends SetOfMovies {
     this.userId = userId
   }
 
-  public async getList(): Promise<Watchlist> {
+  public async getList(userId : string, type : String): Promise<Watchlist> {
     // let movie;
     let value
+    let list = new Watchlist(userId)
     value = await this.database.database
-      .ref('movie')
+      .ref("users/" + userId + "/watchlist/" + type)
       .orderByChild('title')
       .equalTo(this.userId)
       .once('value', function(snap) {
@@ -35,10 +36,10 @@ class Watchlist extends SetOfMovies {
 
     for (var key in arrayOfMovies) {
       // console.log(arrayOfMovies[key]);
-      this.SetOfMovie.addMovie(arrayOfMovies[key])
+      list.addMovie(arrayOfMovies[key])  //do not do this.setofMovie do a new instance of it and return that
     }
     // return null
-    return this
+    return list
   }
 
   public getUser(): User {

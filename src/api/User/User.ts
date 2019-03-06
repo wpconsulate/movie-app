@@ -52,7 +52,7 @@ class User extends Model implements IUser {
     return this.isOnline
   }
 
-  public async getDetails() {
+  public async getDetails() : Promise<User> {
     const value = await this.database.ref("users/" + this.id)
     let jsonVar = JSON.stringify(value)
     let User = JSON.parse(jsonVar)
@@ -62,6 +62,7 @@ class User extends Model implements IUser {
     this.isOnline = User.isOnline
     return this
   }
+
   public setEmail(newEmail: string): void {
     this.email = newEmail
   }

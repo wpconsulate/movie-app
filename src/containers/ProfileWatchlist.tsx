@@ -14,7 +14,7 @@ interface IState {
 
 }
 interface IProps {
-  userid : number
+  userid : string
 }
 
 export default class ProfileWatchlist extends Component<IProps, IState> {         

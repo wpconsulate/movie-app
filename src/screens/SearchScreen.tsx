@@ -171,6 +171,7 @@ class SearchScreen extends Component<any, State> {
     )
   }
 }
+// @ts-ignore
 const Main = (props: any) => (
   <View style={styles.mainSection}>
     <Grid>
@@ -220,6 +221,7 @@ const Main = (props: any) => (
     </Grid>
   </View>
 )
+//@ts-ignore
 const SearchHeader = (props: any) => (
   <View style={styles.headerView}>
     <View

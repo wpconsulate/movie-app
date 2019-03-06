@@ -63,7 +63,7 @@ class OverAllStatus extends React.Component {
           </View>
           <View style={{marginTop:10, flexDirection:"row"}}>
             <TopRated />
-            <ProfileWatchlist userid={1}/>
+            <ProfileWatchlist userid={"1"}/>
           </View>
       </View>
       </ScrollView>
