@@ -23,9 +23,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     minHeight: 60,
     alignSelf: 'center',
-    bottom: 15,
+    bottom: -10,
     borderRadius: 8,
     zIndex: 1,
+    flexWrap: 'wrap',
   },
   topSection: {
     flex: 0.3,
@@ -47,11 +48,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 50,
     width: '100%',
-    marginTop: 5
+    marginTop: 5,
+    flexDirection: 'row',
   },
   scrollContainer: {
-    minHeight: 400,
-    backgroundColor: 'red'
+    minHeight: 70,
+    backgroundColor: 'red',
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%'
   }
 })
 
