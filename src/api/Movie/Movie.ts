@@ -190,14 +190,16 @@ class Movie extends Database implements IMovie {
     }
   }
 
-  public async AddToWatchlist(userId : number, type : String) {
+  public async AddToWatchlist(userId : string, type : String) {
     return await this.database.ref(Movie.ENTITY + "/" + userId + "/watchlist/" + type).push(this.getData());
   }
 
-  public getData()
+  public getData() : any
   {
-    const { backdrop_path,  title, popularity, poster_path, id} = this
-    return { backdrop_path, title, popularity, poster_path, id}
+     const { backdrop_path,  title, popularity, poster_path, id} = this
+    //  console.log(this);
+     return { backdrop_path, title, popularity, poster_path, id}
+    // return null
   }
 
   public async getReview(): Promise<any> {

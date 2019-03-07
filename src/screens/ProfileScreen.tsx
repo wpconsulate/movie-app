@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import ProfilePic from '../components/ProfilePic'
 import UserStats from '../components/UserStats'
-import {TopRated} from '../containers'
 import Friends from '../components/FriendsSlider'
 import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import Review from '../components/ReviewTab'
@@ -59,10 +58,10 @@ class OverAllStatus extends React.Component {
             <Friends/>
           </View>
           <View style={{marginTop:10, flexDirection:"row"}}>
-            <TopRated />
+            {/* <TopRated /> */}
           </View>
           <View style={{marginTop:10, flexDirection:"row"}}>
-            <TopRated />
+            {/* <TopRated /> */}
             <ProfileWatchlist userid={"1"}/>
           </View>
       </View>

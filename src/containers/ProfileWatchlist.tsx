@@ -18,7 +18,7 @@ interface IProps {
 }
 
 export default class ProfileWatchlist extends Component<IProps, IState> {         
-  private Watchlist = new Watchlist("1")
+  private Watchlist = new Watchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1")
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -39,7 +39,9 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
     const planned = await this.Watchlist.getList(userid, "planned"); 
     const completed = await this.Watchlist.getList(userid, "completed"); 
     const dropped = await this.Watchlist.getList(userid, "dropped"); 
-    // SetOfMovie[0].AddToWatchlist(userid, "planned");
+    dropped[0].AddToWatchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1", "watching");
+    await this.Watchlist.changelist(dropped[0], "watching", "planned"); 
+    console.log(watching);
     this.setState({
       isLoading: false,
       watching: watching,
@@ -65,7 +67,6 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
         <WatchlistSlider data={this.state.planned} title={"Planning"} /> 
         <WatchlistSlider data={this.state.completed} title={"Completed"} />  
         <WatchlistSlider data={this.state.dropped} title={"Dropped"} /> 
-
       </View>
     )
   }
