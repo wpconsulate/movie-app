@@ -90,34 +90,30 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   async componentWillMount() {
-    try {
-      let accessibility = StoreGlobal({ type: 'get', key: 'access' })
-      const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
-      const movie = await this.movies.findMovieById(parseInt(id))
-      const images = await movie.getImages(5, { type: 'backdrops' })
-      const casts = await movie.getCasts()
-      let castImages = new Array<IImage>()
+    let accessibility = StoreGlobal({ type: 'get', key: 'access' })
+    const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
+    const movie = await this.movies.findMovieById(parseInt(id))
+    const images = await movie.getImages(5, { type: 'backdrops' })
+    const casts = await movie.getCasts()
+    let castImages = new Array<IImage>()
 
-      let review = await movie.getReview()
-      let txtSize = 0
-      if (accessibility == true) {
-        txtSize = 15;
-        accessBcColour = 'black'
-      }
-      accessTxtSize = txtSize
-      casts.forEach(cast => {
-        castImages.push({ url: cast.getImage() })
-      })
-      this.setState({
-        movie,
-        images,
-        isLoaded: true,
-        castImages,
-        reviewList: review,
-      })
-    } catch (err) {
-      console.error(err)
+    let review = await movie.getReview()
+    let txtSize = 0
+    if(accessibility == true){
+      txtSize = 15;
+      accessBcColour = 'black'
     }
+    accessTxtSize = txtSize
+    casts.forEach(cast => {
+      castImages.push({ url: cast.getImage() })
+    })
+    this.setState({
+      movie,
+      images,
+      isLoaded: true,
+      castImages,
+      reviewList: review,
+    })
   }
 
   render() {

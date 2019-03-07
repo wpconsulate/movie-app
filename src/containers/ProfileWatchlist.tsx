@@ -39,8 +39,8 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
     const planned = await this.Watchlist.getList(userid, "planned"); 
     const completed = await this.Watchlist.getList(userid, "completed"); 
     const dropped = await this.Watchlist.getList(userid, "dropped"); 
-    dropped[0].AddToWatchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1", "watching");
-    await this.Watchlist.changelist(dropped[0], "watching", "planned"); 
+    // dropped[0].AddToWatchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1", "watching");
+    // await this.Watchlist.changelist(dropped[0], "watching", "planned"); 
     console.log(watching);
     this.setState({
       isLoading: false,
