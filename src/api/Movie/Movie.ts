@@ -8,14 +8,11 @@ import {
 } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
 import Cast from './../Cast/Cast'
-// import Model from '../Model';
-import Database from '../Database';
-
 interface IParams {
   type?: 'backdrops' | 'posters'
 }
-class Movie extends Database implements IMovie {
-  static ENTITY = 'users'
+class Movie implements IMovie {
+  static ENTITY = 'movie'
 
   private id: number
   private overview: string
@@ -28,9 +25,8 @@ class Movie extends Database implements IMovie {
   private runtime: number
   private backdrop_path: string
 
-  constructor(movie: Partial<Movie>) {
-    super();
-    Object.assign(this, movie);
+  constructor(movie: any) {
+    Object.assign(this, movie)
   }
 
   public getId(): number {
@@ -101,7 +97,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-      }/${this.getId()}/images?api_key=${Config.API_KEY}`
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
 
     const response = await fetch(url)
     const responseJson = await response.json()
@@ -127,7 +123,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-      }/${this.getId()}/images?api_key=${Config.API_KEY}`
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
     const response = await fetch(url)
     const responseJson = await response.json()
     const posters = responseJson.posters
@@ -147,25 +143,20 @@ class Movie extends Database implements IMovie {
     limit = limit ? limit : 15
     const backdrops = await this.getBackdrops()
     const posters = await this.getPosters()
-    console.log('posters', posters)
-    if (params.type.toLowerCase() == 'backdrops') {
-      for (let i = 0; i < backdrops.length && limit; i++) {
-        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
-        images.push({ url: backdropUrl })
-      }
-    } else if (params.type.toLowerCase() == 'posters') {
-      for (let i = 0; i < posters.length && limit; i++) {
-        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-        images.push({ url: posterUrl })
-      }
-    } else {
-      for (let i = 0; i < backdrops.length && limit; i++) {
-        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
-        images.push({ url: backdropUrl })
-      }
-      for (let i = 0; i < posters.length && limit; i++) {
-        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-        images.push({ url: posterUrl })
+
+    for (let i = 0; i < backdrops.length && limit; i++) {
+      const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
+      const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
+      switch (params.type.toLowerCase()) {
+        case 'backdrops':
+          images.push({ url: backdropUrl })
+          break
+        case 'posters':
+          images.push({ url: posterUrl })
+          break
+        default:
+          images.push({ url: backdropUrl })
+          images.push({ url: posterUrl })
       }
     }
 
@@ -177,7 +168,7 @@ class Movie extends Database implements IMovie {
       let setOfCasts = new Array<Cast>()
       const url = `${Config.BASE_URL}movie/${this.id}/credits?api_key=${
         Config.API_KEY
-        }`
+      }`
       const response = await fetch(url)
       const responseJson = await response.json()
       responseJson.cast.forEach((cast: any) => {
@@ -189,19 +180,9 @@ class Movie extends Database implements IMovie {
       return null
     }
   }
-
-  public async AddToWatchlist(userId : number, type : String) {
-    return await this.database.ref(Movie.ENTITY + "/" + userId + "/watchlist/" + type).push(this.getData());
-  }
-
-  public getData()
-  {
-    const { backdrop_path,  title, popularity, poster_path, id} = this
-    return { backdrop_path, title, popularity, poster_path, id}
-  }
-
+  
   public async getReview(): Promise<any> {
-    let reviewURL = Config.BASE_URL + "movie/" + this.id + "/reviews?api_key=" + Config.API_KEY;
+    let reviewURL = Config.BASE_URL + "movie/" +this.id+ "/reviews?api_key="+Config.API_KEY;
     let content = await fetch(reviewURL)
     let parsedContent = await content.json();
     interface reviewObject {
@@ -210,11 +191,12 @@ class Movie extends Database implements IMovie {
       content: String
     }
     let reviewList = new Array<reviewObject>()
-    parsedContent.results.forEach((element: any) => {
-      reviewList.push({ id: element.id, author: element.author, content: element.content })
+    parsedContent.results.forEach((element: any) =>{
+        reviewList.push({id:element.id, author: element.author, content: element.content})
     })
     return reviewList;
   }
 }
+
 
 export default Movie
