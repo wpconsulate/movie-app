@@ -4,15 +4,10 @@ import { Database } from '..'
 class SetOfUsers extends Array<User> {
   private database = new Database()
 
-  constructor() {
-    super()
-
-  }
-
   public async getById(id: string) {
-    let value;
+    let value
     value = await this.database.database
-      .ref("users/" + id)
+      .ref('users/' + id)
       .once('value', function(snap) {
         //change the above to users/movie to make it the folders under the correct location -- this will work
         return (value = snap.val())

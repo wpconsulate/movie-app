@@ -5,6 +5,8 @@ import { ActionSheet } from 'native-base'
 import { EWatchlists } from '../api/Movie/Enums/Watchlists'
 import { capitlize } from '../lib/string'
 import Movie from '../api/Movie/Movie'
+import { StoreGlobal } from '../screens/globalStore'
+import { observer } from 'mobx-react'
 
 interface IProps {
   show: boolean
@@ -23,22 +25,11 @@ const OPTIONS = [
   capitlize(EWatchlists.COMPLETED),
   'Cancel',
 ]
+@observer
 class MovieSidebar extends React.Component<IProps, any> {
-  constructor(props: IProps) {
-    super(props)
-    this.state = {
-      show: false,
-    }
-  }
-
-  componentDidMount() {
-    this.setState({
-      show: this.props.show,
-    })
-  }
-
   render() {
-    if (this.state.show) {
+    const { showMenu } = this.props as any
+    if (showMenu) {
       return (
         <BlurView
           style={{

@@ -34,7 +34,9 @@ import { LinearGradient } from 'expo'
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
+import { observer } from 'mobx-react'
 import { StoreGlobal } from './globalStore'
+import MovieStore from '../stores/MovieStore'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -58,6 +60,8 @@ interface IStyle {
 }
 var accessTxtSize = 0
 var accessBcColour = 'transparent'
+
+@observer
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
@@ -82,8 +86,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     this.state = {
       movie: null,
       isLoaded: false,
-      images: null,
       showMenu: false,
+      images: null,
       castImages: null,
       reviewList: null,
     }
@@ -169,11 +173,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             shadowOpacity: 10,
           }}
           onPress={() => {
-            if (this.state.showMenu) {
-              this.setState({ showMenu: false })
-            } else {
-              this.setState({ showMenu: true })
-            }
+            MovieStore.setShowMenu(!this.state.showMenu)
           }}
         >
           <Image
