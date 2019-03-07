@@ -1,7 +1,9 @@
-import { Card, CardItem, Col, Grid, Input, Row, Spinner, Text } from 'native-base';
+//import { Card, CardItem, Col, Grid, Input, Row, Spinner, Text } from 'native-base';
+import { Input, Spinner } from 'native-base';
+
 import React, { Component } from 'react';
 import {
-  AsyncStorage, FlatList, ScrollView, StyleSheet, TouchableOpacity, View, StatusBar
+  AsyncStorage, FlatList, ScrollView, StyleSheet, View, StatusBar
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     minHeight: 60,
     alignSelf: 'center',
-    bottom: -10,
+    bottom: 30,
     borderRadius: 8,
     zIndex: 1,
     flexWrap: 'wrap',
@@ -52,11 +54,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   scrollContainer: {
-    minHeight: 70,
-    backgroundColor: 'red',
+    marginTop:123,
+    backgroundColor: 'white',
     flex: 1,
     flexDirection: 'row',
-    width: '100%'
+    width: '90%',
+    position:'absolute',
+    borderRadius: 8,
+    alignSelf:'center'
+
   }
 })
 
@@ -151,10 +157,13 @@ class SearchScreen extends Component<any, State> {
                 onSubmitEditing={() => this.onSubmit()}
                 style={styles.searchInput}
               />
-              {this.state.isLoading && <Spinner />}
+              {this.state.isLoading && <Spinner style={{width:10,height:10}}/>}
             </View>
-            <View style={styles.scrollContainer}>
-              <ScrollView style={{ maxHeight: 200 }}>
+            
+          </View>
+        </View>
+        <View style={styles.scrollContainer}>
+              <ScrollView style={{ maxHeight: 200, position:'relative' }}>
                 <View>
                   <FlatList
                     data={this.state.results}
@@ -164,91 +173,89 @@ class SearchScreen extends Component<any, State> {
                 </View>
               </ScrollView>
             </View>
-          </View>
-        </View>
         <View style={styles.mainSection} />
       </View>
     )
   }
 }
-const Main = (props: any) => (
-  <View style={styles.mainSection}>
-    <Grid>
-      <Row>
-        <Col>
-          <Text
-            style={{ fontSize: 30, color: 'white', fontWeight: 'bold' }}
-          >
-            Search History
-      </Text>
-        </Col>
-        <Col>
-          <TouchableOpacity onPress={props.clearSearchHistory}>
-            <Text
-              style={{
-                color: 'red',
-                fontSize: 20,
-                alignSelf: 'flex-end',
-                fontWeight: '200',
-              }}
-            >
-              Clear
-        </Text>
-          </TouchableOpacity>
-        </Col>
-      </Row>
-      <Row>
-        {/* <ScrollView horizontal>
-      {this.state.searchHistory
-        ? this.state.searchHistory.map((e: any) => {
-            return (
-              <TouchableOpacity
-                key={e}
-                onPress={() => this.searchHistoryOnPress(e)}
-              >
-                <Pill
-                  text={e}
-                  colour={'#4F547E'}
-                  textColour={'white'}
-                />
-              </TouchableOpacity>
-            )
-          })
-        : ''}
-    </ScrollView> */}
-      </Row>
-    </Grid>
-  </View>
-)
-const SearchHeader = (props: any) => (
-  <View style={styles.headerView}>
-    <View
-      style={styles.searchContainer}
-    >
-      <Card
-        style={{
-          maxWidth: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 18,
-        }}
-      >
-        <CardItem
-          header
-          style={{
-            paddingLeft: 0,
-            paddingBottom: 0,
-            paddingRight: 0,
-            paddingTop: 0,
-            alignSelf: 'center',
-            borderRadius: 18,
-          }}
-        >
+// const Main = (props: any) => (
+//   <View style={styles.mainSection}>
+//     <Grid>
+//       <Row>
+//         <Col>
+//           <Text
+//             style={{ fontSize: 30, color: 'white', fontWeight: 'bold' }}
+//           >
+//             Search History
+//       </Text>
+//         </Col>
+//         <Col>
+//           <TouchableOpacity onPress={props.clearSearchHistory}>
+//             <Text
+//               style={{
+//                 color: 'red',
+//                 fontSize: 20,
+//                 alignSelf: 'flex-end',
+//                 fontWeight: '200',
+//               }}
+//             >
+//               Clear
+//         </Text>
+//           </TouchableOpacity>
+//         </Col>
+//       </Row>
+//       <Row>
+//         {/* <ScrollView horizontal>
+//       {this.state.searchHistory
+//         ? this.state.searchHistory.map((e: any) => {
+//             return (
+//               <TouchableOpacity
+//                 key={e}
+//                 onPress={() => this.searchHistoryOnPress(e)}
+//               >
+//                 <Pill
+//                   text={e}
+//                   colour={'#4F547E'}
+//                   textColour={'white'}
+//                 />
+//               </TouchableOpacity>
+//             )
+//           })
+//         : ''}
+//     </ScrollView> */}
+//       </Row>
+//     </Grid>
+//   </View>
+// )
+// const SearchHeader = (props: any) => (
+//   <View style={styles.headerView}>
+//     <View
+//       style={styles.searchContainer}
+//     >
+//       <Card
+//         style={{
+//           maxWidth: '100%',
+//           justifyContent: 'center',
+//           alignItems: 'center',
+//           borderRadius: 18,
+//         }}
+//       >
+//         <CardItem
+//           header
+//           style={{
+//             paddingLeft: 0,
+//             paddingBottom: 0,
+//             paddingRight: 0,
+//             paddingTop: 0,
+//             alignSelf: 'center',
+//             borderRadius: 18,
+//           }}
+//         >
 
-        </CardItem>
-      </Card>
-    </View>
-  </View>
-)
+//         </CardItem>
+//       </Card>
+//     </View>
+//   </View>
+// )
 
 export default withNavigation(SearchScreen)
