@@ -13,7 +13,6 @@ import {
   Form,
   Item,
   Label,
-  View,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -180,7 +179,7 @@ class LoginScreen extends Component<IProps, IState> {
                     </Button>
                   </Row>
                 </Item>
-                <Row
+                {/* <Row
                   style={{ alignItems: 'center', justifyContent: 'flex-end' }}
                 >
                   <Col style={{ alignSelf: 'flex-end' }}>
@@ -196,7 +195,7 @@ class LoginScreen extends Component<IProps, IState> {
                       </Text>
                     </Button>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row
                   style={{
                     marginTop: 40,
@@ -240,7 +239,7 @@ class LoginScreen extends Component<IProps, IState> {
               </Button>
             </Col>
           </Row>
-          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+          {/* <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Col>
               <View />
             </Col>
@@ -267,7 +266,7 @@ class LoginScreen extends Component<IProps, IState> {
                 <Icon type="FontAwesome" name="twitter" />
               </Button>
             </Col>
-          </Row>
+          </Row> */}
         </Content>
       </Container>
     )

@@ -8,10 +8,11 @@ import {
 } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
 import Cast from './../Cast/Cast'
+import Database from '../Database';
 interface IParams {
   type?: 'backdrops' | 'posters'
 }
-class Movie implements IMovie {
+class Movie extends Database implements IMovie {
   static ENTITY = 'movie'
 
   private id: number
@@ -26,6 +27,7 @@ class Movie implements IMovie {
   private backdrop_path: string
 
   constructor(movie: any) {
+    super();
     Object.assign(this, movie)
   }
 
@@ -180,6 +182,19 @@ class Movie implements IMovie {
       return null
     }
   }
+
+  public async AddToWatchlist(userId : string, type : String) {
+    return await this.database.ref("users/" + userId + "/watchlist/" + type).push(this.getData());
+  }
+
+  public getData() : any
+  {
+     const { backdrop_path,  title, popularity, poster_path, id} = this
+    //  console.log(this);
+     return { backdrop_path, title, popularity, poster_path, id}
+    // return null
+  }
+
   
   public async getReview(): Promise<any> {
     let reviewURL = Config.BASE_URL + "movie/" +this.id+ "/reviews?api_key="+Config.API_KEY;
