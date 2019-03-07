@@ -5,6 +5,7 @@ import * as Expo from 'expo'
 const AppContainer = createAppContainer(RootStack)
 import Config from './Config'
 import * as firebase from 'firebase'
+import { Root } from 'native-base'
 
 interface StateInterface {
   fontLoaded: boolean
@@ -47,7 +48,11 @@ class App extends Component<PropsInterface, StateInterface> {
     if (!this.state.fontLoaded) {
       return <Expo.AppLoading />
     }
-    return <AppContainer />
+    return (
+      <Root>
+        <AppContainer />
+      </Root>
+    )
   }
 }
 

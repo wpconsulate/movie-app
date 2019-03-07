@@ -99,8 +99,8 @@ export default class MovieScreen extends Component<IProps, IState> {
 
     let review = await movie.getReview()
     let txtSize = 0
-    if(accessibility == true){
-      txtSize = 15;
+    if (accessibility == true) {
+      txtSize = 15
       accessBcColour = 'black'
     }
     accessTxtSize = txtSize
@@ -185,7 +185,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             source={require('../../assets/icons/SideBar.png')}
           />
         </TouchableOpacity>
-        <MovieSidebar show={showMenu} />
+        <MovieSidebar show={showMenu} movie={movie} />
         <Content style={{ flex: 1 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
@@ -376,7 +376,7 @@ function Storyline(props: any) {
           fontFamily: 'PoppinsLight',
           fontSize: 13 | accessTxtSize,
           width: '100%',
-          backgroundColor: accessBcColour
+          backgroundColor: accessBcColour,
         }}
       >
         {props.content}

@@ -1,11 +1,28 @@
 import React from 'react'
 import { View, Image, TouchableOpacity } from 'react-native'
 import { BlurView } from 'expo'
+import { ActionSheet } from 'native-base'
+import { EWatchlists } from '../api/Movie/Enums/Watchlists'
+import { capitlize } from '../lib/string'
+import Movie from '../api/Movie/Movie'
 
 interface IProps {
   show: boolean
+  movie: Movie
 }
 
+function addToWatchlist(movie: Movie, watchlist: string) {
+  console.log('movie', movie)
+  console.log('watchlist', watchlist)
+}
+
+const OPTIONS = [
+  capitlize(EWatchlists.WATCHING),
+  capitlize(EWatchlists.PLANNED),
+  capitlize(EWatchlists.DROPPED),
+  capitlize(EWatchlists.COMPLETED),
+  'Cancel',
+]
 function MovieSidebar(props: IProps) {
   if (props.show) {
     return (
@@ -32,6 +49,18 @@ function MovieSidebar(props: IProps) {
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          onPress={() =>
+            ActionSheet.show(
+              {
+                options: OPTIONS,
+                cancelButtonIndex: 4,
+                title: 'Add to watchlist',
+              },
+              buttonIndex => {
+                addToWatchlist(props.movie, OPTIONS[buttonIndex].toLowerCase())
+              }
+            )
+          }
         >
           <Image
             style={{

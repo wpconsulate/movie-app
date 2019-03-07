@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Container, Header, Content } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
-// import { TopRated } from '../containers'
+import { TopRated } from '../containers'
 import { navigationOptions } from '../helpers/header'
 import { StoreGlobal } from './globalStore'
-// import Upcoming from '../containers/Upcoming'
-// import Trending from '../containers/Trending'
+import Upcoming from '../containers/Upcoming'
+import Trending from '../containers/Trending'
 interface IState {
   switch: boolean
 }
@@ -15,12 +15,11 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
-      switch: false
+      switch: false,
     }
   }
 
   onchange = () => {
-
     this.setState({ switch: !this.state.switch })
     StoreGlobal({ type: 'set', key: 'access', value: !this.state.switch })
   }
@@ -33,10 +32,10 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
         }}
       >
         <Header transparent />
-        <Content>
-          {/* <Upcoming />
+        <Content style={{ paddingTop: 20 }}>
+          <Upcoming />
           <TopRated />
-          <Trending />  */}
+          <Trending />
         </Content>
       </Container>
     )
