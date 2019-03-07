@@ -29,7 +29,7 @@ interface IState {
 interface IProps extends NavigationScreenProps {}
 
 class LoginScreen extends Component<IProps, IState> {
-  static navigationOptions = ({ navigation }: NavigationScreenProps) => {
+  public navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
       headerTransparent: true,
       headerBackgroundTransitionPreset: 'fade',
@@ -65,12 +65,15 @@ class LoginScreen extends Component<IProps, IState> {
   }
 
   onLoginPress() {
+    
     const { email, password } = this.state
     this.auth
       .login(email, password)
       .then(() => {
         Alert.alert('Successfully logged in!')
-        this.props.navigation.navigate("ProfileScreen")
+        this.props.navigation.navigate("Profile", {
+          userId: this.auth.getCurrentUser().uid,
+        })
       })
       .catch((error: any) => {
         Alert.alert(error.message)

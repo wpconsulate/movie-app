@@ -6,6 +6,7 @@ import {TopRated} from '../containers'
 import Friends from '../components/FriendsSlider'
 import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import Review from '../components/ReviewTab'
+import ProfileWatchlist from '../containers/ProfileWatchlist'
 
 //import {Container, Row, Col} from 'native-base'
 // import ProfileWatchlist from '../containers/ProfileWatchlist';
@@ -62,6 +63,7 @@ class OverAllStatus extends React.Component {
           </View>
           <View style={{marginTop:10, flexDirection:"row"}}>
             <TopRated />
+            <ProfileWatchlist userid={"1"}/>
           </View>
       </View>
       </ScrollView>

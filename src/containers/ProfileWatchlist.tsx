@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import Watchlist from '../api/Collection/Watchlist'
-import WatchlistCard from '../components/WatchlistCard'
-// import { SetOfMovies } from '../api';
-
-interface IProps {}
+// import WatchlistCard from '../components/WatchlistCard'
+import { SetOfMovies } from '../api';
+import WatchlistSlider from '../components/WatchlistSlider';
 
 interface IState {
   isLoading: boolean
-  topRated: Watchlist
+  watching: SetOfMovies
+  planned: SetOfMovies
+  completed: SetOfMovies
+  dropped: SetOfMovies
+
+}
+interface IProps {
+  userid : string
 }
 
 export default class ProfileWatchlist extends Component<IProps, IState> {         
@@ -17,17 +23,30 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
     super(props)
     this.state = {
       isLoading: true,
-      topRated: null,
+      watching: null,
+      planned: null,
+      completed: null,
+      dropped: null
     }
   }
 
   //this function is called when component has mounted
   async componentDidMount() {
-    const movies = await this.Watchlist.getList() //This part is not receving anything back this is where I need to go to try and fix it loool
-    console.log(movies) // empty because the id is not included
+    const { userid } = this.props;
+    // let SetOfMovie = new SetOfMovies();
+    // SetOfMovie = await SetOfMovie.getTrending();
+    const watching = await this.Watchlist.getList(userid, "watching"); 
+    const planned = await this.Watchlist.getList(userid, "planned"); 
+    const completed = await this.Watchlist.getList(userid, "completed"); 
+    const dropped = await this.Watchlist.getList(userid, "dropped"); 
+    // SetOfMovie[0].AddToWatchlist(userid, "planned");
     this.setState({
       isLoading: false,
-      topRated: movies,
+      watching: watching,
+      planned: planned,
+      completed: completed,
+      dropped: dropped,
+
     })
   }
 
@@ -41,9 +60,12 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
       )
     }
     return (
-      <View>
-        <WatchlistCard data={this.state.topRated} title={this.Watchlist.getTitle()} />
-        {/* <MovieSlider data={this.state.topRated} title="Testing" /> */}
+       <View>
+        <WatchlistSlider data={this.state.watching} title={"Watching"} /> 
+        <WatchlistSlider data={this.state.planned} title={"Planning"} /> 
+        <WatchlistSlider data={this.state.completed} title={"Completed"} />  
+        <WatchlistSlider data={this.state.dropped} title={"Dropped"} /> 
+
       </View>
     )
   }
