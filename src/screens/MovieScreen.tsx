@@ -35,7 +35,6 @@ import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
 import { observer } from 'mobx-react'
-import { StoreGlobal } from './globalStore'
 import MovieStore from '../stores/MovieStore'
 
 interface IProps {
@@ -94,7 +93,6 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   async componentWillMount() {
-    let accessibility = StoreGlobal({ type: 'get', key: 'access' })
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
@@ -102,12 +100,6 @@ export default class MovieScreen extends Component<IProps, IState> {
     let castImages = new Array<IImage>()
 
     let review = await movie.getReview()
-    let txtSize = 0
-    if (accessibility == true) {
-      txtSize = 15
-      accessBcColour = 'black'
-    }
-    accessTxtSize = txtSize
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
@@ -126,7 +118,6 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded,
       images,
       castImages,
-      showMenu,
       reviewList,
     } = this.state
 
@@ -173,7 +164,10 @@ export default class MovieScreen extends Component<IProps, IState> {
             shadowOpacity: 10,
           }}
           onPress={() => {
-            MovieStore.setShowMenu(!this.state.showMenu)
+            if (MovieStore.showMenu)
+              MovieStore.setShowMenu(false)
+            else
+              MovieStore.setShowMenu(true)
           }}
         >
           <Image
@@ -185,7 +179,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             source={require('../../assets/icons/SideBar.png')}
           />
         </TouchableOpacity>
-        <MovieSidebar show={showMenu} movie={movie} />
+        <MovieSidebar movie={movie} />
         <Content style={{ flex: 1 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
