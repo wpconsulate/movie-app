@@ -10,7 +10,7 @@ import { Root } from 'native-base'
 interface StateInterface {
   fontLoaded: boolean
 }
-interface PropsInterface {}
+interface PropsInterface { }
 
 class App extends Component<PropsInterface, StateInterface> {
   constructor(props: PropsInterface) {

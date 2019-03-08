@@ -57,8 +57,6 @@ interface IStyle {
   titleView: ViewStyle
   title: TextStyle
 }
-var accessTxtSize = 0
-var accessBcColour = 'transparent'
 
 @observer
 export default class MovieScreen extends Component<IProps, IState> {
@@ -368,9 +366,8 @@ function Storyline(props: any) {
         style={{
           color: 'white',
           fontFamily: 'PoppinsLight',
-          fontSize: 13 | accessTxtSize,
+          fontSize: 13,
           width: '100%',
-          backgroundColor: accessBcColour,
         }}
       >
         {props.content}

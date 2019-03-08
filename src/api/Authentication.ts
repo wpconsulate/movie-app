@@ -31,5 +31,12 @@ class Authentication {
     const user = this.auth.currentUser
     return user
   }
+
+  public isLoggedIn() {
+    if (this.getCurrentUser()) {
+      return true
+    }
+    return false
+  }
 }
 export default Authentication

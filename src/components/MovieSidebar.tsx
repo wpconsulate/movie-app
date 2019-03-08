@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { BlurView } from 'expo'
 import { ActionSheet } from 'native-base'
 import { EWatchlists } from '../api/Movie/Enums/Watchlists'
