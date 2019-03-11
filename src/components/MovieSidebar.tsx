@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, Image, TouchableOpacity } from 'react-native'
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { BlurView } from 'expo'
 import { ActionSheet } from 'native-base'
 import { EWatchlists } from '../api/Movie/Enums/Watchlists'
 import { capitlize } from '../lib/string'
 import Movie from '../api/Movie/Movie'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface IProps {
   show: boolean
@@ -23,6 +24,18 @@ const OPTIONS = [
   capitlize(EWatchlists.COMPLETED),
   'Cancel',
 ]
+const CIRCLE_SIZE = 100
+
+const styles = StyleSheet.create({
+  circle: {
+    height: CIRCLE_SIZE,
+    width: CIRCLE_SIZE,
+    borderRadius: CIRCLE_SIZE / 2,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+})
 class MovieSidebar extends React.Component<IProps, any> {
   constructor(props: IProps) {
     super(props)
@@ -60,8 +73,6 @@ class MovieSidebar extends React.Component<IProps, any> {
           <TouchableOpacity
             style={{
               marginBottom: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
             onPress={() =>
               ActionSheet.show(
@@ -82,30 +93,18 @@ class MovieSidebar extends React.Component<IProps, any> {
               )
             }
           >
-            <Image
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 50,
-              }}
-              source={require('../../assets/icons/add-watch-button.png')}
-            />
+            <View style={styles.circle}>
+              <MaterialIcons name="add" color="#12152D" size={52} />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              alignItems: 'center',
-              justifyContent: 'center',
               marginBottom: 50,
             }}
           >
-            <Image
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 50,
-              }}
-              source={require('../../assets/icons/share.png')}
-            />
+            <View style={styles.circle}>
+              <MaterialIcons name="share" color="#12152D" size={52} />
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -113,14 +112,9 @@ class MovieSidebar extends React.Component<IProps, any> {
               justifyContent: 'center',
             }}
           >
-            <Image
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 50,
-              }}
-              source={require('../../assets/icons/thumbs-up.png')}
-            />
+            <View style={styles.circle}>
+              <MaterialIcons name="thumb-up" color="#12152D" size={52} />
+            </View>
           </TouchableOpacity>
         </BlurView>
       )

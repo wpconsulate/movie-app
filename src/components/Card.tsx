@@ -78,6 +78,8 @@ class Card extends Component<IProps> {
     })
     return (
       <TouchableOpacity
+        style={{ flex: 1 }}
+        activeOpacity={0.6}
         onPress={() => (onPress ? navigation.push(routeName, params) : {})}
       >
         <View style={styles.view}>
@@ -115,7 +117,7 @@ class Card extends Component<IProps> {
                   borderRadius: 16,
                 }}
               />
-              <CardItem style={styles.cardItem}>
+              <CardItem style={styles.cardItem} onPress={() => (onPress ? navigation.push(routeName, params) : {})}>
                 <Body
                   style={{
                     justifyContent: 'center',
