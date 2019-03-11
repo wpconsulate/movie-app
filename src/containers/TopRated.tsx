@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from 'react-native'
 import SetOfMovies from '../api/Collection/SetOfMovies'
 import MovieSlider from '../components/MovieSlider'
 
-interface IProps {}
+interface IProps { }
 
 interface IState {
   isLoading: boolean

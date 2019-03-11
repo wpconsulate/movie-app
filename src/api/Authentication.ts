@@ -1,11 +1,11 @@
-import * as firebase from 'firebase'
+import { auth } from 'firebase'
 import Database from './Database'
 import IRegisterParams from './User/IRegisterParams'
 class Authentication {
   auth: firebase.auth.Auth
   database: Database
   constructor() {
-    this.auth = firebase.app().auth()
+    this.auth = auth()
     this.database = new Database()
   }
 

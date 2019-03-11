@@ -1,5 +1,4 @@
 import { database } from 'firebase'
-
 class Database {
   database: firebase.database.Database
   constructor() {

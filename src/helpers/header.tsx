@@ -12,10 +12,6 @@ export const navigationOptions = ({ navigation }: NavigationScreenProps) => ({
   headerLeft: (
     <StyleProvider style={getTheme(mmdb)}>
       <Button onPress={() => navigation.navigate('Login')} transparent
-        accessibilityLabel={auth.isLoggedIn() ? `Profile` : `Login`}
-        accessibilityHint={auth.isLoggedIn() ? `Navigates to the profile screen` : `Navigates to the login screen`}
-        accessibilityRole="button"
-        accessibilityTraits="button"
       >
         <Icon name="person" style={{ color: '#fff' }} />
       </Button>
@@ -24,10 +20,6 @@ export const navigationOptions = ({ navigation }: NavigationScreenProps) => ({
   headerTitle: (
     <StyleProvider style={getTheme(mmdb)}>
       <Button onPress={() => navigation.navigate('Home')} transparent
-        accessibilityLabel="Home"
-        accessibilityHint={"Navigate to the home screen"}
-        accessibilityRole="button"
-        accessibilityTraits="button"
       >
         <Text
           style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
@@ -40,10 +32,6 @@ export const navigationOptions = ({ navigation }: NavigationScreenProps) => ({
   headerRight: (
     <StyleProvider style={getTheme(mmdb)}>
       <Button onPress={() => navigation.navigate('Search')} transparent
-        accessibilityLabel="Search"
-        accessibilityHint={`Navigates to the search screen`}
-        accessibilityRole="button"
-        accessibilityTraits="button"
       >
         <Icon name="search" style={{ color: '#fff' }} />
       </Button>
