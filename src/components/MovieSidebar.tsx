@@ -13,10 +13,9 @@ interface IProps {
   movie: Movie
 }
 
-//commented out as its not doing anything
 // function addToWatchlist(movie: Movie, watchlist: string) {
-  // console.log('movie', movie)
-  // console.log('watchlist', watchlist)
+//   console.log('movie', movie)
+//   console.log('watchlist', watchlist)
 // }
 
 const OPTIONS = [
@@ -80,7 +79,7 @@ class MovieSidebar extends React.Component<IProps, any> {
                 },
                 buttonIndex => {
                   const option = OPTIONS[buttonIndex].toLowerCase()
-                  //addToWatchlist(this.props.movie, option)
+                  this.props.movie.AddToWatchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1", option)
                   if (option !== 'cancel') {
                     MovieStore.setShowMenu(false)
                   }
