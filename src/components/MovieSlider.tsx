@@ -40,6 +40,10 @@ function MovieSlider(props: IProps) {
         {topRated.map((movie: Movie) => {
           return (
             <TouchableOpacity
+              accessible
+              accessibilityRole="button"
+              accessibilityLabel={movie.getTitle()}
+              accessibilityHint={`Double tap to go to the movie screen.`}
               style={{ alignItems: 'center', maxWidth: 100, margin: 10 }}
               key={movie.getId()}
               onPress={() => handleOnPress(props.navigation, movie)}

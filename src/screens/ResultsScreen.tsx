@@ -72,7 +72,12 @@ class ResultsScreen extends Component<any, IState> {
               <Header transparent iosBarStyle="light-content" style={{ flexDirection: 'row' }}>
                 <Grid>
                   <Row style={{ marginTop: 5, alignItems: 'center', height: '100%', width: '100%', flex: 1 }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}
+                      accessible
+                      accessibilityRole="button"
+                      accessibilityLabel="Go back"
+                      accessibilityHint="Double tap to go back to the search screen."
+                    >
                       <FeatherIcon name="chevron-left" size={30} color="white" />
                     </TouchableOpacity>
                     <Text

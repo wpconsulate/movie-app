@@ -83,9 +83,11 @@ class Movie extends Database implements IMovie {
     return genres
   }
 
-  public getRuntime(): string {
+  public getRuntime(accessible?: boolean): string {
     const minutes = this.runtime % 60
     const hours = Math.floor(this.runtime / 60)
+    if (accessible)
+      `${hours} hours and ${minutes} minutes`
     return `${hours}h ${minutes}min`
   }
 
@@ -99,7 +101,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-    }/${this.getId()}/images?api_key=${Config.API_KEY}`
+      }/${this.getId()}/images?api_key=${Config.API_KEY}`
 
     const response = await fetch(url)
     const responseJson = await response.json()
@@ -125,7 +127,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-    }/${this.getId()}/images?api_key=${Config.API_KEY}`
+      }/${this.getId()}/images?api_key=${Config.API_KEY}`
     const response = await fetch(url)
     const responseJson = await response.json()
     const posters = responseJson.posters
@@ -170,7 +172,7 @@ class Movie extends Database implements IMovie {
       let setOfCasts = new Array<Cast>()
       const url = `${Config.BASE_URL}movie/${this.id}/credits?api_key=${
         Config.API_KEY
-      }`
+        }`
       const response = await fetch(url)
       const responseJson = await response.json()
       responseJson.cast.forEach((cast: any) => {
@@ -183,21 +185,20 @@ class Movie extends Database implements IMovie {
     }
   }
 
-  public async AddToWatchlist(userId : string, type : String) {
+  public async AddToWatchlist(userId: string, type: String) {
     return await this.database.ref("users/" + userId + "/watchlist/" + type).push(this.getData());
   }
 
-  public getData() : any
-  {
-     const { backdrop_path,  title, popularity, poster_path, id} = this
+  public getData(): any {
+    const { backdrop_path, title, popularity, poster_path, id } = this
     //  console.log(this);
-     return { backdrop_path, title, popularity, poster_path, id}
+    return { backdrop_path, title, popularity, poster_path, id }
     // return null
   }
 
-  
+
   public async getReview(): Promise<any> {
-    let reviewURL = Config.BASE_URL + "movie/" +this.id+ "/reviews?api_key="+Config.API_KEY;
+    let reviewURL = Config.BASE_URL + "movie/" + this.id + "/reviews?api_key=" + Config.API_KEY;
     let content = await fetch(reviewURL)
     let parsedContent = await content.json();
     interface reviewObject {
@@ -206,8 +207,8 @@ class Movie extends Database implements IMovie {
       content: String
     }
     let reviewList = new Array<reviewObject>()
-    parsedContent.results.forEach((element: any) =>{
-        reviewList.push({id:element.id, author: element.author, content: element.content})
+    parsedContent.results.forEach((element: any) => {
+      reviewList.push({ id: element.id, author: element.author, content: element.content })
     })
     return reviewList;
   }

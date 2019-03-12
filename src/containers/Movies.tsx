@@ -48,7 +48,12 @@ class Movies extends React.Component<any, any> {
         }
         return (
             <Col size={3} style={{ marginLeft: 10, marginRight: 10, marginBottom: 15 }} key={index.toString()}>
-                <TouchableOpacity onPress={() => this.onPressItem(item.getId().toString())} onLongPress={this.onLongPressItem}>
+                <TouchableOpacity
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.getTitle()} is rated ${item.getPopularity()} out of 5 stars.`}
+                    accessibilityHint="Navigates to the movie screen."
+                    onPress={() => this.onPressItem(item.getId().toString())}
+                    onLongPress={this.onLongPressItem}>
                     <FitImage
                         source={{ uri: item.getPoster() }}
                         resizeMethod="scale"
@@ -65,7 +70,6 @@ class Movies extends React.Component<any, any> {
                     >
                         {item.getTitle()}
                     </Text>
-                    {/* <Row>{this._renderStars(item.getPopularity())}</Row> */}
                     <Row style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
                         {this._renderStars(item.getPopularity())}
                     </Row>

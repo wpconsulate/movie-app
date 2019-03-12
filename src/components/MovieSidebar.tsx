@@ -66,6 +66,10 @@ class MovieSidebar extends React.Component<IProps, any> {
               alignItems: 'center',
               justifyContent: 'center',
             }}
+            accessible
+            accessibilityLabel="Add to watchlist"
+            accessibilityRole="button"
+            accessibilityHint="Double tap to open up an action list."
             onPress={() =>
               ActionSheet.show(
                 {
@@ -93,6 +97,10 @@ class MovieSidebar extends React.Component<IProps, any> {
               justifyContent: 'center',
               marginBottom: 50,
             }}
+            accessible
+            accessibilityLabel="Share with your friends"
+            accessibilityRole="button"
+            accessibilityHint="Double tap to share with your friends"
           >
             <View style={styles.circle}>
               <MaterialIcons name="share" color="#12152D" size={52} />
@@ -103,6 +111,10 @@ class MovieSidebar extends React.Component<IProps, any> {
               alignItems: 'center',
               justifyContent: 'center',
             }}
+            accessible
+            accessibilityLabel="Like"
+            accessibilityRole="button"
+            accessibilityHint="Double tap to like it."
           >
             <View style={styles.circle}>
               <MaterialIcons name="thumb-up" color="#12152D" size={52} />

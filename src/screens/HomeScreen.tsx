@@ -32,7 +32,7 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
         }}
       >
         <Header transparent />
-        <Content style={{ paddingTop: 20 }}>
+        <Content style={{ paddingTop: 20, paddingBottom: 20 }}>
           <Upcoming />
           <TopRated />
           <Trending />

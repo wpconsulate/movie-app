@@ -20,12 +20,13 @@ import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert } from 'react-native'
 import { Authentication } from '../api'
+import UserStore from '../stores/UserStore';
 
 interface IState {
   email: string
   password: string
 }
-interface IProps extends NavigationScreenProps {}
+interface IProps extends NavigationScreenProps { }
 
 class LoginScreen extends Component<IProps, IState> {
   public navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -64,7 +65,7 @@ class LoginScreen extends Component<IProps, IState> {
   }
 
   onLoginPress() {
-    
+
     const { email, password } = this.state
     this.auth
       .login(email, password)
@@ -73,6 +74,7 @@ class LoginScreen extends Component<IProps, IState> {
         this.props.navigation.navigate("Profile", {
           userId: this.auth.getCurrentUser().uid,
         })
+        UserStore.setIsLoggedIn(true)
       })
       .catch((error: any) => {
         Alert.alert(error.message)

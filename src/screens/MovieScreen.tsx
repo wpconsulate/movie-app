@@ -28,6 +28,7 @@ import {
   TextStyle,
   TouchableOpacity,
   Image,
+  AccessibilityInfo
 } from 'react-native'
 import { LinearGradient } from 'expo'
 
@@ -51,6 +52,7 @@ interface IState {
   castImages: Array<IImage>
   showMenu: boolean
   reviewList: []
+  isAccessible: boolean
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -66,7 +68,12 @@ export default class MovieScreen extends Component<IProps, IState> {
       headerBackgroundTransitionPreset: 'fade',
       headerLeft: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.goBack()} transparent>
+          <Button onPress={() => navigation.goBack()} transparent
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+            accessibilityHint="Double tap to go back to the previous screen."
+          >
             <Icon
               type="Feather"
               name="chevron-left"
@@ -87,6 +94,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       castImages: null,
       reviewList: null,
+      isAccessible: false
     }
   }
 
@@ -95,6 +103,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
+    const isAccessible = await AccessibilityInfo.fetch()
     let castImages = new Array<IImage>()
 
     let review = await movie.getReview()
@@ -107,6 +116,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: true,
       castImages,
       reviewList: review,
+      isAccessible
     })
   }
 
@@ -117,6 +127,7 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       castImages,
       reviewList,
+      isAccessible
     } = this.state
 
     if (!isLoaded) {
@@ -161,6 +172,10 @@ export default class MovieScreen extends Component<IProps, IState> {
             },
             shadowOpacity: 10,
           }}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel="Sidebar"
+          accessibilityHint="Double tap to open a modal where you can add the movie to your watchlist, share with your friends and like or unlike it."
           onPress={() => {
             if (MovieStore.showMenu)
               MovieStore.setShowMenu(false)
@@ -186,7 +201,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             <GenreContainer genres={movie.getGenres(true, 3)} />
             <ReleaseDateRuntime
               date={formatDate(movie.getReleaseDate())}
-              time={movie.getRuntime()}
+              time={isAccessible ? movie.getRuntime(true) : movie.getRuntime()}
             />
             <Storyline content={movie.getOverview()} />
             <View
@@ -252,7 +267,6 @@ export default class MovieScreen extends Component<IProps, IState> {
     )
   }
 }
-// movie.getBackdrop()
 function Backdrop(props: any) {
   return (
     <View
@@ -320,7 +334,10 @@ function ReleaseDate(props: any) {
           style={{ color: '#fff' }}
         />
       </View>
-      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}>
+      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+        accessible
+        accessibilityHint={`The release date of this movie was the ${props.data}`}
+      >
         {props.date}
       </Text>
     </View>
@@ -340,7 +357,11 @@ function Runtime(props: any) {
       <View style={{ marginHorizontal: 5 }}>
         <Icon type="EvilIcons" name="clock" style={{ color: '#fff' }} />
       </View>
-      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}>
+      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={`Total runtime is ${props.time}`}
+      >
         {props.time}
       </Text>
     </View>

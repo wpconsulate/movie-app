@@ -80,10 +80,16 @@ class Card extends Component<IProps> {
       <TouchableOpacity
         style={{ flex: 1 }}
         activeOpacity={0.6}
+        accessible
+        accessibilityLabel={title}
+        accessibilityHint={`Navigates to ${title} screen. Swipe horizontally with three fingers for the next movie card.`}
+        accessibilityRole="button"
         onPress={() => (onPress ? navigation.push(routeName, params) : {})}
       >
         <View style={styles.view}>
           <NativeCard
+            accessible
+            accessibilityLabel={title}
             style={{
               width: width ? width : '100%',
               height: height,
@@ -95,6 +101,9 @@ class Card extends Component<IProps> {
             <ImageBackground
               source={{ uri: bgImage }}
               style={styles.imageBackground}
+              accessible
+              accessibilityLabel={title}
+              accessibilityRole="image"
               imageStyle={{
                 borderRadius: 16,
                 borderColor: 'transparent',
@@ -117,7 +126,13 @@ class Card extends Component<IProps> {
                   borderRadius: 16,
                 }}
               />
-              <CardItem style={styles.cardItem} onPress={() => (onPress ? navigation.push(routeName, params) : {})}>
+              <CardItem style={styles.cardItem}
+                onPress={() => (onPress ? navigation.push(routeName, params) : {})}
+                accessible
+                accessibilityLabel={title}
+                accessibilityHint={`Navigates to ${title} screen`}
+                accessibilityRole="button"
+              >
                 <Body
                   style={{
                     justifyContent: 'center',
@@ -129,6 +144,9 @@ class Card extends Component<IProps> {
                   <Button
                     transparent
                     style={{ width: 85, height: 85, alignSelf: 'center' }}
+                    accessible
+                    accessibilityLabel={`Play`}
+                    accessibilityHint={`Press to play trailer`}
                   >
                     <SvgUri
                       source={require('../../assets/icons/play-button.svg')}
