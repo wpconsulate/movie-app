@@ -8,6 +8,8 @@ import Movie from '../api/Movie/Movie'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import {ToastAndroid} from 'react-native';
+
 
 interface IProps {
   movie: Movie
@@ -80,6 +82,7 @@ class MovieSidebar extends React.Component<IProps, any> {
                 buttonIndex => {
                   const option = OPTIONS[buttonIndex].toLowerCase()
                   this.props.movie.AddToWatchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1", option)
+                  ToastAndroid.show('Movie added to' + option + ' watchlist !', ToastAndroid.SHORT);
                   if (option !== 'cancel') {
                     MovieStore.setShowMenu(false)
                   }

@@ -11,7 +11,6 @@ interface IState {
   planned: SetOfMovies
   completed: SetOfMovies
   dropped: SetOfMovies
-
 }
 interface IProps {
   userid : string

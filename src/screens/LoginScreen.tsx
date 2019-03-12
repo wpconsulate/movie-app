@@ -18,13 +18,15 @@ import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { Dimensions, Alert } from 'react-native'
+import { Dimensions, Alert, TouchableWithoutFeedback } from 'react-native'
 import { Authentication } from '../api'
 import UserStore from '../stores/UserStore';
+import {Keyboard} from 'react-native'
 
 interface IState {
   email: string
   password: string
+  showPass: boolean
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -60,6 +62,7 @@ class LoginScreen extends Component<IProps, IState> {
     this.state = {
       email: null,
       password: null,
+      showPass: false,
     }
     this.auth = new Authentication()
   }
@@ -85,6 +88,7 @@ class LoginScreen extends Component<IProps, IState> {
     const { email, password } = this.state
     return (
       <Container>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Header transparent />
         <AutoHeightImage
           source={require('../../assets/header.png')}
@@ -161,14 +165,14 @@ class LoginScreen extends Component<IProps, IState> {
                   <Row>
                     <Input
                       label="PASSWORD"
-                      keyboardType="visible-password"
-                      secureTextEntry
+                      keyboardType="default"
+                      secureTextEntry={this.state.showPass}
                       value={password}
                       onChangeText={text => {
                         this.setState({ password: text })
                       }}
                     />
-                    <Button transparent>
+                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
                       <Text
                         style={{
                           color: '#E20F0F',
@@ -270,6 +274,7 @@ class LoginScreen extends Component<IProps, IState> {
             </Col>
           </Row> */}
         </Content>
+        </TouchableWithoutFeedback>
       </Container>
     )
   }
