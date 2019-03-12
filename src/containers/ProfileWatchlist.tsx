@@ -3,8 +3,7 @@ import { ActivityIndicator, View } from 'react-native'
 import Watchlist from '../api/Collection/Watchlist'
 // import WatchlistCard from '../components/WatchlistCard'
 import { SetOfMovies } from '../api';
-import WatchlistSlider from '../components/WatchlistSlider';
-
+import MovieSlider from '../components/MovieSlider'
 interface IState {
   isLoading: boolean
   watching: SetOfMovies
@@ -17,7 +16,7 @@ interface IProps {
 }
 
 export default class ProfileWatchlist extends Component<IProps, IState> {         
-  private Watchlist = new Watchlist("4ZmT7I7oZYdBy2YYaw5BS0keAhu1")
+  private Watchlist = new Watchlist(this.props.userid)
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -62,10 +61,10 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
     }
     return (
        <View>
-        <WatchlistSlider data={this.state.watching} title={"Watching"} /> 
-        <WatchlistSlider data={this.state.planned} title={"Planning"} /> 
-        <WatchlistSlider data={this.state.completed} title={"Completed"} />  
-        <WatchlistSlider data={this.state.dropped} title={"Dropped"} /> 
+        <MovieSlider data={this.state.watching} title={"Watching"} /> 
+        <MovieSlider data={this.state.planned} title={"Planning"} /> 
+        <MovieSlider data={this.state.completed} title={"Completed"} />  
+        <MovieSlider data={this.state.dropped} title={"Dropped"} /> 
       </View>
     )
   }
