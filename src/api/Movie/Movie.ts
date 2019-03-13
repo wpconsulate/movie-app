@@ -9,12 +9,13 @@ import {
 import { default as sortArray } from '../../lib/sort'
 import Cast from './../Cast/Cast'
 import Database from '../Database';
+
+
 interface IParams {
   type?: 'backdrops' | 'posters'
 }
 class Movie extends Database implements IMovie {
   static ENTITY = 'movie'
-
   private id: number
   private overview: string
   private poster_path: string
@@ -196,6 +197,43 @@ class Movie extends Database implements IMovie {
     // return null
   }
 
+  public async addReview(reviewContent: String, movieId: number, userId: string, username: string){
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth() + 1;
+    let yyyy = today.getFullYear();
+    if (dd < 10) {dd = 0 + dd;}
+    if (mm < 10) {mm = 0 + mm;}
+    let currentDate = mm + '/' + dd + '/' + yyyy;
+
+    let data = { author: username, content: reviewContent,  date: currentDate}
+    await this.write('review/' + movieId + "/" + userId, data)
+  }
+
+  // public async getMMDBReview(): Promise<any> {
+  //   interface reviewObject {
+  //     id: String
+  //     author: String,
+  //     content: String,
+  //     date: String,
+  //   }
+  //   let reviewList = new Array<reviewObject>()
+  //   this.database.ref("review/" + this.id).on(
+  //     'value',
+  //     element => {
+  //       let reviewID = element.key
+  //       element.forEach((review: any) => {
+  //         let element = review.toJSON()
+  //         reviewList.push({ id: reviewID, author: element.author, content: element.content, date: element.date })
+  //       })
+
+  //   },
+  //     (error: any) => {
+  //       console.error(error)
+  //     }
+  //   )
+  //   return reviewList
+  // }
 
   public async getReview(): Promise<any> {
     let reviewURL = Config.BASE_URL + "movie/" + this.id + "/reviews?api_key=" + Config.API_KEY;
@@ -204,14 +242,17 @@ class Movie extends Database implements IMovie {
     interface reviewObject {
       id: String
       author: String,
-      content: String
+      content: String,
     }
     let reviewList = new Array<reviewObject>()
+    
     parsedContent.results.forEach((element: any) => {
       reviewList.push({ id: element.id, author: element.author, content: element.content })
     })
+
     return reviewList;
   }
+
 }
 
 

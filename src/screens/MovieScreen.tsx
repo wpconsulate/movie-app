@@ -18,7 +18,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import { PlayButton, Genres, Slider, MovieSidebar } from '../components'
+import { PlayButton, Genres, Slider, MovieSidebar, LeaveReview } from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -31,12 +31,13 @@ import {
   AccessibilityInfo
 } from 'react-native'
 import { LinearGradient } from 'expo'
-
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore'
+import { Authentication } from '../api'
+import { SetOfUsers } from '../api/Collection'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -53,6 +54,8 @@ interface IState {
   showMenu: boolean
   reviewList: []
   isAccessible: boolean
+  currentUid: string
+  currentUsername: string
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -94,7 +97,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       castImages: null,
       reviewList: null,
-      isAccessible: false
+      isAccessible: false,
+      currentUid: 'testUid',
+      currentUsername: 'test',
     }
   }
 
@@ -105,6 +110,17 @@ export default class MovieScreen extends Component<IProps, IState> {
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
     let castImages = new Array<IImage>()
+    let Uid = "testUid"
+    let username = 'test'
+
+
+    let currUser = new Authentication()
+    if(currUser.isLoggedIn()){
+      Uid = currUser.getCurrentUser().uid
+      let CurrUSerDetails = await new SetOfUsers().getById(Uid)
+      username = CurrUSerDetails.name
+    }
+
 
     let review = await movie.getReview()
     casts.forEach(cast => {
@@ -116,7 +132,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: true,
       castImages,
       reviewList: review,
-      isAccessible
+      isAccessible,
+      currentUid: Uid,
+      currentUsername: username,
     })
   }
 
@@ -127,7 +145,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       castImages,
       reviewList,
-      isAccessible
+      isAccessible,
+      currentUid,
+      currentUsername,
     } = this.state
 
     if (!isLoaded) {
@@ -250,15 +270,48 @@ export default class MovieScreen extends Component<IProps, IState> {
                 width={75}
               />
             </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }}
+            >
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'PoppinsMedium',
+                marginBottom: 10,
+                width: '100%',
+              }}
+            >
+              Reviews
+            </Text>          
+            </View>   
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }} >
+              <LeaveReview 
+                username={currentUsername} 
+                url={"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}
+                movieId={movie.getId()}
+                userId={currentUid}              
+              />
+            </View>
             {reviewList.map((element: any) => {
-              return (
-                <Review
-                  key={element.id}
-                  url={'something image'}
-                  review={element.content}
-                  numberOfDays={2}
-                  username={element.author}
-                />
+            return (
+              <Review
+                key={element.id}
+                url={'something image'}
+                review={element.content}
+                numberOfDays={2}
+                username={element.author}
+              />
               )
             })}
           </View>
