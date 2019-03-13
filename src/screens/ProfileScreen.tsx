@@ -1,69 +1,74 @@
 import * as React from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView,ActivityIndicator, RefreshControl  } from 'react-native';
 import ProfilePic from '../components/ProfilePic'
 import UserStats from '../components/UserStats'
 import Friends from '../components/FriendsSlider'
 import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
+import Authentication from '../api/Authentication'
+import SetOfUsers from '../api/Collection/SetOfUsers'
 
-//import {Container, Row, Col} from 'native-base'
-// import ProfileWatchlist from '../containers/ProfileWatchlist';
+interface IState{
+  userID: string
+  username: string
+  userData: any
+  isLoading: boolean
+  refreshing: boolean
+}
+class OverAllStatus extends React.Component <any,IState>{
+  constructor(props: any){
+    super(props)
+    this.state={
+      userID: '',
+      username: '',
+      userData: null,
+      isLoading: true,
+      refreshing: false
+    }
+  }
+  async componentWillMount(){
+    let currUser = new Authentication()
+    let userID = currUser.getCurrentUser().uid
+    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    let CurrUSerDetails = await new SetOfUsers().getById(userID)
+    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, isLoading: false})
+  } 
 
-// export default class ProfileScreen extends React.Component {
-//   render() {
-//     return (
-//       <View style={{flex:1, backgroundColor:'#535FB2', paddingTop:0}}>
-//             <Text style={{alignSelf: 'center', fontSize:20}}>My Profile</Text>
-//         <View style={{flexDirection:'row', alignItems:"center"}}>
-//           <ProfilePic/>
-//           <UserStats/>
-//         </View>
-//         {/* <ProfileWatchlist/> */}
-
-//         <Tabs style={{backgroundColor: '#535FB2'}} tabBarUnderlineStyle={{backgroundColor: 'red'}} tabBarBackgroundColor='#535FB2'>
-//           <Tab heading="All" >
-//           <View style={{marginTop:10, flexDirection:"row"}}>
-//             <Friends/>
-//           </View>
-//           <View style={{marginTop:5, flexDirection:"row"}}>
-//             <TopRated />
-//           </View>
-//           </Tab>
-//           <Tab heading="Friends">
-            
-//           </Tab>
-//           <Tab heading="Review">
-          
-//           </Tab>
-//         </Tabs>
-
-//       </View>
-      
-            
-//     );
-//   }
-// }
-class OverAllStatus extends React.Component {
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.componentWillMount().then(() => {
+      this.setState({refreshing: false});
+    });
+  }
   render() {
+    //show loading icon
+    if (this.state.isLoading) {
+      return (
+        <View style={{ flex: 1, padding: 20 }}>
+          <ActivityIndicator />
+        </View>
+      )
+    }
         return (
-          <ScrollView style={{backgroundColor: '#535FB2'}}>
-      <View style={{flex:1, backgroundColor:'#535FB2'}}>
+      <ScrollView style={{backgroundColor: '#535FB2'}}
+      refreshControl={
+        <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh}/>
+      }
+      >
+      <View style={{flex:1, backgroundColor:'#535FB2', paddingTop:0}}>
             <Text style={{alignSelf: 'center', fontSize:20}}>My Profile</Text>
         <View style={{flexDirection:'row', alignItems:"center", padding:5}}>
-          <ProfilePic/>
-          <UserStats/>
+          <ProfilePic username={this.state.username}/>
+          <UserStats userData={this.state.userData}/>
         </View>
         <View style={{marginTop:10, flexDirection:"row"}}>
             <Friends/>
-          </View>
-          <View style={{marginTop:10, flexDirection:"row"}}>
-            {/* <TopRated /> */}
-          </View>
-          <View style={{marginTop:10, flexDirection:"row"}}>
-            {/* <TopRated /> */}
-            <ProfileWatchlist userid={"1"}/>
-          </View>
+        </View>
+        <View style={{marginTop:10, flexDirection:"row"}}>
+            <ProfileWatchlist userid={this.state.userID}/>
+        </View>
       </View>
       </ScrollView>
       
