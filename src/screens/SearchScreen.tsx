@@ -36,7 +36,10 @@ const styles = StyleSheet.create({
   mainSection: {
     flex: 1,
     maxWidth: '90%',
-    alignSelf: 'center'
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    flexDirection: 'row',
+    marginTop: 50
   },
   root: {
     backgroundColor: '#12152D', // Use this color
@@ -178,32 +181,33 @@ class SearchScreen extends Component<any, State> {
           </ScrollView>
         </View>
         <View style={styles.mainSection}>
-          <Grid>
-            <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-              <Col size={6}>
-                <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}
-                >
-                  Search History
-                </Text>
-              </Col>
-              <Col size={6}>
-                <TouchableOpacity onPress={this.props.clearSearchHistory}>
-                  <Text
-                    style={{
-                      color: 'red',
-                      fontSize: 20,
-                      alignSelf: 'flex-end',
-                      fontWeight: '200',
-                    }}
+          <Grid style={{ width: '100%' }}>
+            <View style={{ flex: 1, maxHeight: '50%' }}>
+              <Row style={{ maxHeight: 50, alignItems: 'center', marginBottom: 10 }}>
+                <Col>
+                  <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}
                   >
-                    Clear
+                    Search History
+                </Text>
+                </Col>
+                <Col>
+                  <TouchableOpacity onPress={this.props.clearSearchHistory}>
+                    <Text
+                      style={{
+                        color: 'red',
+                        fontSize: 20,
+                        textAlign: 'right',
+                        fontWeight: '200',
+                      }}
+                    >
+                      Clear
                   </Text>
-                </TouchableOpacity>
-              </Col>
-            </Row>
-            <Row>
-              <ScrollView horizontal>
-                {/* {this.state.searchHistory
+                  </TouchableOpacity>
+                </Col>
+              </Row>
+              <Row>
+                <ScrollView horizontal>
+                  {/* {this.state.searchHistory
                   ? this.state.searchHistory.map((e: any) => {
                     return (
                       <TouchableOpacity
@@ -220,13 +224,15 @@ class SearchScreen extends Component<any, State> {
                   })
                   : ''} */}
 
-                <Pill
-                  text="irobot"
-                  colour={'#4F547E'}
-                  textColour={'white'}
-                />
-              </ScrollView>
-            </Row>
+                  <Pill
+                    text="irobot"
+                    colour={'#4F547E'}
+                    textColour={'white'}
+                  />
+                </ScrollView>
+              </Row>
+            </View>
+
           </Grid>
         </View>
       </View>
