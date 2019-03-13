@@ -8,6 +8,7 @@ import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
+import SettingsScreens from '../screens/SettingsScreen'
 
 interface IState{
   userID: string
@@ -111,7 +112,8 @@ class ReviewsList extends React.Component {
 const TabNavigator = createBottomTabNavigator({
   All: { screen: OverAllStatus },
   Friends: { screen: FriendsList },
-  Review:{screen: ReviewsList}
+  Review:{screen: ReviewsList},
+  Setting: SettingsScreens
 }, {tabBarOptions: {
   activeTintColor: 'red',
   inactiveTintColor: 'white',

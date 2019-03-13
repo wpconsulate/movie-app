@@ -5,6 +5,7 @@ import SearchScreen from './SearchScreen'
 import MovieScreen from './MovieScreen'
 import ProfileScreen from './ProfileScreen'
 import ResultsScreen from './ResultsScreen'
+import SettingsScreen from './SettingsScreen'
 
 export {
   HomeScreen,
@@ -14,4 +15,5 @@ export {
   MovieScreen,
   ProfileScreen,
   ResultsScreen,
+  SettingsScreen,
 }

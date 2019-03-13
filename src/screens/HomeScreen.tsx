@@ -34,7 +34,7 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
         <Header transparent />
         <Content style={{paddingBottom: 20 }}>
           <Upcoming />
-          <TopRated />
+          {/* <TopRated /> */}
           <Trending />
         </Content>
       </Container>
