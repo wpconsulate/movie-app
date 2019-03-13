@@ -181,23 +181,7 @@ class LoginScreen extends Component<IProps, IState> {
                     </Button>
                   </Row>
                 </Item>
-                {/* <Row
-                  style={{ alignItems: 'center', justifyContent: 'flex-end' }}
-                >
-                  <Col style={{ alignSelf: 'flex-end' }}>
-                    <Button transparent>
-                      <Text
-                        style={{
-                          color: '#12152D',
-                          fontFamily: 'PoppinsMedium',
-                          fontSize: 12,
-                        }}
-                      >
-                        Forgot password?
-                      </Text>
-                    </Button>
-                  </Col>
-                </Row> */}
+
                 <Row
                   style={{
                     marginTop: 40,
@@ -241,34 +225,6 @@ class LoginScreen extends Component<IProps, IState> {
               </Button>
             </Col>
           </Row>
-          {/* <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Col>
-              <View />
-            </Col>
-            <Col>
-              <Text>OR WITH</Text>
-            </Col>
-            <Col>
-              <View />
-            </Col>
-          </Row>
-          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="facebook" />
-              </Button>
-            </Col>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="google-plus" />
-              </Button>
-            </Col>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="twitter" />
-              </Button>
-            </Col>
-          </Row> */}
         </Content>
       </Container>
     )

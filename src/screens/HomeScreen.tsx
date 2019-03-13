@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Header, Content } from 'native-base'
 import { NavigationScreenProps } from 'react-navigation'
-import { TopRated } from '../containers'
 import { navigationOptions } from '../helpers/header'
 import { StoreGlobal } from './globalStore'
 import Upcoming from '../containers/Upcoming'

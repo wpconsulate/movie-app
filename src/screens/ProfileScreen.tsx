@@ -35,7 +35,7 @@ class OverAllStatus extends React.Component <any,IState>{
     let CurrUSerDetails = await new SetOfUsers().getById(userID)
     //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, isLoading: false})
-  } 
+  }
 
   _onRefresh = () => {
     this.setState({refreshing: true});
@@ -44,7 +44,7 @@ class OverAllStatus extends React.Component <any,IState>{
     });
   }
   render() {
-    //show loading icon
+    //show loading icon for profile page
     if (this.state.isLoading) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -58,9 +58,9 @@ class OverAllStatus extends React.Component <any,IState>{
         <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh}/>
       }
       >
-      <View style={{flex:1, backgroundColor:'#535FB2', paddingTop:0}}>
-            <Text style={{alignSelf: 'center', fontSize:20}}>My Profile</Text>
-        <View style={{flexDirection:'row', alignItems:"center", padding:5}}>
+      <View style={{flex:1, backgroundColor:'#05111F', paddingTop:10}}>
+            <Text style={{alignSelf: 'center', fontSize:30, color: 'white',fontWeight: 'bold'}}>Profile Page</Text>
+        <View style={{flexDirection:'row', alignItems:"center", padding:5, color: 'white'}}>
           <ProfilePic username={this.state.username}/>
           <UserStats userData={this.state.userData}/>
         </View>
@@ -72,8 +72,8 @@ class OverAllStatus extends React.Component <any,IState>{
         </View>
       </View>
       </ScrollView>
-      
-            
+
+
     );
   }
 }
@@ -82,12 +82,12 @@ class FriendsList extends React.Component {
   render() {
     return (
       <View>
-        <Text>Settings!</Text>
-        <ScrollView > 
+        <Text>Settings</Text>
+        <ScrollView >
         <Review review="testing this review" username="shezan" url="../../assets/profilePicture/p1.png"/>
         <Review review="testing this review" username="shezan" url="sdfs"/>
         <Review review="testing this review" username="shezan" url="sdfs"/>
-        
+
         </ScrollView>
       </View>
     );
@@ -121,7 +121,7 @@ const TabNavigator = createBottomTabNavigator({
     fontSize: 18,
     fontWeight:'400',
     textDecorationLine: 'underline',
-    
+
   },
   style: {
     backgroundColor: '#535FB2',
@@ -130,4 +130,3 @@ const TabNavigator = createBottomTabNavigator({
 }});
 
 export default createAppContainer(TabNavigator);
-

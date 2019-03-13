@@ -183,9 +183,9 @@ class SearchScreen extends Component<any, State> {
         <View style={styles.mainSection}>
           <Grid style={{ width: '100%' }}>
             <View style={{ flex: 1, maxHeight: '50%' }}>
-              <Row style={{ maxHeight: 50, alignItems: 'center', marginBottom: 10 }}>
+              <Row style={{ maxHeight: 50, alignItems: 'center', marginBottom: 15 }}>
                 <Col>
-                  <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}
+                  <Text style={{ fontSize: 27, color: 'white', fontWeight: 'bold' }}
                   >
                     Search History
                 </Text>
@@ -232,7 +232,6 @@ class SearchScreen extends Component<any, State> {
                 </ScrollView>
               </Row>
             </View>
-
           </Grid>
         </View>
       </View>
