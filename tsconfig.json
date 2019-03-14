@@ -34,7 +34,8 @@
     "rn-cli.config.js",
     "./src/native-base-theme",
     "./src/lib/react-native-ratings",
-    "assets"
+    "assets",
+    "./__test__"
   ],
   "compileOnSave": false
 }

@@ -5,6 +5,7 @@ import { navigationOptions } from '../helpers/header'
 import { StoreGlobal } from './globalStore'
 import Upcoming from '../containers/Upcoming'
 import Trending from '../containers/Trending'
+import TopRated from '../containers/TopRated';
 interface IState {
   switch: boolean
 }
