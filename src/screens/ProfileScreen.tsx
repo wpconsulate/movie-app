@@ -53,7 +53,7 @@ class OverAllStatus extends React.Component <any,IState>{
       )
     }
         return (
-      <ScrollView style={{backgroundColor: '#535FB2'}}
+      <ScrollView style={{backgroundColor: '#05111F'}}
       refreshControl={
         <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh}/>
       }
@@ -124,7 +124,7 @@ const TabNavigator = createBottomTabNavigator({
 
   },
   style: {
-    backgroundColor: '#535FB2',
+    backgroundColor: '#05111F',
     height: 40
   },
 }});
