@@ -38,8 +38,9 @@ const styles = StyleSheet.create({
     maxWidth: '90%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    flexDirection: 'row',
-    marginTop: 50
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
+    
   },
   root: {
     backgroundColor: '#12152D', // Use this color
@@ -51,16 +52,15 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flex: 1,
     alignItems: 'center',
-    minHeight: 50,
     width: '100%',
     marginTop: 5,
     flexDirection: 'row',
   },
   scrollContainer: {
-    marginTop: 123,
+    marginTop: 180,
     backgroundColor: 'white',
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: '90%',
     position: 'absolute',
     borderRadius: 8,
@@ -180,8 +180,11 @@ class SearchScreen extends Component<any, State> {
             </View>
           </ScrollView>
         </View>
+
+
+        
         <View style={styles.mainSection}>
-          <Grid style={{ width: '100%' }}>
+          <Grid style={{ width: '100%', marginTop:520 }}>
             <View style={{ flex: 1, maxHeight: '50%' }}>
               <Row style={{ maxHeight: 50, alignItems: 'center', marginBottom: 15 }}>
                 <Col>
