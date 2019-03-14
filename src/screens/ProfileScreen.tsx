@@ -9,6 +9,7 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from '../screens/SettingsScreen'
+import { Button } from 'native-base';
 
 interface IState{
   userID: string
@@ -71,6 +72,7 @@ class OverAllStatus extends React.Component <any,IState>{
             <ProfileWatchlist userid={this.state.userID}/>
         </View>
       </View>
+      <Button onPress={{logout}}>Logout</Button>
       </ScrollView>
 
 

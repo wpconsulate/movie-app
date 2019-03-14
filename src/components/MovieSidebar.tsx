@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { BlurView } from 'expo'
 import { ActionSheet } from 'native-base'
 import { EWatchlists } from '../api/Movie/Enums/Watchlists'
@@ -8,7 +8,6 @@ import Movie from '../api/Movie/Movie'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Toast from 'react-native-simple-toast';
 import UserStore from '../stores/UserStore';
 
 
@@ -83,18 +82,18 @@ class MovieSidebar extends React.Component<IProps, any> {
                 },
                 buttonIndex => {
                   const option = OPTIONS[buttonIndex].toLowerCase()
-                  if(UserStore.isLoggedIn === true)
+                  if(option !== "cancel")
                   {
-                    // console.log(this.props.userid)
-                    this.props.movie.AddToWatchlist(this.props.userid, option)
-                    Toast.show('Movie added to' + option + ' watchlist !', Toast.SHORT);
-                  } else 
-                  {
-                    Toast.show('Please Login to add to a Watchlist !', Toast.SHORT);
-                  }
-                  if (option !== 'cancel') {
-                    MovieStore.setShowMenu(false)
-                  }
+                    if(UserStore.isLoggedIn === true)
+                    {
+                      this.props.movie.AddToWatchlist(this.props.userid, option)
+                      Alert.alert('Movie added to watchlist!')
+                    } else 
+                    {
+                      Alert.alert('Please Login to add to Watchlist')
+                    }
+                      MovieStore.setShowMenu(false)
+                  }  
                 }
               )
             }

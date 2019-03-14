@@ -1,5 +1,5 @@
 // import SetOfMovies from "./SetOfMovies";
-import { Database, SetOfMovies, Movie } from '..'
+import { Database, SetOfMovies } from '..'
 import User from '../User/User'
 import SetOfUsers from './SetOfUsers'
 // import Movie from "./Movie/Movie";
@@ -26,7 +26,6 @@ class Watchlist extends SetOfMovies {
     let idForUser = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
     value = await this.database.database
       .ref("users/" + idForUser + "/watchlist/" + type)
-      .limitToLast(4)
       .once('value', function(snap) {
         //change the above to users/movie to make it the folders under the correct location -- this will work
         return (value = snap.val())
@@ -49,12 +48,6 @@ class Watchlist extends SetOfMovies {
 
   public getTitle(): String {
     return this.title
-  }
-
-  public async changelist(movie : Movie, originalType : String, changedType : String) {
-    await this.database.database
-      .ref("users/" + this.userId + "/watchlist/" + originalType + "/-LZp4Zy9uC65bohTQgCv").remove();
-    return await this.database.database.ref("users/" + this.userId + "/watchlist/" + changedType).push(movie);
   }
 }
 export default Watchlist
