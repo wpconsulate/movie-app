@@ -35,28 +35,46 @@ class ResultsScreen extends Component<any, IState> {
 
   async componentWillMount() {
     this.setState({
-      isLoading: true,
-    })
-    try {
-      const query = await this.props.navigation.getParam('query')
-      const results = await this.search.search(query)
-      results.forEach((result: any) => {
-        if (result.title && result.poster_path)
-          this.setOfMovies.addMovie(result)
-      })
-      this.setState({
-        movies: this.setOfMovies,
-      })
-    } catch (err) {
-      console.error(err)
-    }
+      isLoading: true
+    });
+    let header: String = await this.props.navigation.getParam('query');
+    if( await this.props.navigation.getParam('setOfMovie') != null)
+      {
+        try{
+          const query = await this.props.navigation.getParam('setOfMovie')
+          this.setOfMovies = query
+          this.setState({
+            movies: this.setOfMovies,
+          })
+        }
+        catch(err){
+          console.error(err)
+        }
+      }
+      else{
+        try {
+          const query = await this.props.navigation.getParam('query')
+          const results = await this.search.search(query)
+          results.forEach((result: any) => {
+            if (result.title && result.poster_path)
+              this.setOfMovies.addMovie(result)
+          })
+          this.setState({
+            movies: this.setOfMovies,
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      }
+    
     this.setState({
       isLoading: false,
+      title: header
     })
   }
 
   render() {
-    const { navigation } = this.props
+    
     return (
       <Container
         style={{
@@ -98,7 +116,7 @@ class ResultsScreen extends Component<any, IState> {
                 <Grid>
                   <Row style={{ alignItems: 'center', width: '100%' }}>
                     <Col>
-                      <Text style={{ alignSelf: 'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>Star Wars</Text>
+                      <Text style={{ alignSelf: 'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>{this.state.title}</Text>
                     </Col>
                   </Row>
                 </Grid>
@@ -106,7 +124,6 @@ class ResultsScreen extends Component<any, IState> {
                   <Spinner />
                 ) : this.state.movies ? (
                   <Movies
-                    query={navigation.getParam('query')}
                     data={this.setOfMovies}
                   />
                 ) : (

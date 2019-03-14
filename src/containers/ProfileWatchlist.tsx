@@ -61,10 +61,10 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
     }
     return (
        <View>
-        <MovieSlider data={this.state.watching} title={"Watching"} /> 
-        <MovieSlider data={this.state.planned} title={"Planning"} /> 
-        <MovieSlider data={this.state.completed} title={"Completed"} />  
-        <MovieSlider data={this.state.dropped} title={"Dropped"} /> 
+        <MovieSlider data={this.state.watching} title={"Watching"}/> 
+        <MovieSlider data={this.state.planned} title={"Planning"}/> 
+        <MovieSlider data={this.state.completed} title={"Completed"}/>  
+        <MovieSlider data={this.state.dropped} title={"Dropped"}/> 
       </View>
     )
   }
