@@ -31,9 +31,13 @@ class Authentication {
     const user = this.auth.currentUser
     return user
   }
+  public getCurrentUserUid() {
+    const user = this.auth.currentUser.uid
+    return user
+  }
 
   public isLoggedIn() {
-    console.log('user', this.getCurrentUser())
+    // console.log('user', this.getCurrentUser())
     if (this.getCurrentUser()) {
       return true
     }

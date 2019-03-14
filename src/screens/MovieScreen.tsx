@@ -17,8 +17,8 @@ import {
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { SetOfMovies, Movie, Authentication } from '../api'
-import { PlayButton, Genres, Slider, MovieSidebar } from '../components'
+import { SetOfMovies, Movie } from '../api'
+import { PlayButton, Genres, Slider, MovieSidebar, LeaveReview } from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -31,12 +31,13 @@ import {
   AccessibilityInfo
 } from 'react-native'
 import { LinearGradient } from 'expo'
-
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore'
+import { Authentication } from '../api'
+import { SetOfUsers } from '../api/Collection'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -53,7 +54,8 @@ interface IState {
   showMenu: boolean
   reviewList: []
   isAccessible: boolean
-  userid: string
+  currentUid: string
+  currentUsername: string
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -96,19 +98,29 @@ export default class MovieScreen extends Component<IProps, IState> {
       castImages: null,
       reviewList: null,
       isAccessible: false,
-      userid: null,
+      currentUid: 'testUid',
+      currentUsername: 'test',
     }
   }
 
   async componentWillMount() {
-    let currUser = new Authentication()
-    let userid = currUser.getCurrentUser().uid
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
     let castImages = new Array<IImage>()
+    let Uid = "testUid"
+    let username = 'test'
+
+
+    let currUser = new Authentication()
+    if(currUser.isLoggedIn()){
+      Uid = currUser.getCurrentUser().uid
+      let CurrUSerDetails = await new SetOfUsers().getById(Uid)
+      username = CurrUSerDetails.name
+    }
+
 
     let review = await movie.getReview()
     casts.forEach(cast => {
@@ -121,7 +133,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       castImages,
       reviewList: review,
       isAccessible,
-      userid
+      currentUid: Uid,
+      currentUsername: username,
     })
   }
 
@@ -133,7 +146,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       castImages,
       reviewList,
       isAccessible,
-      userid
+      currentUid,
+      currentUsername,
     } = this.state
 
     if (!isLoaded) {
@@ -198,7 +212,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             source={require('../../assets/icons/SideBar.png')}
           />
         </TouchableOpacity>
-        <MovieSidebar movie={movie} userid={userid} />
+        <MovieSidebar movie={movie} userid={currentUid} />
         <Content style={{ flex: 1 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
@@ -256,15 +270,48 @@ export default class MovieScreen extends Component<IProps, IState> {
                 width={75}
               />
             </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }}
+            >
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'PoppinsMedium',
+                marginBottom: 10,
+                width: '100%',
+              }}
+            >
+              Reviews
+            </Text>          
+            </View>   
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                flexWrap: 'wrap',
+                marginTop: 40,
+              }} >
+              <LeaveReview 
+                username={currentUsername} 
+                url={"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}
+                movieId={movie.getId()}
+                userId={currentUid}              
+              />
+            </View>
             {reviewList.map((element: any) => {
-              return (
-                <Review
-                  key={element.id}
-                  url={'something image'}
-                  review={element.content}
-                  numberOfDays={2}
-                  username={element.author}
-                />
+            return (
+              <Review
+                key={element.id}
+                url={'something image'}
+                review={element.content}
+                numberOfDays={2}
+                username={element.author}
+              />
               )
             })}
           </View>
