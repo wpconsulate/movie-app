@@ -62,7 +62,7 @@ class LoginScreen extends Component<IProps, IState> {
     this.state = {
       email: null,
       password: null,
-      showPass: false,
+      showPass: true,
     }
     this.auth = new Authentication()
   }
@@ -86,9 +86,9 @@ class LoginScreen extends Component<IProps, IState> {
 
   render() {
     const { email, password } = this.state
+    console.log(this.auth.getCurrentUser)
     return (
       <Container>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Header transparent />
         <AutoHeightImage
           source={require('../../assets/header.png')}
@@ -101,6 +101,7 @@ class LoginScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}

@@ -17,7 +17,7 @@ import {
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
-import { SetOfMovies, Movie } from '../api'
+import { SetOfMovies, Movie, Authentication } from '../api'
 import { PlayButton, Genres, Slider, MovieSidebar } from '../components'
 import {
   ActivityIndicator,
@@ -53,6 +53,7 @@ interface IState {
   showMenu: boolean
   reviewList: []
   isAccessible: boolean
+  userid: string
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -94,11 +95,14 @@ export default class MovieScreen extends Component<IProps, IState> {
       images: null,
       castImages: null,
       reviewList: null,
-      isAccessible: false
+      isAccessible: false,
+      userid: null,
     }
   }
 
   async componentWillMount() {
+    let currUser = new Authentication()
+    let userid = currUser.getCurrentUser().uid
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
     const images = await movie.getImages(5, { type: 'backdrops' })
@@ -116,7 +120,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: true,
       castImages,
       reviewList: review,
-      isAccessible
+      isAccessible,
+      userid
     })
   }
 
@@ -127,7 +132,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       castImages,
       reviewList,
-      isAccessible
+      isAccessible,
+      userid
     } = this.state
 
     if (!isLoaded) {
@@ -192,7 +198,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             source={require('../../assets/icons/SideBar.png')}
           />
         </TouchableOpacity>
-        <MovieSidebar movie={movie} />
+        <MovieSidebar movie={movie} userid={userid} />
         <Content style={{ flex: 1 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
