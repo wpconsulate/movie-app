@@ -1,14 +1,25 @@
-import { Input, Spinner, Row, Text, Col, Grid } from 'native-base';
+import { Input, Spinner, Grid, Row, Col, Text } from 'native-base'
 
-import React, { Component } from 'react';
-import { AsyncStorage, FlatList, ScrollView, StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import React, { Component } from 'react'
+import {
+  AsyncStorage,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+  StatusBar,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native'
+import { withNavigation } from 'react-navigation'
 
-import Search from '../api/Search';
-import ResultItem from '../components/ResultItem';
-import { navigationOptions } from '../helpers/header';
-import { SearchScreenState as State } from '../state/SearchScreenState';
-import Pill from '../components/Pill';
+import Search from '../api/Search'
+import ResultItem from '../components/ResultItem'
+import { navigationOptions } from '../helpers/header'
+import { SearchScreenState as State } from '../state/SearchScreenState'
+
+import Pill from '../components/Pill'
 
 const styles = StyleSheet.create({
   headerView: {
@@ -25,13 +36,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     bottom: 30,
     borderRadius: 8,
-    zIndex: 1,
+    zIndex: 2,
     flexWrap: 'wrap',
   },
   topSection: {
-    flex: 0.3,
+    flex: 0.25,
     backgroundColor: '#E20F0F',
     position: 'relative',
+  },
+  bottomSection: {
+    flex: 0.7,
+    zIndex: -1,
   },
   mainSection: {
     flex: 1,
@@ -39,15 +54,15 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     flexDirection: 'column',
-    justifyContent: 'flex-end'
-    
+    justifyContent: 'flex-end',
   },
   root: {
     backgroundColor: '#12152D', // Use this color
-    flex: 1
+    flex: 1,
   },
   searchInput: {
     width: '100%',
+    fontFamily: 'PoppinsLight',
   },
   searchInputContainer: {
     flex: 1,
@@ -57,16 +72,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   scrollContainer: {
-    marginTop: 180,
     backgroundColor: 'white',
     flex: 1,
     flexDirection: 'column',
-    width: '90%',
+    width: '100%',
     position: 'absolute',
-    borderRadius: 8,
-    alignSelf: 'center'
-
-  }
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    alignSelf: 'center',
+    top: 50,
+    zIndex: 1,
+  },
 })
 
 class SearchScreen extends Component<any, State> {
@@ -81,6 +97,7 @@ class SearchScreen extends Component<any, State> {
       searchInput: '',
       isLoading: false,
       results: null,
+      tmpResults: null,
       searchHistory: null,
     }
 
@@ -145,6 +162,15 @@ class SearchScreen extends Component<any, State> {
     this.setState({ searchHistory: [] })
   }
 
+  onBottomSectionPress = (e: any) => {
+    this.setState({
+      tmpResults: this.state.results,
+      results: [],
+    })
+    console.log('Results are', this.state.results)
+    // Keyboard.dismiss()
+  }
+
   render() {
     return (
       <View style={styles.root}>
@@ -159,58 +185,73 @@ class SearchScreen extends Component<any, State> {
                 accessibilityHint="Search for a movie, actor or a user. Press enter on your keypad to search."
                 placeholder="Search for a movie, actor or a user..."
                 value={this.state.searchInput}
+                clearButtonMode="while-editing"
+                // onFocus={e => this.setState({ results: this.state.tmpResults })}
                 onChangeText={this.onChange}
                 returnKeyType="search"
                 onSubmitEditing={() => this.onSubmit()}
                 style={styles.searchInput}
               />
-              {this.state.isLoading && <Spinner style={{ width: 10, height: 10 }} />}
+              {this.state.isLoading && (
+                <Spinner style={{ width: 10, height: 10 }} />
+              )}
             </View>
-
+            <View style={styles.scrollContainer}>
+              <ScrollView style={{ maxHeight: 250, position: 'relative' }}>
+                <View>
+                  <FlatList
+                    data={this.state.results}
+                    keyExtractor={(item: any) => item.id.toString()}
+                    renderItem={this._renderItem}
+                  />
+                </View>
+              </ScrollView>
+            </View>
           </View>
         </View>
-        <View style={styles.scrollContainer}>
-          <ScrollView style={{ maxHeight: 200, position: 'relative' }}>
-            <View>
-              <FlatList
-                data={this.state.results}
-                keyExtractor={(item: any) => item.id.toString()}
-                renderItem={this._renderItem}
-              />
-            </View>
-          </ScrollView>
-        </View>
-
-
-        
-        <View style={styles.mainSection}>
-          <Grid style={{ width: '100%', marginTop:520 }}>
-            <View style={{ flex: 1, maxHeight: '50%' }}>
-              <Row style={{ maxHeight: 50, alignItems: 'center', marginBottom: 15 }}>
-                <Col>
-                  <Text style={{ fontSize: 27, color: 'white', fontWeight: 'bold' }}
-                  >
-                    Search History
-                </Text>
-                </Col>
-                <Col>
-                  <TouchableOpacity onPress={this.props.clearSearchHistory}>
+        <TouchableWithoutFeedback
+          onPress={this.onBottomSectionPress}
+          accessible={false}
+        >
+          <View style={styles.bottomSection}>
+            <Grid style={{ width: '100%', marginTop: 50 }}>
+              <View style={{ flex: 1, maxHeight: '50%' }}>
+                <Row
+                  style={{
+                    maxHeight: 50,
+                    alignItems: 'center',
+                    marginBottom: 15,
+                  }}
+                >
+                  <Col>
                     <Text
                       style={{
-                        color: 'red',
-                        fontSize: 20,
-                        textAlign: 'right',
-                        fontWeight: '200',
+                        fontSize: 27,
+                        color: 'white',
+                        fontWeight: 'bold',
                       }}
                     >
-                      Clear
-                  </Text>
-                  </TouchableOpacity>
-                </Col>
-              </Row>
-              <Row>
-                <ScrollView horizontal>
-                  {/* {this.state.searchHistory
+                      Search History
+                    </Text>
+                  </Col>
+                  <Col>
+                    <TouchableOpacity onPress={this.props.clearSearchHistory}>
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 20,
+                          textAlign: 'right',
+                          fontWeight: '200',
+                        }}
+                      >
+                        Clear
+                      </Text>
+                    </TouchableOpacity>
+                  </Col>
+                </Row>
+                <Row>
+                  <ScrollView horizontal>
+                    {/* {this.state.searchHistory
                   ? this.state.searchHistory.map((e: any) => {
                     return (
                       <TouchableOpacity
@@ -227,16 +268,17 @@ class SearchScreen extends Component<any, State> {
                   })
                   : ''} */}
 
-                  <Pill
-                    text="irobot"
-                    colour={'#4F547E'}
-                    textColour={'white'}
-                  />
-                </ScrollView>
-              </Row>
-            </View>
-          </Grid>
-        </View>
+                    <Pill
+                      text="irobot"
+                      colour={'#4F547E'}
+                      textColour={'white'}
+                    />
+                  </ScrollView>
+                </Row>
+              </View>
+            </Grid>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     )
   }
