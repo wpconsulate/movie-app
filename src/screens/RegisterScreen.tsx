@@ -66,7 +66,7 @@ class RegisterScreen extends Component<IProps, IState> {
       name: null,
       isLoaded: true,
     }
-    
+
     this.auth = new Authentication()
     this.database = new Database()
   }
@@ -254,6 +254,9 @@ class RegisterScreen extends Component<IProps, IState> {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginTop: 20,
+
+
+
             }}
           >
             <Col>
@@ -270,7 +273,7 @@ class RegisterScreen extends Component<IProps, IState> {
               </Button>
             </Col>
           </Row>
-          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Row style={{ justifyContent: 'center', alignItems: 'center',marginTop: 20 }}>
             <Col>
               <View />
             </Col>
