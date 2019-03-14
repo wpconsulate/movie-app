@@ -4,6 +4,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { navigationOptions } from '../helpers/header'
 import { StoreGlobal } from './globalStore'
 import Upcoming from '../containers/Upcoming'
+import TopRated from '../containers/TopRated'
 import Trending from '../containers/Trending'
 interface IState {
   switch: boolean

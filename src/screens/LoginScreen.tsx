@@ -86,7 +86,6 @@ class LoginScreen extends Component<IProps, IState> {
 
   render() {
     const { email, password } = this.state
-    console.log(this.auth.getCurrentUser)
     return (
       <Container>
         <Header transparent />

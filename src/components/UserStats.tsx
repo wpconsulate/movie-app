@@ -102,10 +102,10 @@ export default class UserStats extends React.PureComponent<IPropsUser, IState> {
     }
   totalHours =Math.floor (totalRuntime/60)
   days = Math.floor(totalHours/24)
-  console.log("total entry: "+totalEntries)
-  console.log("total runtime: "+totalRuntime)
-  console.log("total hours: "+ totalHours)
-  console.log("total days: "+ days)
+  // console.log("total entry: "+totalEntries)
+  // console.log("total runtime: "+totalRuntime)
+  // console.log("total hours: "+ totalHours)
+  // console.log("total days: "+ days)
   let userDetails = {
     totalEntries: totalEntries,
     totalMin: totalRuntime,

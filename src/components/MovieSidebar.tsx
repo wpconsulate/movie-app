@@ -8,7 +8,7 @@ import Movie from '../api/Movie/Movie'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {ToastAndroid} from 'react-native';
+import Toast from 'react-native-simple-toast';
 import UserStore from '../stores/UserStore';
 
 
@@ -85,12 +85,12 @@ class MovieSidebar extends React.Component<IProps, any> {
                   const option = OPTIONS[buttonIndex].toLowerCase()
                   if(UserStore.isLoggedIn === true)
                   {
-                    console.log(this.props.userid)
+                    // console.log(this.props.userid)
                     this.props.movie.AddToWatchlist(this.props.userid, option)
-                    ToastAndroid.show('Movie added to' + option + ' watchlist !', ToastAndroid.SHORT);
+                    Toast.show('Movie added to' + option + ' watchlist !', Toast.SHORT);
                   } else 
                   {
-                    ToastAndroid.show('Please Login to add to a Watchlist !', ToastAndroid.SHORT);
+                    Toast.show('Please Login to add to a Watchlist !', Toast.SHORT);
                   }
                   if (option !== 'cancel') {
                     MovieStore.setShowMenu(false)
