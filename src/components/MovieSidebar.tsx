@@ -6,14 +6,13 @@ import { EWatchlists } from '../api/Movie/Enums/Watchlists'
 import { capitlize } from '../lib/string'
 import Movie from '../api/Movie/Movie'
 import { observer } from 'mobx-react'
-import MovieStore from '../stores/MovieStore';
+import MovieStore from '../stores/MovieStore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Toast from 'react-native-simple-toast';
-import UserStore from '../stores/UserStore';
-
+// import Toast from 'react-native-simple-toast';
+import UserStore from '../stores/UserStore'
 
 interface IProps {
-  movie: Movie,
+  movie: Movie
   userid: string
 }
 
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 })
 @observer
 class MovieSidebar extends React.Component<IProps, any> {
@@ -83,14 +82,12 @@ class MovieSidebar extends React.Component<IProps, any> {
                 },
                 buttonIndex => {
                   const option = OPTIONS[buttonIndex].toLowerCase()
-                  if(UserStore.isLoggedIn === true)
-                  {
+                  if (UserStore.isLoggedIn === true) {
                     // console.log(this.props.userid)
                     this.props.movie.AddToWatchlist(this.props.userid, option)
-                    Toast.show('Movie added to' + option + ' watchlist !', Toast.SHORT);
-                  } else 
-                  {
-                    Toast.show('Please Login to add to a Watchlist !', Toast.SHORT);
+                    // Toast.show('Movie added to' + option + ' watchlist !', Toast.SHORT);
+                  } else {
+                    // Toast.show('Please Login to add to a Watchlist !', Toast.SHORT);
                   }
                   if (option !== 'cancel') {
                     MovieStore.setShowMenu(false)
