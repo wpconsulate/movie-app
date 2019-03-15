@@ -16,6 +16,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather'
 import Movies from '../containers/Movies';
 import { Header } from 'native-base';
 import { withNavigation } from 'react-navigation';
+import Algolia from './../api/Algolia';
 const navigationOptions: any = () => ({
   headerTransparent: true,
   headerMode: 'none',
@@ -26,11 +27,13 @@ class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
   private setOfMovies: SetOfMovies
   private search: Search
+  private algolia: Algolia
 
   constructor(props: any) {
     super(props)
     this.setOfMovies = new SetOfMovies()
     this.search = new Search()
+    this.algolia = new Algolia('users')
   }
 
   async componentWillMount() {
@@ -44,6 +47,8 @@ class ResultsScreen extends Component<any, IState> {
         if (result.title && result.poster_path)
           this.setOfMovies.addMovie(result)
       })
+      const users = await this.algolia.search({ query })
+      console.log('user index', users)
       this.setState({
         movies: this.setOfMovies,
       })
