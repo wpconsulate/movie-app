@@ -10,8 +10,7 @@ class ResultItem extends Component<any, any> {
 
     render() {
         return (
-            //@ts-ignore
-            <Button block transparent onPress={this.onPress}>
+            <Button block transparent >
                 <Text>
                     {this.props.name}{' '}
                     {this.props.releaseDate ? `(${this.props.releaseDate})` : null}

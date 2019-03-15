@@ -26,7 +26,6 @@ class Watchlist extends SetOfMovies {
     let idForUser = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
     value = await this.database.database
       .ref("users/" + idForUser + "/watchlist/" + type)
-      .limitToLast(4)
       .once('value', function(snap) {
         //change the above to users/movie to make it the folders under the correct location -- this will work
         return (value = snap.val())
