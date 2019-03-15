@@ -10,6 +10,7 @@ import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from '../screens/SettingsScreen'
 import { Button } from 'native-base';
+import UserStore from '../stores/UserStore';
 
 interface IState{
   userID: string
@@ -37,7 +38,14 @@ class OverAllStatus extends React.Component <any,IState>{
     //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, isLoading: false})
   }
-
+ // logout = () => {
+  //   console.log("this");
+  //   // let currUser = new Authentication()
+  //   // currUser.auth.signOut().then(function() {
+  //   //   this.props.navigation.navigate('Home');
+  //   // });
+  //   console.log("ICECREAM");
+  // }
   _onRefresh = () => {
     this.setState({refreshing: true});
     this.componentWillMount().then(() => {
@@ -71,8 +79,11 @@ class OverAllStatus extends React.Component <any,IState>{
         <View style={{marginTop:10, flexDirection:"row"}}>
             <ProfileWatchlist userid={this.state.userID}/>
         </View>
-      </View>
-      <Button onPress={{logout}}>Logout</Button>
+      </View> 
+      <Button onPress={() => { console.log("i logged out!");  let currUser = new Authentication()
+              currUser.auth.signOut().then(function() {
+              UserStore.setIsLoggedIn(false);
+              } );/*this.props.navigation.navigate('home');*/ }}><Text>LOGOUT</Text></Button> 
       </ScrollView>
 
 

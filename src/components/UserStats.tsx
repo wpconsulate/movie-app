@@ -1,8 +1,9 @@
 import React from 'react'
 import { StackedBarChart } from 'react-native-svg-charts'
 import { View, Text } from 'native-base'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet  } from 'react-native'
 import {Row, Col, Grid} from 'native-base'
+import { withNavigation } from 'react-navigation';
 
 
 //given to StatsKey to provide circle colour, text next to circle and total watch in that section
@@ -54,7 +55,7 @@ function StatsKey(props: IProps) {
   )
 }
 
-export default class UserStats extends React.PureComponent<IPropsUser, IState> {
+class UserStats extends React.Component<IPropsUser, IState> {
   constructor(props:any){
     super(props)
     this.state={
@@ -102,10 +103,6 @@ export default class UserStats extends React.PureComponent<IPropsUser, IState> {
     }
   totalHours =Math.floor (totalRuntime/60)
   days = Math.floor(totalHours/24)
-  // console.log("total entry: "+totalEntries)
-  // console.log("total runtime: "+totalRuntime)
-  // console.log("total hours: "+ totalHours)
-  // console.log("total days: "+ days)
   let userDetails = {
     totalEntries: totalEntries,
     totalMin: totalRuntime,
@@ -161,9 +158,6 @@ export default class UserStats extends React.PureComponent<IPropsUser, IState> {
           <Col>
           <Text>Total Entries:{this.state.totalEntries}</Text>
           <Text>Review:19</Text>
-          <TouchableOpacity style={{marginTop:10, backgroundColor:"#05a5d1", borderRadius:20, alignItems: 'center', width:100}}>
-            <Text style={{padding:6,color:"white", fontSize:18}}>Watchlist</Text>
-          </TouchableOpacity>
           </Col>
 
           <Col >
@@ -179,3 +173,4 @@ export default class UserStats extends React.PureComponent<IPropsUser, IState> {
     )
   }
 }
+export default withNavigation(UserStats)

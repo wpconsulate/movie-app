@@ -6,13 +6,13 @@ import { EWatchlists } from '../api/Movie/Enums/Watchlists'
 import { capitlize } from '../lib/string'
 import Movie from '../api/Movie/Movie'
 import { observer } from 'mobx-react'
-import MovieStore from '../stores/MovieStore';
+import MovieStore from '../stores/MovieStore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import UserStore from '../stores/UserStore';
-
+// import Toast from 'react-native-simple-toast';
+import UserStore from '../stores/UserStore'
 
 interface IProps {
-  movie: Movie,
+  movie: Movie
   userid: string
 }
 
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 })
 @observer
 class MovieSidebar extends React.Component<IProps, any> {

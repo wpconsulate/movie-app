@@ -13,31 +13,42 @@ interface IProps extends NavigationInjectedProps {
   data: SetOfMovies
   title: String
 }
-function handleOnPress(
-  navigation: NavigationScreenProp<
-    NavigationRoute<NavigationParams>,
-    NavigationParams
-  >,
-  movie: Movie
-) {
+
+function handleOnPress(navigation: NavigationScreenProp<NavigationRoute<NavigationParams>,NavigationParams>,movie: Movie) {
   navigation.push('Movie', { movieId: movie.getId() })
 }
+function _ViewAllOnPress (navigation: NavigationScreenProp<NavigationRoute<NavigationParams>,NavigationParams>, data: SetOfMovies, title:String)
+{
+  navigation.push('Results', { setOfMovie: data, query: title })
+}
 function MovieSlider(props: IProps) {
-  const topRated = props.data
+  const topRated = props.data  
   return (
     <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
+      <View style={{flex:1, flexDirection: 'row', justifyContent:'space-between'}}>
       <Text
         style={{
           color: 'white',
           fontSize: 20,
-          marginLeft: 5,
           fontFamily: 'PoppinsBold',
         }}
       >
         {props.title}
       </Text>
+      <TouchableOpacity onPress={()=>_ViewAllOnPress(props.navigation,topRated, props.title)}>
+      <Text
+        style={{
+          color: '#56CCF2',
+          fontSize: 15,
+          fontFamily: 'PoppinsBold',
+        }}
+      >
+        {("View All")}
+      </Text>
+      </TouchableOpacity>
+      </View>
       <ScrollView horizontal>
-        {topRated.map((movie: Movie) => {
+        {topRated.slice(0,10).map((movie: Movie) => {
           return (
             <TouchableOpacity
               accessible
