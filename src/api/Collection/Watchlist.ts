@@ -1,5 +1,5 @@
 // import SetOfMovies from "./SetOfMovies";
-import { Database, SetOfMovies, Movie } from '..'
+import { Database, SetOfMovies } from '..'
 import User from '../User/User'
 import SetOfUsers from './SetOfUsers'
 // import Movie from "./Movie/Movie";
@@ -48,12 +48,6 @@ class Watchlist extends SetOfMovies {
 
   public getTitle(): String {
     return this.title
-  }
-
-  public async changelist(movie : Movie, originalType : String, changedType : String) {
-    await this.database.database
-      .ref("users/" + this.userId + "/watchlist/" + originalType + "/-LZp4Zy9uC65bohTQgCv").remove();
-    return await this.database.database.ref("users/" + this.userId + "/watchlist/" + changedType).push(movie);
   }
 }
 export default Watchlist

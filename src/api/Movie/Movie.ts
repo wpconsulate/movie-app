@@ -187,8 +187,44 @@ class Movie extends Database implements IMovie {
   }
 
   public async AddToWatchlist(userId: string, type: String) {
-    return await this.database.ref("users/" + userId + "/watchlist/" + type).push(this.getData());
+    let planned = await this.searchForCopy(userId, "planned");
+    let completed = await this.searchForCopy(userId, "completed");
+    let watching = await this.searchForCopy(userId, "watching");
+    let dropped = await this.searchForCopy(userId, "dropped");
+
+    if(!planned && !completed && !watching && !dropped)
+    {
+      await this.database.ref("users/" + userId + "/watchlist/" + type).push(this.getData());
+    } 
   }
+
+  public async searchForCopy(userId: string, type : string)
+    {
+      let id = this.id;
+      let returnVal = false;
+      await this.database.ref(`users/${userId}/watchlist/${type}`).once('value', function(snap) {
+        snap.forEach( function (value) {
+          let obj = value.val();
+          if(obj.id === id) {
+            returnVal = true;
+            console.log("A repeat is here");
+          }
+        })
+      })
+    //   let id = this.id;
+    //   let returnVal = false;
+      // await this.database.ref(`users/${userId}/watchlist`).once('value', await async function(snap) {
+      //   snap.forEach(await function (snapshot) {
+      //     snapshot.forEach( function (value) {
+      //       let obj = value.val();
+      //       if(obj.id === id) {
+      //         returnVal = true;
+      //       }
+      //     })
+      //   })
+      // })
+      return returnVal;
+    }
 
   public getData(): any {
     const { backdrop_path, title, popularity, poster_path, id } = this

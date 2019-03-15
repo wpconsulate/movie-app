@@ -10,7 +10,7 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  Keyboard,
+//  Keyboard,
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
 
