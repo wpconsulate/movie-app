@@ -23,7 +23,7 @@ class Watchlist extends SetOfMovies {
     // let movie;
     let value
     let list = new Watchlist(userId)
-    let idForUser = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    let idForUser = userId
     value = await this.database.database
       .ref("users/" + idForUser + "/watchlist/" + type)
       .once('value', function(snap) {
