@@ -1,12 +1,15 @@
 import { auth } from 'firebase'
 import Database from './Database'
 import IRegisterParams from './User/IRegisterParams'
+import { Algolia } from '.';
 class Authentication {
   auth: firebase.auth.Auth
   database: Database
+  algolia: Algolia
   constructor() {
     this.auth = auth()
     this.database = new Database()
+    this.algolia = new Algolia('users')
   }
 
   public async login(email: string, password: string) {
@@ -22,9 +25,14 @@ class Authentication {
     password: string,
     data: IRegisterParams
   ) {
+    //TODO: Check to see if username exists!
     const user = await this.auth.createUserWithEmailAndPassword(email, password)
     const userId = this.auth.currentUser.uid
-    this.database.write('users/' + userId, data)
+    await this.database.write('users/' + userId, data)
+    await this.algolia.add({
+      id: userId,
+      username: data.username,
+    })
     return user
   }
   public getCurrentUser() {

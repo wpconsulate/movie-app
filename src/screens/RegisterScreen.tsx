@@ -26,8 +26,9 @@ interface IState {
   password: string
   name: string
   isLoaded: boolean
+  username: string
 }
-interface IProps extends NavigationScreenProps {}
+interface IProps extends NavigationScreenProps { }
 
 class RegisterScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -65,6 +66,7 @@ class RegisterScreen extends Component<IProps, IState> {
       password: null,
       name: null,
       isLoaded: true,
+      username: null
     }
 
     this.auth = new Authentication()
@@ -72,12 +74,13 @@ class RegisterScreen extends Component<IProps, IState> {
   }
   // user = new User('', 'test');
   onRegisterPress() {
-    const { email, password, name } = this.state
+    const { email, password, name, username } = this.state
     this.setState({ isLoaded: false })
     this.auth
       .register(email, password, {
         email,
         name,
+        username
       })
       .then(() => {
         this.setState({ isLoaded: true })
@@ -153,6 +156,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     label="YOUR NAME"
                     autoFocus
                     keyboardType="name-phone-pad"
+                    autoCapitalize="words"
                     value={this.state.name}
                     onChangeText={text => {
                       this.setState({ name: text })
@@ -175,6 +179,25 @@ class RegisterScreen extends Component<IProps, IState> {
                     value={this.state.email}
                     onChangeText={text => {
                       this.setState({ email: text })
+                    }}
+                  />
+                </Item>
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
+                    USERNAME
+                  </Label>
+                  <Input
+                    label="USERNAME"
+                    keyboardType="default"
+                    value={this.state.username}
+                    onChangeText={text => {
+                      this.setState({ username: text })
                     }}
                   />
                 </Item>
@@ -254,9 +277,6 @@ class RegisterScreen extends Component<IProps, IState> {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginTop: 20,
-
-
-
             }}
           >
             <Col>
@@ -270,34 +290,6 @@ class RegisterScreen extends Component<IProps, IState> {
                 }}
               >
                 <Text>Login now</Text>
-              </Button>
-            </Col>
-          </Row>
-          <Row style={{ justifyContent: 'center', alignItems: 'center',marginTop: 20 }}>
-            <Col>
-              <View />
-            </Col>
-            <Col>
-              <Text>OR WITH</Text>
-            </Col>
-            <Col>
-              <View />
-            </Col>
-          </Row>
-          <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="facebook" />
-              </Button>
-            </Col>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="google-plus" />
-              </Button>
-            </Col>
-            <Col>
-              <Button rounded primary>
-                <Icon type="FontAwesome" name="twitter" />
               </Button>
             </Col>
           </Row>

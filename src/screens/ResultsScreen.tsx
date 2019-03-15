@@ -16,6 +16,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather'
 import Movies from '../containers/Movies';
 import { Header } from 'native-base';
 import { withNavigation } from 'react-navigation';
+import Algolia from './../api/Algolia';
 const navigationOptions: any = () => ({
   headerTransparent: true,
   headerMode: 'none',
@@ -26,11 +27,13 @@ class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
   private setOfMovies: SetOfMovies
   private search: Search
+  private algolia: Algolia
 
   constructor(props: any) {
     super(props)
     this.setOfMovies = new SetOfMovies()
     this.search = new Search()
+    this.algolia = new Algolia('users')
   }
 
   async componentWillMount() {
@@ -38,35 +41,36 @@ class ResultsScreen extends Component<any, IState> {
       isLoading: true
     });
     let header: String = await this.props.navigation.getParam('query');
-    if( await this.props.navigation.getParam('setOfMovie') != null)
-      {
-        try{
-          const query = await this.props.navigation.getParam('setOfMovie')
-          this.setOfMovies = query
-          this.setState({
-            movies: this.setOfMovies,
-          })
-        }
-        catch(err){
-          console.error(err)
-        }
+    if (await this.props.navigation.getParam('setOfMovie') != null) {
+      try {
+        const query = await this.props.navigation.getParam('setOfMovie')
+        this.setOfMovies = query
+        this.setState({
+          movies: this.setOfMovies,
+        })
       }
-      else{
-        try {
-          const query = await this.props.navigation.getParam('query')
-          const results = await this.search.search(query)
-          results.forEach((result: any) => {
-            if (result.title && result.poster_path)
-              this.setOfMovies.addMovie(result)
-          })
-          this.setState({
-            movies: this.setOfMovies,
-          })
-        } catch (err) {
-          console.error(err)
-        }
+      catch (err) {
+        console.error(err)
       }
-    
+    }
+    else {
+      try {
+        const query = await this.props.navigation.getParam('query')
+        const results = await this.search.search(query)
+        results.forEach((result: any) => {
+          if (result.title && result.poster_path)
+            this.setOfMovies.addMovie(result)
+        })
+        const users = await this.algolia.search({ query })
+        console.log('user index', users)
+        this.setState({
+          movies: this.setOfMovies,
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     this.setState({
       isLoading: false,
       title: header
@@ -74,7 +78,7 @@ class ResultsScreen extends Component<any, IState> {
   }
 
   render() {
-    
+
     return (
       <Container
         style={{

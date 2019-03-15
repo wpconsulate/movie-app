@@ -1,5 +1,5 @@
 import { Input, Spinner, Grid, Row, Col, Text } from 'native-base'
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import React, { Component } from 'react'
 import {
   AsyncStorage,
@@ -20,7 +20,6 @@ import { navigationOptions } from '../helpers/header'
 import { SearchScreenState as State } from '../state/SearchScreenState'
 
 import Pill from '../components/Pill'
-
 const styles = StyleSheet.create({
   headerView: {
     maxHeight: '20%',
@@ -63,6 +62,9 @@ const styles = StyleSheet.create({
   searchInput: {
     width: '100%',
     fontFamily: 'PoppinsLight',
+    fontSize: 14,
+    paddingLeft: 15,
+    color: '#12152D'
   },
   searchInputContainer: {
     flex: 1,
@@ -89,6 +91,7 @@ class SearchScreen extends Component<any, State> {
   static navigationOptions = navigationOptions
 
   private search: Search
+  private keyboardDidHideListener: any
 
   constructor(props: any) {
     super(props)
@@ -99,9 +102,21 @@ class SearchScreen extends Component<any, State> {
       results: null,
       tmpResults: null,
       searchHistory: null,
+      showClearBtn: false
     }
 
     this.search = new Search()
+  }
+
+  componentDidMount() {
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide
+    )
+  }
+
+  keyboardDidHide = () => {
+    this.onBottomSectionPress()
   }
 
   onChange = async (text: string) => {
@@ -109,6 +124,7 @@ class SearchScreen extends Component<any, State> {
 
     this.setState({
       searchInput: text,
+      showClearBtn: true
     })
 
     if (searchInput.trim().length <= 2) {
@@ -133,9 +149,31 @@ class SearchScreen extends Component<any, State> {
   }
 
   onPressItem = (id: number) => {
-    console.log('Clicked')
     this.props.navigation.push('Movie', { movieId: id })
   }
+
+  _storeData = async (userInput: string) => {
+    try {
+      await AsyncStorage.setItem(userInput, userInput);
+      let previousSearch = this.state.searchHistory
+      previousSearch.push(userInput)
+      this.setState({ searchHistory: previousSearch })
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  _retrieveData = async (userInput: string) => {
+    try {
+      const value = await AsyncStorage.getItem(userInput);
+      if (value === null) {
+        this._storeData(userInput)
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.log("retrieve didn't work")
+
+    }
+  };
 
   _renderItem = ({ item }: any) => (
     <ResultItem
@@ -146,8 +184,9 @@ class SearchScreen extends Component<any, State> {
     />
   )
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const { searchInput } = this.state
+    await this._retrieveData(searchInput)
     this.props.navigation.push('Results', { query: searchInput })
   }
 
@@ -167,8 +206,16 @@ class SearchScreen extends Component<any, State> {
       tmpResults: this.state.results,
       results: [],
     })
-    console.log('Results are', this.state.results)
-    // Keyboard.dismiss()
+    Keyboard.dismiss()
+  }
+
+  onClearPress = () => {
+    this.setState({
+      results: null,
+      searchInput: '',
+      showClearBtn: false
+    })
+    Keyboard.dismiss()
   }
 
   render() {
@@ -185,13 +232,19 @@ class SearchScreen extends Component<any, State> {
                 accessibilityHint="Search for a movie, actor or a user. Press enter on your keypad to search."
                 placeholder="Search for a movie, actor or a user..."
                 value={this.state.searchInput}
-                clearButtonMode="while-editing"
-                // onFocus={e => this.setState({ results: this.state.tmpResults })}
                 onChangeText={this.onChange}
                 returnKeyType="search"
                 onSubmitEditing={() => this.onSubmit()}
+                placeholderTextColor="#B3B3B3"
                 style={styles.searchInput}
               />
+              {this.state.showClearBtn ?
+                <TouchableOpacity onPress={this.onClearPress} style={{ paddingRight: 15 }}>
+                  <MaterialIcons name="close" color="#12152D" size={20} />
+                </TouchableOpacity>
+                :
+                null
+              }
               {this.state.isLoading && (
                 <Spinner style={{ width: 10, height: 10 }} />
               )}
@@ -214,69 +267,66 @@ class SearchScreen extends Component<any, State> {
           accessible={false}
         >
           <View style={styles.bottomSection}>
-            <Grid style={{ width: '100%', marginTop: 50 }}>
-              <View style={{ flex: 1, maxHeight: '50%' }}>
-                <Row
-                  style={{
-                    maxHeight: 50,
-                    alignItems: 'center',
-                    marginBottom: 15,
-                  }}
-                >
-                  <Col>
-                    <Text
-                      style={{
-                        fontSize: 27,
-                        color: 'white',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Search History
-                    </Text>
-                  </Col>
-                  <Col>
-                    <TouchableOpacity onPress={this.props.clearSearchHistory}>
+            <View style={styles.mainSection}>
+              <Grid style={{ width: '100%', marginTop: 50 }}>
+                <View style={{ flex: 1, maxHeight: '50%' }}>
+                  <Row
+                    style={{
+                      maxHeight: 50,
+                      alignItems: 'center',
+                      marginBottom: 15,
+                    }}
+                  >
+                    <Col size={75}>
                       <Text
                         style={{
-                          color: 'red',
-                          fontSize: 20,
-                          textAlign: 'right',
-                          fontWeight: '200',
+                          fontSize: 27,
+                          color: 'white',
+                          fontWeight: 'bold',
                         }}
                       >
-                        Clear
+                        Search History
+                    </Text>
+                    </Col>
+                    <Col size={25}>
+                      <TouchableOpacity onPress={this.clearSearchHistory}>
+                        <Text
+                          style={{
+                            color: '#E20F0F',
+                            fontSize: 20,
+                            textAlign: 'right',
+                            fontWeight: '200',
+                          }}
+                        >
+                          Clear
                       </Text>
-                    </TouchableOpacity>
-                  </Col>
-                </Row>
-                <Row>
-                  <ScrollView horizontal>
-                    {/* {this.state.searchHistory
-                  ? this.state.searchHistory.map((e: any) => {
-                    return (
-                      <TouchableOpacity
-                        key={e}
-                        onPress={() => this.searchHistoryOnPress(e)}
-                      >
-                        <Pill
-                          text={e}
-                          colour={'#4F547E'}
-                          textColour={'white'}
-                        />
                       </TouchableOpacity>
-                    )
-                  })
-                  : ''} */}
-
-                    <Pill
-                      text="irobot"
-                      colour={'#4F547E'}
-                      textColour={'white'}
-                    />
-                  </ScrollView>
-                </Row>
-              </View>
-            </Grid>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <ScrollView horizontal>
+                      {this.state.searchHistory
+                        ? this.state.searchHistory.map((e: any) => {
+                          console.log('searchHistory', e)
+                          return (
+                            <TouchableOpacity
+                              key={e}
+                              onPress={() => this.searchHistoryOnPress(e)}
+                            >
+                              <Pill
+                                text={e}
+                                colour={'#4F547E'}
+                                textColour={'white'}
+                              />
+                            </TouchableOpacity>
+                          )
+                        })
+                        : null}
+                    </ScrollView>
+                  </Row>
+                </View>
+              </Grid>
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </View>
