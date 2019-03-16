@@ -13,7 +13,6 @@ import {
   Form,
   Item,
   Label,
-  View,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -75,20 +74,27 @@ class RegisterScreen extends Component<IProps, IState> {
   // user = new User('', 'test');
   onRegisterPress() {
     const { email, password, name, username } = this.state
-    this.setState({ isLoaded: false })
-    this.auth
-      .register(email, password, {
-        email,
-        name,
-        username
-      })
-      .then(() => {
-        this.setState({ isLoaded: true })
-        Alert.alert('Successfully registered!')
-      })
-      .catch(error => {
-        Alert.alert(error.message)
-      })
+    if (email !== null && password !== null && name !== null && username !== null)
+    {
+      this.setState({ isLoaded: false })
+      this.auth
+        .register(email, password, {
+          email,
+          name,
+          username
+        })
+        .then(() => {
+          this.setState({ isLoaded: true })
+          Alert.alert('Successfully registered!')
+          this.props.navigation.navigate('Home');
+        })
+        .catch(error => {
+          Alert.alert(error.message)
+        })
+    }
+    else {
+      Alert.alert('Please Input all the data before Registering!')
+    }
   }
   render() {
     if (!this.state.isLoaded) {
