@@ -62,14 +62,14 @@ class OverAllStatus extends React.Component <any,IState>{
       )
     }
         return (
-      <ScrollView style={{backgroundColor: '#05111F'}}
+      <ScrollView style={{backgroundColor: '#12152D'}}
       refreshControl={
         <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh}/>
       }
       >
-      <View style={{flex:1, backgroundColor:'#05111F', paddingTop:10}}>
-            <Text style={{alignSelf: 'center', fontSize:30, color: 'white',fontWeight: 'bold'}}>Profile Page</Text>
-        <View style={{flexDirection:'row', alignItems:"center", padding:5, color: 'white'}}>
+      <View style={{flex:1, backgroundColor:'#12152D', paddingTop:5}}>
+            <Text style={{alignSelf: 'center', fontSize:30, color: 'red',fontWeight: 'bold'}}>Profile Page</Text>
+        <View style={{flexDirection:'row', alignItems:"center", padding:6, color: 'white'}}>
           <ProfilePic username={this.state.username}/>
           <UserStats userData={this.state.userData}/>
         </View>
@@ -79,11 +79,12 @@ class OverAllStatus extends React.Component <any,IState>{
         <View style={{marginTop:10, flexDirection:"row"}}>
             <ProfileWatchlist userid={this.state.userID}/>
         </View>
-      </View> 
-      <Button onPress={() => { console.log("i logged out!");  let currUser = new Authentication()
+      </View>
+      <Button onPress={() => { console.log("i logged out!");   let currUser = new Authentication()
               currUser.auth.signOut().then(function() {
               UserStore.setIsLoggedIn(false);
-              } );/*this.props.navigation.navigate('home');*/ }}><Text>LOGOUT</Text></Button> 
+
+            } );/*this.props.navigation.navigate('home');*/ }}><Text>Logout</Text></Button>
       </ScrollView>
 
 
@@ -122,6 +123,7 @@ class ReviewsList extends React.Component {
     );
   }
 }
+
 const TabNavigator = createBottomTabNavigator({
   All: { screen: OverAllStatus },
   Friends: { screen: FriendsList },
@@ -137,7 +139,7 @@ const TabNavigator = createBottomTabNavigator({
 
   },
   style: {
-    backgroundColor: '#05111F',
+    backgroundColor: '#12152D',
     height: 40
   },
 }});

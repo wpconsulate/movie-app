@@ -118,7 +118,7 @@ class RegisterScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
+        <Content style={{ marginTop: 60, paddingHorizontal: 30 , paddingBottom: 20}}>
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >

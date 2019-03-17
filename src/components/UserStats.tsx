@@ -36,6 +36,7 @@ function StatsKey(props: IProps) {
       height: 15,
       borderRadius: 100 / 2,
       backgroundColor: props.colour,
+      fontWeight: 'bold'
     },
     text: {
       color: 'white',
@@ -68,9 +69,9 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalHours: 0,
       totalDays:0
     }
-    
+
   }
-  
+
   async componentDidMount(){
     const {userData} = this.props
     let countComplete = Object.keys(userData.watchlist.completed).length;
@@ -78,18 +79,18 @@ class UserStats extends React.Component<IPropsUser, IState> {
     let countPlanned = Object.keys(userData.watchlist.planned).length;
     let countDropped = Object.keys(userData.watchlist.dropped).length;
     let calResult = await this.calculateResults()
-    
+
     this.setState({completeCount: countComplete, watchingCount: countWatching,
                    plannedCount: countPlanned, droppedCount: countDropped,
                    totalEntries: calResult.totalEntries, totalHours: calResult.totalHours,
                   totalRuntime: calResult.totalMin, totalDays: calResult.totalDays})
-    
-    
+
+
   }
 
   async calculateResults(){
     let totalEntries = 0
-    let list = this.props.userData.watchlist //containts all the watchlist as objects 
+    let list = this.props.userData.watchlist //containts all the watchlist as objects
     let totalRuntime = 0
     let totalHours = 0
     let days = 0
@@ -152,23 +153,23 @@ class UserStats extends React.Component<IPropsUser, IState> {
         <StatsKey text="Completed" colour="#56CCF2" total={this.state.completeCount.toString()} />
         <StatsKey text="Dropped" colour="#FF0000" total={this.state.droppedCount.toString()} />
         <StatsKey text="Plan To Watch" colour="#C4C4C4" total={this.state.plannedCount.toString()} />
-       
+
         <Grid>
         <Row>
           <Col>
-          <Text>Total Entries:{this.state.totalEntries}</Text>
-          <Text>Review:19</Text>
+          <Text style={{color: 'white',padding:5, fontSize: 13}}>Total Entries: {this.state.totalEntries}</Text>
+          <Text style={{color: 'white',fontSize: 13}}>  Review: 19</Text>
           </Col>
 
           <Col >
-          <Text>Days:{this.state.totalDays}</Text>
-          <Text>Hours:{this.state.totalHours}</Text> 
-          <Text>Minutes: {this.state.totalRuntime}</Text>
-          <Text>Joined: {this.props.userData.joined}</Text>      
+          <Text style={{color: 'white', fontSize: 13}}>Days: {this.state.totalDays}</Text>
+          <Text style={{color: 'white', fontSize: 13}}>Hours: {this.state.totalHours}</Text>
+          <Text style={{color: 'white', fontSize: 13}}>Minutes: {this.state.totalRuntime}</Text>
+          <Text style={{color: 'white', fontSize: 13}}>Joined: 17:03:2019{this.props.userData.joined}</Text>
           </Col>
         </Row>
-        </Grid>        
-        
+        </Grid>
+
       </View>
     )
   }
