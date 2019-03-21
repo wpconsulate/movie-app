@@ -12,7 +12,7 @@ import {
   Input,
   Form,
   Item,
-  Label,
+  Label
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'

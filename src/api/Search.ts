@@ -1,6 +1,5 @@
 import { Url } from '../api/Url'
 import axios from 'axios'
-
 class Search {
   private url: Url
   constructor() {
