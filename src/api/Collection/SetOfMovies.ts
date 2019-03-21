@@ -45,6 +45,7 @@ class SetOfMovies extends Array<Movie> {
     try {
       const response = await fetch(url)
       const responseJson = await response.json()
+     // console.log(url);
       responseJson.results.forEach((movie: Movie) => {
         this.addMovie(movie)
       })

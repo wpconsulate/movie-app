@@ -26,6 +26,7 @@ interface IState {
   name: string
   isLoaded: boolean
   username: string
+  createDate: Date
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -65,7 +66,8 @@ class RegisterScreen extends Component<IProps, IState> {
       password: null,
       name: null,
       isLoaded: true,
-      username: null
+      username: null,
+      createDate: new Date()
     }
 
     this.auth = new Authentication()
@@ -81,7 +83,7 @@ class RegisterScreen extends Component<IProps, IState> {
         .register(email, password, {
           email,
           name,
-          username
+          username,
         })
         .then(() => {
           this.setState({ isLoaded: true })
