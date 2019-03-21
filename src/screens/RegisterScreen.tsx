@@ -12,7 +12,7 @@ import {
   Input,
   Form,
   Item,
-  Label
+  Label,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -27,6 +27,7 @@ interface IState {
   isLoaded: boolean
   username: string
   createDate: Date
+  showPass: boolean
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -67,7 +68,8 @@ class RegisterScreen extends Component<IProps, IState> {
       name: null,
       isLoaded: true,
       username: null,
-      createDate: new Date()
+      createDate: new Date(),
+      showPass: true,
     }
 
     this.auth = new Authentication()
@@ -222,19 +224,20 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Row>
                     <Input
                       label="PASSWORD"
-                      keyboardType="visible-password"
-                      secureTextEntry
+                      keyboardType="default"
+                      secureTextEntry={this.state.showPass}
                       value={this.state.password}
                       onChangeText={text => {
                         this.setState({ password: text })
                       }}
                     />
-                    <Button transparent>
+                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
                       <Text
                         style={{
                           color: '#E20F0F',
                           fontFamily: 'PoppinsMedium',
                           fontSize: 12,
+                          fontWeight: 'bold',
                         }}
                       >
                         Show
@@ -252,12 +255,26 @@ class RegisterScreen extends Component<IProps, IState> {
                   >
                     CONFIRM PASSWORD
                   </Label>
+                  <Row>
                   <Input
-                    label="CONFIRM PASSWORD"
-                    keyboardType="visible-password"
-                    secureTextEntry
-                  />
-                </Item>
+                      label="CONFIRM PASSWORD"
+                      keyboardType="default"
+                      secureTextEntry={this.state.showPass}
+                    />
+                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
+                      <Text
+                        style={{
+                          color: '#E20F0F',
+                          fontFamily: 'PoppinsMedium',
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        Show
+                      </Text>
+                    </Button>
+                    </Row>
+                    </Item>
                 <Row
                   style={{
                     marginTop: 40,

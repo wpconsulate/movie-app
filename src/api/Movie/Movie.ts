@@ -215,7 +215,6 @@ class Movie extends Database implements IMovie {
     }
 
   public getData(): any {
-    console.log(this.runtime)
     const { backdrop_path, title, popularity, poster_path, id, runtime  } = this
     //  console.log(this);
     return { backdrop_path, title, popularity, poster_path, id, runtime }
