@@ -121,7 +121,8 @@ class LoginScreen extends Component<IProps, IState> {
                 style={{
                   fontFamily: 'PoppinsMedium',
                   fontSize: 14,
-                  color: '#696969',
+                  color: 'black',
+                  fontWeight: 'bold'
                 }}
               >
                 Sign in to your account
@@ -137,9 +138,10 @@ class LoginScreen extends Component<IProps, IState> {
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
                       color: '#696969',
+                      fontWeight: 'bold'
                     }}
                   >
-                    EMAIL
+                    EMAIL@
                   </Label>
                   <Input
                     label="EMAIL"
@@ -160,7 +162,7 @@ class LoginScreen extends Component<IProps, IState> {
                       color: '#696969',
                     }}
                   >
-                    PASSWORD
+                    PASSWORD*
                   </Label>
                   <Row>
                     <Input
@@ -178,6 +180,7 @@ class LoginScreen extends Component<IProps, IState> {
                           color: '#E20F0F',
                           fontFamily: 'PoppinsMedium',
                           fontSize: 12,
+                          fontWeight: 'bold',
                         }}
                       >
                         Show
@@ -201,7 +204,7 @@ class LoginScreen extends Component<IProps, IState> {
                       onPress={() => this.onLoginPress()}
                       style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                     >
-                      <Text>Login</Text>
+                      <Text>LOGIN</Text>
                     </Button>
                   </Col>
                 </Row>
@@ -216,7 +219,7 @@ class LoginScreen extends Component<IProps, IState> {
             }}
           >
             <Col>
-              <Text>Don't have an account?</Text>
+              <Text style= {{ fontFamily: 'PoppinsMedium'}}>Don't have an account?</Text>
             </Col>
             <Col>
               <Button
@@ -225,7 +228,7 @@ class LoginScreen extends Component<IProps, IState> {
                   this.props.navigation.navigate('Register')
                 }}
               >
-                <Text>Register now</Text>
+                <Text style= {{ fontFamily: 'PoppinsMedium'}}>Register Now</Text>
               </Button>
             </Col>
           </Row>

@@ -91,7 +91,7 @@ class SearchScreen extends Component<any, State> {
   static navigationOptions = navigationOptions
 
   private search: Search
-  //private keyboardDidHideListener: any
+ // private keyboardDidHideListener: any
 
   constructor(props: any) {
     super(props)
@@ -108,12 +108,12 @@ class SearchScreen extends Component<any, State> {
     this.search = new Search()
   }
 
-  // componentDidMount() {
-  //   this.keyboardDidHideListener = Keyboard.addListener(
-  //     'keyboardDidHide',
-  //     this.keyboardDidHide
-  //   )
-  // }
+  componentDidMount() {
+    // this.keyboardDidHideListener = Keyboard.addListener(
+    //   'keyboardDidHide',
+    //   this.keyboardDidHide
+    // )
+  }
 
   keyboardDidHide = () => {
     this.onBottomSectionPress()
@@ -296,6 +296,7 @@ class SearchScreen extends Component<any, State> {
                             fontSize: 20,
                             textAlign: 'right',
                             fontWeight: '200',
+                        
                           }}
                         >
                           Clear

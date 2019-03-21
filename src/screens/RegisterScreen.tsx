@@ -74,20 +74,27 @@ class RegisterScreen extends Component<IProps, IState> {
   // user = new User('', 'test');
   onRegisterPress() {
     const { email, password, name, username } = this.state
-    this.setState({ isLoaded: false })
-    this.auth
-      .register(email, password, {
-        email,
-        name,
-        username
-      })
-      .then(() => {
-        this.setState({ isLoaded: true })
-        Alert.alert('Successfully registered!')
-      })
-      .catch((error:any) => {
-        Alert.alert(error.message)
-      })
+    if (email !== null && password !== null && name !== null && username !== null)
+    {
+      this.setState({ isLoaded: false })
+      this.auth
+        .register(email, password, {
+          email,
+          name,
+          username
+        })
+        .then(() => {
+          this.setState({ isLoaded: true })
+          Alert.alert('Successfully registered!')
+          this.props.navigation.navigate('Home');
+        })
+        .catch(error => {
+          Alert.alert(error.message)
+        })
+    }
+    else {
+      Alert.alert('Please Input all the data before Registering!')
+    }
   }
   render() {
     if (!this.state.isLoaded) {
@@ -111,7 +118,7 @@ class RegisterScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
+        <Content style={{ marginTop: 60, paddingHorizontal: 30 , paddingBottom: 20}}>
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >

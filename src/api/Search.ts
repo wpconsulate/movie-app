@@ -1,7 +1,5 @@
 import { Url } from '../api/Url'
 import axios from 'axios'
-// import Database from './Database';
-// import Algolia from './Algolia';
 class Search {
   private url: Url
   constructor() {

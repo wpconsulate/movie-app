@@ -17,11 +17,13 @@ import Movies from '../containers/Movies';
 import { Header } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import Algolia from './../api/Algolia';
+
 const navigationOptions: any = () => ({
   headerTransparent: true,
   headerMode: 'none',
   header: null as any
 })
+
 
 class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
@@ -116,7 +118,7 @@ class ResultsScreen extends Component<any, IState> {
                   </Row>
                 </Grid>
               </Header>
-              <Content style={{ paddingLeft: 20, paddingRight: 20 }}>
+              <Content style={{ paddingLeft: 20, paddingRight: 20 , paddingBottom: 20}}>
                 <Grid>
                   <Row style={{ alignItems: 'center', width: '100%' }}>
                     <Col>
