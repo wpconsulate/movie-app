@@ -6,24 +6,26 @@ import {
   Header,
   Row,
   Col,
-  StyleProvider,
   Button,
-  Icon,
   Input,
   Form,
   Item,
   Label,
 } from 'native-base'
-import getTheme from '../native-base-theme/components'
-import mmdb from '../native-base-theme/variables/mmdb'
+import { Dimensions, CameraRoll, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import { Database } from '../api'
+import Authentication from '../api/Authentication'
+import SetOfUsers from '../api/Collection/SetOfUsers'
+import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
-import { Dimensions, CameraRoll, Image, TouchableOpacity, } from 'react-native'
-import { Database } from '../api'
 
 interface IState {
-  email: string
+  userID: string
+  username: string
   password: string
+  userData: any
+  email: string
   darkmode: boolean
   userPic: any
   currPic: string
@@ -32,30 +34,8 @@ interface IState {
 interface IProps extends NavigationScreenProps {}
 
 class SettingsScreen extends Component<IProps, IState> {
-  static navigationOptions = ({ navigation }: NavigationScreenProps) => {
-    return {
-      headerTransparent: true,
-      headerBackgroundTransitionPreset: 'fade',
-      headerLeft: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Login')} transparent>
-            <Icon name="close" style={{ color: '#fff' }} />
-          </Button>
-        </StyleProvider>
-      ),
-      headerTitle: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Home')} transparent>
-            <Text
-              style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-            >
-              mmdb
-            </Text>
-          </Button>
-        </StyleProvider>
-      ),
-    }
-  }
+  static navigationOptions = navigationOptions
+
 
 
   database: Database
@@ -63,14 +43,27 @@ class SettingsScreen extends Component<IProps, IState> {
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
-      email: "Dummy email",
-      password: "Dummy pass",
+      userID: '',
+      username: '',
+      password: '',
+      userData: null,
+      email: '',
       darkmode: false,
       userPic: [],
       selectedPic: '',
       currPic: 'http://www.cruciblefactory.com/images/membersprofilepic/noprofilepicture.gif',
     }
     this.database = new Database()
+  }
+  
+
+  async componentWillMount(){
+    let currUser = new Authentication()
+    let userID = currUser.getCurrentUser().uid
+    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    let CurrUSerDetails = await new SetOfUsers().getById(userID)
+    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, email: CurrUSerDetails.email })
   }
 
   setPic(newP: any){
@@ -94,11 +87,16 @@ class SettingsScreen extends Component<IProps, IState> {
     };
 
   render() {
-    const { email, password, userPic, selectedPic, currPic } = this.state
+    const { email, username, userPic, selectedPic, currPic , password} = this.state
 
     return (
       <Container>
-        <Header transparent />
+        <Header
+          transparent
+          translucent
+          iosBarStyle="light-content"
+          noShadow
+        />
         <AutoHeightImage
           source={require('../../assets/header.png')}
           style={{
@@ -110,6 +108,8 @@ class SettingsScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
+
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Content style={{ marginTop: 60, paddingHorizontal: 30, paddingBottom: 20 }}>
 
               <Row style={{ marginTop: 30 }}>
@@ -192,11 +192,32 @@ class SettingsScreen extends Component<IProps, IState> {
                       color: '#696969',
                     }}
                   >
+                    USERNAME
+                  </Label>
+                  <Row>
+                    <Input
+                      label="Username"
+                      keyboardType="default"
+                      value={username}
+                      onChangeText={text => {
+                        this.setState({ username: text })
+                      }}
+                    />
+                  </Row>
+                </Item>   
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                    }}
+                  >
                     PASSWORD
                   </Label>
                   <Row>
                     <Input
-                      label="PASSWORD"
+                      label="Password"
                       keyboardType="visible-password"
                       secureTextEntry
                       value={password}
@@ -205,14 +226,12 @@ class SettingsScreen extends Component<IProps, IState> {
                       }}
                     />
                   </Row>
-                </Item>
+                </Item>              
               </Form>
             </Col>
           </Row>
-
-
-
         </Content>
+        </TouchableWithoutFeedback>
       </Container>
     )
   }

@@ -246,30 +246,29 @@ class Movie extends Database implements IMovie {
     await this.write('review/' + movieId + "/" + userId, data)
   }
 
-  // public async getMMDBReview(): Promise<any> {
-  //   interface reviewObject {
-  //     id: String
-  //     author: String,
-  //     content: String,
-  //     date: String,
-  //   }
-  //   let reviewList = new Array<reviewObject>()
-  //   this.database.ref("review/" + this.id).on(
-  //     'value',
-  //     element => {
-  //       let reviewID = element.key
-  //       element.forEach((review: any) => {
-  //         let element = review.toJSON()
-  //         reviewList.push({ id: reviewID, author: element.author, content: element.content, date: element.date })
-  //       })
-
-  //   },
-  //     (error: any) => {
-  //       console.error(error)
-  //     }
-  //   )
-  //   return reviewList
-  // }
+  public async getMMDBReview(): Promise<any> {
+    interface reviewObject {
+      id: String
+      author: String,
+      content: String,
+      date: String,
+    }
+    let reviewList = new Array<reviewObject>()
+    await this.database.ref("review/" + this.id).once(
+      'value',
+      element => {
+        element.forEach((review: any) => {
+          let reviewID = review.key
+          let element = review.toJSON()
+          reviewList.push({ id: reviewID, author: element.author, content: element.content, date: element.date })
+        })
+    },
+      (error: any) => {
+        console.error(error)
+      }
+    )
+    return reviewList
+  }
 
   public async getReview(): Promise<any> {
     let reviewURL = Config.BASE_URL + "movie/" + this.id + "/reviews?api_key=" + Config.API_KEY;

@@ -38,6 +38,7 @@ import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore'
 import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -49,10 +50,13 @@ interface IProps {
 interface IState {
   movie: Movie | null
   isLoaded: boolean
+  wantsToRev: boolean;
   images: Array<IImage>
   castImages: Array<IImage>
   showMenu: boolean
-  reviewList: []
+  isReviewing: boolean
+  critiqueReviewList: [],
+  userReviewList: [],
   isAccessible: boolean
   currentUid: string
   currentUsername: string
@@ -92,14 +96,17 @@ export default class MovieScreen extends Component<IProps, IState> {
     super(props)
     this.state = {
       movie: null,
+      wantsToRev: false,
       isLoaded: false,
       showMenu: false,
+      isReviewing: false,
       images: null,
       castImages: null,
-      reviewList: null,
+      critiqueReviewList: null,
+      userReviewList: null,
       isAccessible: false,
-      currentUid: 'testUid',
-      currentUsername: 'test',
+      currentUid: null,
+      currentUsername: null,
     }
   }
 
@@ -110,7 +117,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
     let castImages = new Array<IImage>()
-    let Uid = "testUid"
+    let Uid =  'test'
     let username = 'test'
 
 
@@ -122,7 +129,9 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
 
 
-    let review = await movie.getReview()
+    let critReview = await movie.getReview()
+    let userReview = await movie.getMMDBReview()
+
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
@@ -130,8 +139,10 @@ export default class MovieScreen extends Component<IProps, IState> {
       movie,
       images,
       isLoaded: true,
+      isReviewing: false,
       castImages,
-      reviewList: review,
+      critiqueReviewList: critReview,
+      userReviewList: userReview,
       isAccessible,
       currentUid: Uid,
       currentUsername: username,
@@ -144,8 +155,10 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded,
       images,
       castImages,
-      reviewList,
+      userReviewList,
+      // critiqueReviewList,
       isAccessible,
+      isReviewing,
       currentUid,
       currentUsername,
     } = this.state
@@ -273,7 +286,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             </View>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: 'column',
                 flex: 1,
                 flexWrap: 'wrap',
                 marginTop: 40,
@@ -283,14 +296,38 @@ export default class MovieScreen extends Component<IProps, IState> {
               style={{
                 color: 'white',
                 fontFamily: 'PoppinsMedium',
-                marginBottom: 30,
+                marginBottom: 10,
                 width: '100%',
-                fontSize:40,
               }}
             >
               Reviews
             </Text>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -10,
+                alignSelf: 'flex-end',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() =>{this.setState({ isReviewing: !isReviewing })}}            
+              
+            >
+              <View style={{ 
+                height: 40,
+                width: 40,
+                borderRadius: 40 / 2,
+                backgroundColor: 'red',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+                <MaterialIcons name="add" color="#12152D" size={38} />
+              </View>
+            </TouchableOpacity>
             </View>
+
+
+
             <View
               style={{
                 flexDirection: 'row',
@@ -303,20 +340,25 @@ export default class MovieScreen extends Component<IProps, IState> {
                 url={"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}
                 movieId={movie.getId()}
                 userId={currentUid}
+                isReviewing={isReviewing}
               />
             </View>
-            {reviewList.map((element: any) => {
-            return (
-              <Review
-                key={element.id}
-                url={'something image'}
-                review={element.content}
-                numberOfDays={2}
-                username={element.author}
-              />
-              )
+            <View style={{ marginBottom: 40 }}>
+              {userReviewList.map((element: any) => {
+              return (
+                  <Review
+                    key={element.id}
+                    url={'something image'}
+                    review={element.content}
+                    numberOfDays={2}
+                    username={element.author}
+                  />
+                )
+              })}
+            </View>
 
-            })}
+            
+
           </View>
         </Content>
       </Container>
