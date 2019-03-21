@@ -211,25 +211,13 @@ class Movie extends Database implements IMovie {
           }
         })
       })
-    //   let id = this.id;
-    //   let returnVal = false;
-      // await this.database.ref(`users/${userId}/watchlist`).once('value', await async function(snap) {
-      //   snap.forEach(await function (snapshot) {
-      //     snapshot.forEach( function (value) {
-      //       let obj = value.val();
-      //       if(obj.id === id) {
-      //         returnVal = true;
-      //       }
-      //     })
-      //   })
-      // })
       return returnVal;
     }
 
   public getData(): any {
-    const { backdrop_path, title, popularity, poster_path, id } = this
+    const { backdrop_path, title, popularity, poster_path, id, runtime  } = this
     //  console.log(this);
-    return { backdrop_path, title, popularity, poster_path, id }
+    return { backdrop_path, title, popularity, poster_path, id, runtime }
     // return null
   }
 
