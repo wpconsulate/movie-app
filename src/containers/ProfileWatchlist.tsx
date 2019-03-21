@@ -31,6 +31,7 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
   //this function is called when component has mounted
   async componentDidMount() {
     const { userid } = this.props;
+    console.log(userid)
     // let SetOfMovie = new SetOfMovies();
     // SetOfMovie = await SetOfMovie.getTrending();
     const watching = await this.Watchlist.getList(userid, "watching"); 
@@ -60,7 +61,7 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
       )
     }
     return (
-       <View>
+       <View style={{width:'100%'}}>
         <MovieSlider data={this.state.watching} title={"Watching"}/> 
         <MovieSlider data={this.state.planned} title={"Planning"}/> 
         <MovieSlider data={this.state.completed} title={"Completed"}/>  

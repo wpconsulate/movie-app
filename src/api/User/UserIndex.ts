@@ -1,13 +1,13 @@
 import Algolia from "../Algolia";
 import { Index } from 'algoliasearch';
 import Config from "../../Config";
-
+//@ts-ignore
 class UserIndex extends Algolia {
     
     public index: Index
 
     constructor() {
-        super()
+        super(Config.ALGOLIA_USERS_INDEX_NAME)
         this.index = this.algolia.initIndex(Config.ALGOLIA_USERS_INDEX_NAME)
     }
 

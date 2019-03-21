@@ -12,8 +12,7 @@ import {
   Input,
   Form,
   Item,
-  Label,
-  View,
+  Label
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -86,7 +85,7 @@ class RegisterScreen extends Component<IProps, IState> {
         this.setState({ isLoaded: true })
         Alert.alert('Successfully registered!')
       })
-      .catch(error => {
+      .catch((error:any) => {
         Alert.alert(error.message)
       })
   }
