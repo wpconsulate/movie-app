@@ -9,10 +9,10 @@ export default class ProfilePic extends React.Component<IProps> {
   render() {
     return (
       <View style={{alignItems:"center"}}>
-            <Image style={{width:95, height:95, borderRadius:100}} source= {{uri:"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}}/>
-            <Text style={{fontSize:18}}>{this.props.username}</Text>
+            <Image style={{width:100, height:100, borderRadius:750}} source= {{uri:"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}}/>
+            <Text style={{fontSize:18, color:'red'}}>{this.props.username}</Text>
       </View>
-            
+
     );
   }
 }

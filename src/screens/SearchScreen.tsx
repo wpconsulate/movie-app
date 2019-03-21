@@ -296,6 +296,7 @@ class SearchScreen extends Component<any, State> {
                             fontSize: 20,
                             textAlign: 'right',
                             fontWeight: '200',
+                        
                           }}
                         >
                           Clear

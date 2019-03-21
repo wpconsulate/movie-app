@@ -213,7 +213,8 @@ export default class MovieScreen extends Component<IProps, IState> {
           />
         </TouchableOpacity>
         <MovieSidebar movie={movie} userid={currentUid} />
-        <Content style={{ flex: 1 }}>
+        <Content style={{ flex: 1, paddingBottom: 20 }}>
+
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
             <PlayContainer />
@@ -282,13 +283,14 @@ export default class MovieScreen extends Component<IProps, IState> {
               style={{
                 color: 'white',
                 fontFamily: 'PoppinsMedium',
-                marginBottom: 10,
+                marginBottom: 30,
                 width: '100%',
+                fontSize:40,
               }}
             >
               Reviews
-            </Text>          
-            </View>   
+            </Text>
+            </View>
             <View
               style={{
                 flexDirection: 'row',
@@ -296,11 +298,11 @@ export default class MovieScreen extends Component<IProps, IState> {
                 flexWrap: 'wrap',
                 marginTop: 40,
               }} >
-              <LeaveReview 
-                username={currentUsername} 
+              <LeaveReview
+                username={currentUsername}
                 url={"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}
                 movieId={movie.getId()}
-                userId={currentUid}              
+                userId={currentUid}
               />
             </View>
             {reviewList.map((element: any) => {
@@ -313,6 +315,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                 username={element.author}
               />
               )
+
             })}
           </View>
         </Content>
@@ -387,7 +390,7 @@ function ReleaseDate(props: any) {
           style={{ color: '#fff' }}
         />
       </View>
-      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 14 }}
         accessible
         accessibilityHint={`The release date of this movie was the ${props.data}`}
       >
@@ -424,7 +427,7 @@ function Runtime(props: any) {
 function Storyline(props: any) {
   return (
     <View
-      style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 40 }}
+      style={{ flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 35 }}
     >
       <Text
         style={{
@@ -434,13 +437,13 @@ function Storyline(props: any) {
           width: '100%',
         }}
       >
-        Storyline
+        Background
       </Text>
       <Text
         style={{
           color: 'white',
           fontFamily: 'PoppinsLight',
-          fontSize: 13,
+          fontSize: 20,
           width: '100%',
         }}
       >
@@ -485,13 +488,13 @@ const styles = StyleSheet.create<IStyle>({
   },
   titleView: {
     maxWidth: 250,
-    marginTop: 50,
+    marginTop: 45,
     flexDirection: 'row',
   },
   title: {
     fontFamily: 'PoppinsSemiBold',
     color: '#fff',
-    fontSize: 32,
+    fontSize: 40,
     padding: 5,
     lineHeight: 50,
     flex: 1,

@@ -53,7 +53,7 @@ class SettingsScreen extends Component<IProps, IState> {
             </Text>
           </Button>
         </StyleProvider>
-      ),    
+      ),
     }
   }
 
@@ -95,8 +95,8 @@ class SettingsScreen extends Component<IProps, IState> {
 
   render() {
     const { email, password, userPic, selectedPic, currPic } = this.state
-    
-    return (      
+
+    return (
       <Container>
         <Header transparent />
         <AutoHeightImage
@@ -110,7 +110,7 @@ class SettingsScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
+        <Content style={{ marginTop: 60, paddingHorizontal: 30, paddingBottom: 20 }}>
 
               <Row style={{ marginTop: 30 }}>
             <Col>
@@ -139,9 +139,9 @@ class SettingsScreen extends Component<IProps, IState> {
                       style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                     >
                       <Text>Select Picture</Text>
-              </Button>              
+              </Button>
               </Item>
-              <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>          
+              <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
               {userPic.map((p: any, i: number) => {
               return (
                 <TouchableOpacity key={i} onPress={() => this.setState({ selectedPic: p.node.image.uri })} >
@@ -150,9 +150,9 @@ class SettingsScreen extends Component<IProps, IState> {
                     source={{ uri: p.node.image.uri }}
                     />
                     <Text> Picture: {i} </Text>
-                </TouchableOpacity>                
-                );                         
-              })}    
+                </TouchableOpacity>
+                );
+              })}
               <Button
                 onPress={() => this.setPic(selectedPic)}
                 rounded
@@ -161,7 +161,7 @@ class SettingsScreen extends Component<IProps, IState> {
                 style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
               >
                 <Text>confirm Picture</Text>
-              </Button>                
+              </Button>
               </Item>
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
@@ -205,11 +205,11 @@ class SettingsScreen extends Component<IProps, IState> {
                       }}
                     />
                   </Row>
-                </Item>                               
+                </Item>
               </Form>
             </Col>
           </Row>
-          
+
 
 
         </Content>
