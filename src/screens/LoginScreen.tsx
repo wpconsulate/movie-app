@@ -46,6 +46,7 @@ class LoginScreen extends Component<IProps, IState> {
     this.auth
       .login(email, password)
       .then(() => {
+        Keyboard.dismiss
         Alert.alert('Successfully logged in!')
         this.props.navigation.navigate("Profile", {
           userId: this.auth.getCurrentUser().uid,
@@ -53,7 +54,8 @@ class LoginScreen extends Component<IProps, IState> {
         UserStore.setIsLoggedIn(true)
       })
       .catch((error: any) => {
-        Alert.alert(error.message)
+        console.log(error)
+        this.props.navigation.navigate("Login")
       })
   }
 
@@ -83,23 +85,23 @@ class LoginScreen extends Component<IProps, IState> {
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Col>
+            <Col size={3}>
               <Text
                 style={{
                   fontFamily: 'PoppinsBold',
-                  fontSize: 26,
+                  fontSize: 24,
                   color: '#12152D',
                 }}
               >
                 Login
               </Text>
             </Col>
-            <Col>
+            <Col size={4}>
               <Text
                 style={{
                   fontFamily: 'PoppinsMedium',
-                  fontSize: 14,
-                  color: 'black',
+                  fontSize: 13,
+                  color: '#696969',
                   fontWeight: 'bold'
                 }}
               >

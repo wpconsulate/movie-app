@@ -4,4 +4,5 @@ export interface IResultsScreenState {
   isLoading: boolean
   movies: SetOfMovies
   title: String
+  user:any[]
 }
