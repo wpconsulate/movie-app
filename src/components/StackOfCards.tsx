@@ -3,7 +3,7 @@ import { SetOfMovies, Movie } from '../api'
 import Card from './Card'
 import Carousel from 'react-native-snap-carousel'
 import { NavigationInjectedProps, withNavigation } from 'react-navigation'
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo } from 'react-native'
 
 interface IProps extends NavigationInjectedProps {
   data: Array<any> | SetOfMovies
@@ -16,13 +16,13 @@ class StackOfCards extends Component<IProps, any> {
   constructor(props: IProps) {
     super(props)
     this.state = {
-      accessibilityOn: false
+      accessibilityOn: false,
     }
   }
 
   async componentDidMount() {
     this.setState({
-      accessibilityOn: await AccessibilityInfo.fetch()
+      accessibilityOn: await AccessibilityInfo.fetch(),
     })
   }
 
@@ -34,6 +34,7 @@ class StackOfCards extends Component<IProps, any> {
         height={this.props.height}
         onPress
         routeName="Movie"
+        movie={item}
         params={{ movieId: item.getId() }}
       />
     )

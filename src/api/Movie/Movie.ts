@@ -1,15 +1,9 @@
 import Config from '../../Config'
-import {
-  IMovie,
-  IGenre,
-  IImage,
-  IBackdrop,
-  IPoster,
-} from './Interfaces'
+import { IMovie, IGenre, IImage, IBackdrop, IPoster } from './Interfaces'
 import { default as sortArray } from '../../lib/sort'
 import Cast from './../Cast/Cast'
-import Database from '../Database';
-
+import Database from '../Database'
+import axios from 'axios'
 
 interface IParams {
   type?: 'backdrops' | 'posters'
@@ -26,9 +20,11 @@ class Movie extends Database implements IMovie {
   private genres: Array<IGenre>
   private runtime: number
   private backdrop_path: string
+  private vote_average: number
+  private genre_ids: Array<number>
 
   constructor(movie: any) {
-    super();
+    super()
     Object.assign(this, movie)
   }
 
@@ -76,19 +72,52 @@ class Movie extends Database implements IMovie {
     return this.revenue
   }
 
-  public getGenres(sort?: boolean, max?: number): Array<IGenre> {
-    let genres = this.genres
-    if (sort) genres = sortArray(genres, 'name')
-    if (max) genres = genres.splice(0, max)
+  public async getGenreList(type = 'movie') {
+    try {
+      const res = await axios.get(
+        `${Config.BASE_URL}genre/${type}/list?api_key=${Config.API_KEY}`
+      )
+      return res.data
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
-    return genres
+  public async getTrailer(item?: number) {
+    const res = await axios.get(
+      `${Config.BASE_URL}movie/${this.getId()}/videos?api_key=${Config.API_KEY}`
+    )
+    if (item && item >= 0) {
+      return res.data.results[item]
+    }
+    return res.data.results
+  }
+
+  // @ts-ignore
+  public async getGenres(sort?: boolean, max?: number): Promise<IGenre[]> {
+    if (!this.genres) {
+      const list = await this.getGenreList()
+      if (this.genre_ids) {
+        this.genre_ids.forEach(item => {
+          list.forEach((_item: any) => {
+            if (_item.id === item) {
+              this.genres.push({ id: _item.id, name: _item.name })
+            }
+          })
+        })
+        console.log('genres', this.genres)
+      }
+    }
+    if (sort) this.genres = sortArray(this.genres, 'name')
+    if (max) this.genres = this.genres.splice(0, max)
+
+    return this.genres
   }
 
   public getRuntime(accessible?: boolean): string {
     const minutes = this.runtime % 60
     const hours = Math.floor(this.runtime / 60)
-    if (accessible)
-      `${hours} hours and ${minutes} minutes`
+    if (accessible) `${hours} hours and ${minutes} minutes`
     return `${hours}h ${minutes}min`
   }
 
@@ -102,7 +131,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-      }/${this.getId()}/images?api_key=${Config.API_KEY}`
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
 
     const response = await fetch(url)
     const responseJson = await response.json()
@@ -128,7 +157,7 @@ class Movie extends Database implements IMovie {
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
-      }/${this.getId()}/images?api_key=${Config.API_KEY}`
+    }/${this.getId()}/images?api_key=${Config.API_KEY}`
     const response = await fetch(url)
     const responseJson = await response.json()
     const posters = responseJson.posters
@@ -138,6 +167,10 @@ class Movie extends Database implements IMovie {
     })
 
     return images
+  }
+
+  public getRating() {
+    return this.vote_average / 2
   }
 
   public async getImages(
@@ -173,7 +206,7 @@ class Movie extends Database implements IMovie {
       let setOfCasts = new Array<Cast>()
       const url = `${Config.BASE_URL}movie/${this.id}/credits?api_key=${
         Config.API_KEY
-        }`
+      }`
       const response = await fetch(url)
       const responseJson = await response.json()
       responseJson.cast.forEach((cast: any) => {
@@ -187,44 +220,46 @@ class Movie extends Database implements IMovie {
   }
 
   public async AddToWatchlist(userId: string, type: String) {
-    let planned = await this.searchForCopy(userId, "planned");
-    let completed = await this.searchForCopy(userId, "completed");
-    let watching = await this.searchForCopy(userId, "watching");
-    let dropped = await this.searchForCopy(userId, "dropped");
+    let planned = await this.searchForCopy(userId, 'planned')
+    let completed = await this.searchForCopy(userId, 'completed')
+    let watching = await this.searchForCopy(userId, 'watching')
+    let dropped = await this.searchForCopy(userId, 'dropped')
 
-    if(!planned && !completed && !watching && !dropped)
-    {
-      await this.database.ref("users/" + userId + "/watchlist/" + type).push(this.getData());
-    } 
+    if (!planned && !completed && !watching && !dropped) {
+      await this.database
+        .ref('users/' + userId + '/watchlist/' + type)
+        .push(this.getData())
+    }
   }
 
-  public async searchForCopy(userId: string, type : string)
-    {
-      let id = this.id;
-      let returnVal = false;
-      await this.database.ref(`users/${userId}/watchlist/${type}`).once('value', function(snap) {
-        snap.forEach( function (value) {
-          let obj = value.val();
-          if(obj.id === id) {
-            returnVal = true;
-            console.log("A repeat is here");
+  public async searchForCopy(userId: string, type: string) {
+    let id = this.id
+    let returnVal = false
+    await this.database
+      .ref(`users/${userId}/watchlist/${type}`)
+      .once('value', function(snap) {
+        snap.forEach(function(value) {
+          let obj = value.val()
+          if (obj.id === id) {
+            returnVal = true
+            console.log('A repeat is here')
           }
         })
       })
     //   let id = this.id;
     //   let returnVal = false;
-      // await this.database.ref(`users/${userId}/watchlist`).once('value', await async function(snap) {
-      //   snap.forEach(await function (snapshot) {
-      //     snapshot.forEach( function (value) {
-      //       let obj = value.val();
-      //       if(obj.id === id) {
-      //         returnVal = true;
-      //       }
-      //     })
-      //   })
-      // })
-      return returnVal;
-    }
+    // await this.database.ref(`users/${userId}/watchlist`).once('value', await async function(snap) {
+    //   snap.forEach(await function (snapshot) {
+    //     snapshot.forEach( function (value) {
+    //       let obj = value.val();
+    //       if(obj.id === id) {
+    //         returnVal = true;
+    //       }
+    //     })
+    //   })
+    // })
+    return returnVal
+  }
 
   public getData(): any {
     const { backdrop_path, title, popularity, poster_path, id } = this
@@ -233,17 +268,26 @@ class Movie extends Database implements IMovie {
     // return null
   }
 
-  public async addReview(reviewContent: String, movieId: number, userId: string, username: string){
-    let today = new Date();
-    let dd = today.getDate();
-    let mm = today.getMonth() + 1;
-    let yyyy = today.getFullYear();
-    if (dd < 10) {dd = 0 + dd;}
-    if (mm < 10) {mm = 0 + mm;}
-    let currentDate = mm + '/' + dd + '/' + yyyy;
+  public async addReview(
+    reviewContent: String,
+    movieId: number,
+    userId: string,
+    username: string
+  ) {
+    let today = new Date()
+    let dd = today.getDate()
+    let mm = today.getMonth() + 1
+    let yyyy = today.getFullYear()
+    if (dd < 10) {
+      dd = 0 + dd
+    }
+    if (mm < 10) {
+      mm = 0 + mm
+    }
+    let currentDate = mm + '/' + dd + '/' + yyyy
 
-    let data = { author: username, content: reviewContent,  date: currentDate}
-    await this.write('review/' + movieId + "/" + userId, data)
+    let data = { author: username, content: reviewContent, date: currentDate }
+    await this.write('review/' + movieId + '/' + userId, data)
   }
 
   // public async getMMDBReview(): Promise<any> {
@@ -272,24 +316,31 @@ class Movie extends Database implements IMovie {
   // }
 
   public async getReview(): Promise<any> {
-    let reviewURL = Config.BASE_URL + "movie/" + this.id + "/reviews?api_key=" + Config.API_KEY;
+    let reviewURL =
+      Config.BASE_URL +
+      'movie/' +
+      this.id +
+      '/reviews?api_key=' +
+      Config.API_KEY
     let content = await fetch(reviewURL)
-    let parsedContent = await content.json();
+    let parsedContent = await content.json()
     interface reviewObject {
       id: String
-      author: String,
-      content: String,
+      author: String
+      content: String
     }
     let reviewList = new Array<reviewObject>()
-    
+
     parsedContent.results.forEach((element: any) => {
-      reviewList.push({ id: element.id, author: element.author, content: element.content })
+      reviewList.push({
+        id: element.id,
+        author: element.author,
+        content: element.content,
+      })
     })
 
-    return reviewList;
+    return reviewList
   }
-
 }
-
 
 export default Movie

@@ -9,9 +9,20 @@ import {
   View,
 } from 'react-native'
 import { NavigationInjectedProps, withNavigation } from 'react-navigation'
-import { Card as NativeCard, CardItem, Body, Text, Button } from 'native-base'
+import {
+  Card as NativeCard,
+  CardItem,
+  Body,
+  Text,
+  Button,
+  // Row,
+} from 'native-base'
 import SvgUri from 'react-native-svg-uri'
-import { LinearGradient } from 'expo'
+import { LinearGradient, Linking } from 'expo'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import Movie from '../api/Movie/Movie'
+// import { Pill } from '.'
+
 interface ICardParams {
   movieId: number
 }
@@ -23,6 +34,7 @@ interface IProps extends NavigationInjectedProps {
   onPress?: boolean
   routeName?: string
   params?: ICardParams
+  movie?: Movie
 }
 
 interface IStyles {
@@ -32,9 +44,32 @@ interface IStyles {
   text: TextStyle
 }
 
-class Card extends Component<IProps> {
+class Card extends Component<IProps, any> {
   constructor(props: IProps) {
     super(props)
+    this.state = {
+      genres: [],
+    }
+  }
+  onPress = async () => {
+    const trailer = await this.props.movie.getTrailer(0)
+    Linking.openURL(`https://www.youtube.com/embed/${trailer.key}`)
+  }
+  renderStars = (stars: number) => {
+    let starsArray = []
+
+    for (let i = 0; i < 5; i++) {
+      if (stars <= i) {
+        starsArray.push(
+          <FontAwesomeIcon key={i} name="star-o" size={16} color="white" />
+        )
+      } else {
+        starsArray.push(
+          <FontAwesomeIcon key={i} name="star" size={16} color="white" />
+        )
+      }
+    }
+    return starsArray
   }
   render() {
     const {
@@ -44,6 +79,7 @@ class Card extends Component<IProps> {
       height,
       navigation,
       routeName,
+      movie,
       params,
       onPress,
     } = this.props
@@ -76,6 +112,7 @@ class Card extends Component<IProps> {
         marginTop: 50,
       },
     })
+
     return (
       <TouchableOpacity
         style={{ flex: 1 }}
@@ -126,8 +163,11 @@ class Card extends Component<IProps> {
                   borderRadius: 16,
                 }}
               />
-              <CardItem style={styles.cardItem}
-                onPress={() => (onPress ? navigation.push(routeName, params) : {})}
+              <CardItem
+                style={styles.cardItem}
+                onPress={() =>
+                  onPress ? navigation.push(routeName, params) : {}
+                }
                 accessible
                 accessibilityLabel={title}
                 accessibilityHint={`Navigates to ${title} screen`}
@@ -146,7 +186,8 @@ class Card extends Component<IProps> {
                     style={{ width: 85, height: 85, alignSelf: 'center' }}
                     accessible
                     accessibilityLabel={`Play`}
-                    accessibilityHint={`Press to play trailer`}
+                    onPress={this.onPress}
+                    accessibilityHint={`Press to open the trailer in a browser.`}
                   >
                     <SvgUri
                       source={require('../../assets/icons/play-button.svg')}
@@ -155,6 +196,33 @@ class Card extends Component<IProps> {
                     />
                   </Button>
                   <Text style={styles.text}>{title}</Text>
+                  {/* <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {this.state.genres
+                      ? this.state.genres.map((item: any) => (
+                          <Pill
+                            key={item.id}
+                            colour="#B90D0D"
+                            text={item.name}
+                            textColour="#E20F0F"
+                          />
+                        ))
+                      : ''}
+                  </View> */}
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {this.renderStars(movie.getRating())}
+                  </View>
                 </Body>
               </CardItem>
             </ImageBackground>

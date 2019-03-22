@@ -61,7 +61,7 @@ function WatchlistCard(props: IProps) {
                   {rowData.getTitle(7)}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
-                  {renderStars(parseInt(rowData.getPopularity.toString()))}
+                  {renderStars(rowData.getRating())}
                 </View>
               </Card>
             </View>
