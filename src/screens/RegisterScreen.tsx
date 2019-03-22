@@ -20,6 +20,7 @@ import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
 import { Authentication, Database } from '../api'
+
 interface IState {
   email: string
   password: string
@@ -28,6 +29,8 @@ interface IState {
   username: string
   createDate: Date
   showPass: boolean
+  userInitials: string
+  userAvatarColour: string
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -70,6 +73,8 @@ class RegisterScreen extends Component<IProps, IState> {
       username: null,
       createDate: new Date(),
       showPass: true,
+      userInitials: 'MT',
+      userAvatarColour: '#7d7d7d'
     }
 
     this.auth = new Authentication()
@@ -77,7 +82,8 @@ class RegisterScreen extends Component<IProps, IState> {
   }
   // user = new User('', 'test');
   onRegisterPress() {
-    const { email, password, name, username } = this.state
+    const { email, password, name, username, userInitials, userAvatarColour} = this.state
+
     if (email !== null && password !== null && name !== null && username !== null)
     {
       this.setState({ isLoaded: false })
@@ -86,6 +92,9 @@ class RegisterScreen extends Component<IProps, IState> {
           email,
           name,
           username,
+          userInitials,
+          userAvatarColour
+          
         })
         .then(() => {
           this.setState({ isLoaded: true })
@@ -100,6 +109,39 @@ class RegisterScreen extends Component<IProps, IState> {
       Alert.alert('Please Input all the data before Registering!')
     }
   }
+
+  setUserAvatar(name: string){
+    name  = name || '';
+
+    let nameSplit = String(name).toUpperCase().split(' ')
+    let initials = ''
+    let charIndex = 0
+    let colourIndex = 0
+    let colourChosen = ''
+    let colours = [
+      "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", 
+      "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
+    ]
+
+    //Collects initals of persons NAME (First and second first character)
+    if (nameSplit.length == 1) {
+      // console.log("Length = 1")
+      initials = nameSplit[0] ? nameSplit[0].charAt(0):'?';
+    } else {
+      // console.log("length > 1")
+        initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
+    }
+    charIndex     = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64;
+    colourIndex   = charIndex % 20;
+
+    colourChosen = colours[colourIndex]
+    console.log(initials)
+    console.log(colourChosen)
+    this.setState({ userInitials: initials, userAvatarColour: colourChosen })
+  }
+
+    
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -169,7 +211,8 @@ class RegisterScreen extends Component<IProps, IState> {
                     autoCapitalize="words"
                     value={this.state.name}
                     onChangeText={text => {
-                      this.setState({ name: text })
+                      this.setState({ name: text }),
+                      this.setUserAvatar(this.state.name)
                     }}
                   />
                 </Item>

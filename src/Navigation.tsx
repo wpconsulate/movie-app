@@ -23,7 +23,7 @@ const RootStack = createStackNavigator(
     Settings: SettingsScreen,
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Register',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,
