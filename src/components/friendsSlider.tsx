@@ -7,7 +7,7 @@ export default function FriendsSlider (){
         margin: 5,
         width:66,
         height:66, 
-        borderRadius:100
+        // borderRadius:100 
     }
     })
     return(
