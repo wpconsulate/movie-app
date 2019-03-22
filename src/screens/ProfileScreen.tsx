@@ -218,7 +218,7 @@ class ReviewsList extends React.Component<any, IState2> {
   }
 
   render() {
-    const { reviewList, isLoading } = this.state
+    const { isLoading } = this.state
 
     if (isLoading) {
       return (
@@ -241,18 +241,18 @@ class ReviewsList extends React.Component<any, IState2> {
           Your reviews
         </Text>
 
-        {reviewList.map((element: any) => {
+        {/* {reviewList.map((element: any) => {
           return (
-            <Review
-              key={element.id}
-              url={'something image'}
-              review={element.content}
-              numberOfDays={2}
-              username={element.author}
-              movieName={element.movieName}
-            />
-          )
-        })}
+            // <Review
+            //   key={element.id}
+            //   url={'something image'}
+            //   review={element.content}
+            //   numberOfDays={2}
+            //   username={element.author}
+            //   movieName={element.movieName}
+            // />
+          //)
+        })} */}
       </ScrollView>
     )
   }

@@ -13,18 +13,16 @@ class Database {
     return await this.database.ref(collection).set(data)
   }
 
+
+ 
   public read(collection: string) {
-    let items: database.DataSnapshot[] = []
-    this.database.ref(collection).on(
-      'value',
-      snapshot => {
-        items.push(snapshot.val())
-      },
-      (error: any) => {
-        console.error(error)
-      }
-    )
-    return items
+    return new Promise((resolve, reject) => {
+      this.database.ref(collection)
+        .on('value', snap => {
+          if (!snap.val()) return reject()
+          return resolve(snap.val())
+        })
+    })
   }
 }
 export default Database

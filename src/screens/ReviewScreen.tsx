@@ -15,8 +15,6 @@ import { TouchableOpacity } from 'react-native'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps, withNavigation } from 'react-navigation'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import Movie from '../api/Movie/Movie'
 import { GenreContainer } from '../components'
 

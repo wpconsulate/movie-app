@@ -46,7 +46,7 @@ import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
-import { database } from 'firebase'
+import Likes from '../api/Collection/Likes';
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -68,7 +68,7 @@ interface IState {
   isAccessible: boolean
   currentUid: string
   currentUsername: string
-  likes: number
+  likeCount: number
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -103,6 +103,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
   private movies = new SetOfMovies()
+  likes : Likes
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -118,8 +119,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible: false,
       currentUid: null,
       currentUsername: null,
-      likes: 0,
+      likeCount: 0,
     }
+    this.likes = new Likes()
   }
 
   onTrailerPlayPress = async () => {
@@ -127,29 +129,16 @@ export default class MovieScreen extends Component<IProps, IState> {
     Linking.openURL(`https://www.youtube.com/embed/${trailer[0].key}`)
   }
 
-  getLikesByMovieId(id: string) {
-    return new Promise((resolve, reject) => {
-      database()
-        .ref()
-        .child('liked')
-        .child(id)
-        .on('value', snap => {
-          if (!snap.val()) return reject()
-          return resolve(snap.val())
-        })
-    })
-  }
-
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
-    const likes = await this.getLikesByMovieId(id)
+    const likes = await this.likes.getReview(movie.getId().toString())
     console.log('likes', likes)
-    database()
-      .ref(`liked/${id}`)
-      .on('value', element => {
-        if (element.val()) this.setState({ likes: element.val().liked })
-      })
+    // database()
+    //   .ref(`liked/${id}`)
+    //   .on('value', element => {
+    //     if (element.val()) this.setState({ likes: element.val().liked })
+    //   })
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
@@ -185,6 +174,7 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   render() {
+    this.likes = new Likes();
     const sidebarIconsMargin = 2
     const {
       movie,
@@ -286,7 +276,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             />
           </View>
         </TouchableOpacity>
-        <MovieSidebar movie={movie} userid={currentUid} />
+        <MovieSidebar movie={movie} userid={currentUid} likes={this.likes} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
