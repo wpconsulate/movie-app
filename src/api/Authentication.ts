@@ -1,7 +1,8 @@
 import { auth } from 'firebase'
 import Database from './Database'
 import IRegisterParams from './User/IRegisterParams'
-import { Algolia } from '.';
+import { Algolia } from '.'
+
 class Authentication {
   auth: firebase.auth.Auth
   database: Database
@@ -28,7 +29,10 @@ class Authentication {
     //TODO: Check to see if username exists!
     const user = await this.auth.createUserWithEmailAndPassword(email, password)
     const userId = this.auth.currentUser.uid
-    await this.database.write('users/' + userId, data)
+    await this.database.write('users/' + userId, {
+      ...data,
+      joined: new Date().getTime(),
+    })
     await this.algolia.add({
       id: userId,
       username: data.username,

@@ -46,7 +46,6 @@ import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { database } from 'firebase'
-import console = require('console')
 
 interface IProps {
   navigation?: NavigationScreenProp<
