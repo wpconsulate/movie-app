@@ -90,15 +90,18 @@ class User extends Model implements IUser {
     return snapshot
   }
 
-  public async addFriendToList(friendId: number, friendName : string) {
-    return await this.database.ref(User.ENTITY).set({
-      'friends' : {'friendId' : friendId,'friendName' : friendName}
+  public async addFollowToList(followId: number, followName : string) {
+    await this.database.ref(User.ENTITY + "/" + this.id).set({
+      'followers' : {'followId' : followId,'followName' : followName}
+    });
+    return await this.database.ref(User.ENTITY + "/" + followId).set({
+      'follows' : {'followId' : this.id,'followName' : this.getName}
     });
   }
 
-  public async addFavActor(actorID: number) {
+  public async addFavActor(actorID: number, actorPic : string) {
     return await this.database.ref(User.ENTITY).set({
-      'actors' : {'actorID' : actorID}
+      'actors' : {'actorID' : actorID, 'actorPic' : actorPic}
     });
   }
   

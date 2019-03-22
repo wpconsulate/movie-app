@@ -3,7 +3,6 @@ import {
   Container,
   Text,
   Content,
-  Header,
   Row,
   Col,
   Button,
@@ -12,13 +11,13 @@ import {
   Item,
   Label,
 } from 'native-base'
-import { Dimensions, CameraRoll, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import { CameraRoll, Image, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard} from 'react-native'
 import { Database } from '../api'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
-import AutoHeightImage from 'react-native-auto-height-image'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface IState {
   userID: string
@@ -30,6 +29,7 @@ interface IState {
   userPic: any
   currPic: string
   selectedPic: string
+  lookingAtPictures: boolean
 }
 interface IProps extends NavigationScreenProps {}
 
@@ -51,6 +51,7 @@ class SettingsScreen extends Component<IProps, IState> {
       darkmode: false,
       userPic: [],
       selectedPic: '',
+      lookingAtPictures: false,
       currPic: 'http://www.cruciblefactory.com/images/membersprofilepic/noprofilepicture.gif',
     }
     this.database = new Database()
@@ -72,6 +73,8 @@ class SettingsScreen extends Component<IProps, IState> {
   }
 
   _handleButtonPress = () => {
+    let reverse = !this.state.lookingAtPictures
+    this.setState({ lookingAtPictures: reverse })
     CameraRoll.getPhotos({
         first: 20,
         assetType: 'Photos',
@@ -90,56 +93,58 @@ class SettingsScreen extends Component<IProps, IState> {
     const { email, username, userPic, selectedPic, currPic , password} = this.state
 
     return (
-      <Container>
-        <Header
-          transparent
-          translucent
-          iosBarStyle="light-content"
-          noShadow
-        />
-        <AutoHeightImage
-          source={require('../../assets/header.png')}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            width: '100%',
-          }}
-          width={Dimensions.get('window').width}
-        />
+      <Container style={{ backgroundColor: '#12152D' }} >
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Content style={{ marginTop: 60, paddingHorizontal: 30, paddingBottom: 20 }}>
-
+        <Content style={{ paddingHorizontal: 30, paddingBottom: 20 }}>
               <Row style={{ marginTop: 30 }}>
             <Col>
 
               <Text style={{
-                fontSize: 16,
-                textDecorationLine: 'underline',
-                fontFamily: 'PoppinsMedium',
-                color: '#000',
+                alignSelf: 'center', 
+                fontSize:30, 
+                color: 'red',
+                fontWeight: 'bold',
+                marginBottom: 40
               }}>
-                Login information
+                Settings
               </Text>
 
               <Form>
               <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
               <Image
-                   style={{width: 50, height: 50}}
-                   source={{ uri: currPic }}
+                style={{width: 50, height: 50}}
+                source={{ uri: currPic }}
               />
-              <Text>CURRENT PROFILE PICTURE</Text>
-              <Button
-                      onPress={() => this._handleButtonPress()}
-                      rounded
-                      primary
-                      block
-                      style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
-                    >
-                      <Text>Select Picture</Text>
-              </Button>
+              <Text 
+              style={{
+                fontSize: 14,
+                fontFamily: 'PoppinsMedium',
+                color: '#FFF',
+                marginBottom: 20
+              }}
+              >CURRENT PROFILE PICTURE</Text>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: -10,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => this._handleButtonPress()}                     
+              >
+                <View style={{ 
+                  height: 40,
+                  width: 40,
+                  borderRadius: 40 / 2,
+                  backgroundColor: 'red',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <MaterialIcons name="add" color="#12152D" size={38} />
+                </View>
+              </TouchableOpacity>
               </Item>
               <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
               {userPic.map((p: any, i: number) => {
@@ -166,14 +171,19 @@ class SettingsScreen extends Component<IProps, IState> {
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
                     style={{
-                      fontSize: 14,
+                      fontSize: 16,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#FFF',
                     }}
                   >
                     EMAIL
                   </Label>
                   <Input
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#FFF',
+                    }}
                     label="EMAIL"
                     autoFocus
                     keyboardType="email-address"
@@ -187,15 +197,20 @@ class SettingsScreen extends Component<IProps, IState> {
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
                     style={{
-                      fontSize: 14,
+                      fontSize: 16,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#FFF',
                     }}
                   >
                     USERNAME
                   </Label>
                   <Row>
                     <Input
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'PoppinsMedium',
+                        color: '#FFF',
+                      }}
                       label="Username"
                       keyboardType="default"
                       value={username}
@@ -208,15 +223,20 @@ class SettingsScreen extends Component<IProps, IState> {
                 <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
                     style={{
-                      fontSize: 14,
+                      fontSize: 16,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#FFF',
                     }}
                   >
                     PASSWORD
                   </Label>
                   <Row>
                     <Input
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'PoppinsMedium',
+                        color: '#FFF',
+                      }}
                       label="Password"
                       keyboardType="visible-password"
                       secureTextEntry

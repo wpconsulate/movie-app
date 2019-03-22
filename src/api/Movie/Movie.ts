@@ -21,7 +21,7 @@ class Movie extends Database implements IMovie {
   private runtime: number
   private backdrop_path: string
   private vote_average: number
-  private genre_ids: Array<number>
+  // private genre_ids: Array<number>
 
   constructor(movie: any) {
     super()
@@ -262,6 +262,7 @@ class Movie extends Database implements IMovie {
 
     let data = { author: username, content: reviewContent, date: currentDate }
     await this.write('review/' + movieId + '/' + userId, data)
+    await this.write('users/' + userId + '/reviews/' + movieId + '/', data)
   }
 
   public async getMMDBReview(): Promise<any> {
@@ -318,6 +319,19 @@ class Movie extends Database implements IMovie {
     })
 
     return reviewList
+  }
+
+  public async setLike() {
+    let count = 0
+    await this.database.ref(`liked/${this.id}`).on('value', element => {
+      if (element) {
+        count = element.val().liked
+      }
+    })
+
+    count++
+
+    await this.database.ref(`liked/${this.id}`).set({ liked: count })
   }
 }
 

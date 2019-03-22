@@ -308,7 +308,7 @@ class SearchScreen extends Component<any, State> {
                     <ScrollView horizontal>
                       {this.state.searchHistory
                         ? this.state.searchHistory.map((e: any) => {
-                          console.log('searchHistory', e)
+                          // console.log('searchHistory', e)
                           return (
                             <TouchableOpacity
                               key={e}

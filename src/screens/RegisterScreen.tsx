@@ -20,14 +20,18 @@ import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
 import { Authentication, Database } from '../api'
+
 interface IState {
   email: string
   password: string
+  confirmPassword: string
   name: string
   isLoaded: boolean
   username: string
   createDate: Date
   showPass: boolean
+  userInitials: string
+  userAvatarColour: string
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -65,11 +69,14 @@ class RegisterScreen extends Component<IProps, IState> {
     this.state = {
       email: null,
       password: null,
+      confirmPassword: null,
       name: null,
       isLoaded: true,
       username: null,
       createDate: new Date(),
       showPass: true,
+      userInitials: 'MT',
+      userAvatarColour: '#7d7d7d'
     }
 
     this.auth = new Authentication()
@@ -77,15 +84,20 @@ class RegisterScreen extends Component<IProps, IState> {
   }
   // user = new User('', 'test');
   onRegisterPress() {
-    const { email, password, name, username } = this.state
-    if (email !== null && password !== null && name !== null && username !== null)
+    const { email, password, confirmPassword, name, username, userInitials, userAvatarColour } = this.state
+    if (email !== null && password !== null && name !== null && username !== null )
     {
+      if(password === confirmPassword)
+      {
       this.setState({ isLoaded: false })
       this.auth
         .register(email, password, {
           email,
           name,
           username,
+          userInitials,
+          userAvatarColour
+          
         })
         .then(() => {
           this.setState({ isLoaded: true })
@@ -94,12 +106,50 @@ class RegisterScreen extends Component<IProps, IState> {
         })
         .catch(error => {
           Alert.alert(error.message)
+          this.props.navigation.navigate('Login');
+          
         })
+      } else {
+        Alert.alert('The two Passwords must be the same')
+      }
     }
     else {
       Alert.alert('Please Input all the data before Registering!')
     }
   }
+
+  setUserAvatar(name: string){
+    name  = name || '';
+
+    let nameSplit = String(name).toUpperCase().split(' ')
+    let initials = ''
+    let charIndex = 0
+    let colourIndex = 0
+    let colourChosen = ''
+    let colours = [
+      "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", 
+      "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
+    ]
+
+    //Collects initals of persons NAME (First and second first character)
+    if (nameSplit.length == 1) {
+      // console.log("Length = 1")
+      initials = nameSplit[0] ? nameSplit[0].charAt(0):'?';
+    } else {
+      // console.log("length > 1")
+        initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
+    }
+    charIndex     = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64;
+    colourIndex   = charIndex % 20;
+
+    colourChosen = colours[colourIndex]
+    console.log(initials)
+    console.log(colourChosen)
+    this.setState({ userInitials: initials, userAvatarColour: colourChosen })
+  }
+
+    
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -126,23 +176,24 @@ class RegisterScreen extends Component<IProps, IState> {
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Col>
+            <Col size={3}>
               <Text
                 style={{
                   fontFamily: 'PoppinsBold',
-                  fontSize: 26,
+                  fontSize: 24,
                   color: '#12152D',
                 }}
               >
                 Register
               </Text>
             </Col>
-            <Col>
+            <Col size={4}>
               <Text
                 style={{
                   fontFamily: 'PoppinsMedium',
-                  fontSize: 14,
+                  fontSize: 13,
                   color: '#696969',
+                  textAlign:'center'
                 }}
               >
                 Sign up for a new account
@@ -165,11 +216,11 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="YOUR NAME"
                     autoFocus
-                    keyboardType="name-phone-pad"
                     autoCapitalize="words"
                     value={this.state.name}
                     onChangeText={text => {
-                      this.setState({ name: text })
+                      this.setState({ name: text }),
+                      this.setUserAvatar(this.state.name)
                     }}
                   />
                 </Item>
@@ -186,6 +237,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="EMAIL"
                     keyboardType="email-address"
+                    autoCapitalize="none"
                     value={this.state.email}
                     onChangeText={text => {
                       this.setState({ email: text })
@@ -205,6 +257,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="USERNAME"
                     keyboardType="default"
+                    autoCapitalize="none"
                     value={this.state.username}
                     onChangeText={text => {
                       this.setState({ username: text })
@@ -225,6 +278,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     <Input
                       label="PASSWORD"
                       keyboardType="default"
+                      autoCapitalize="none"
                       secureTextEntry={this.state.showPass}
                       value={this.state.password}
                       onChangeText={text => {
@@ -259,20 +313,12 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                       label="CONFIRM PASSWORD"
                       keyboardType="default"
-                      secureTextEntry={this.state.showPass}
+                      autoCapitalize="none"
+                      secureTextEntry
+                      onChangeText={text => {
+                        this.setState({ confirmPassword: text })
+                      }}
                     />
-                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
-                      <Text
-                        style={{
-                          color: '#E20F0F',
-                          fontFamily: 'PoppinsMedium',
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        Show
-                      </Text>
-                    </Button>
                     </Row>
                     </Item>
                 <Row
@@ -302,10 +348,12 @@ class RegisterScreen extends Component<IProps, IState> {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginTop: 20,
+              paddingLeft: 40,
+              paddingBottom: 50,
             }}
           >
             <Col>
-              <Text>Already a user?</Text>
+              <Text style={{textAlign: 'center'}}>Already a user?</Text>
             </Col>
             <Col>
               <Button
