@@ -6,6 +6,7 @@ import { StoreGlobal } from './globalStore'
 import Upcoming from '../containers/Upcoming'
 import TopRated from '../containers/TopRated'
 import Trending from '../containers/Trending'
+import { StatusBar } from 'react-native'
 interface IState {
   switch: boolean
 }
@@ -14,17 +15,9 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
 
   constructor(props: NavigationScreenProps) {
     super(props)
-    this.state = {
-      switch: false,
-    }
   }
 
-  onchange = () => {
-    this.setState({ switch: !this.state.switch })
-    StoreGlobal({ type: 'set', key: 'access', value: !this.state.switch })
-  }
   render() {
-    // const {navigate} = this.props.navigation;
     return (
       <Container
         style={{
@@ -32,7 +25,8 @@ class HomeScreen extends Component<NavigationScreenProps, IState> {
         }}
       >
         <Header transparent />
-        <Content style={{paddingBottom: 20 }}>
+        <StatusBar barStyle="light-content" />
+        <Content style={{ paddingBottom: 20 }}>
           <Upcoming />
           <TopRated />
           <Trending />

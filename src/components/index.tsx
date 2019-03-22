@@ -9,6 +9,7 @@ import MovieSidebar from './MovieSidebar'
 import MovieSidebarButton from './MovieSidebarButton'
 import WatchlistCard from './WatchlistCard'
 import { Hits } from './hits'
+import { GenreContainer } from './GenreContainer'
 import LeaveReview from './LeaveReview'
 
 export {
@@ -24,4 +25,5 @@ export {
   Hits,
   WatchlistCard,
   LeaveReview,
+  GenreContainer,
 }
