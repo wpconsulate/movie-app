@@ -18,7 +18,13 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import { PlayButton, Genres, Slider, MovieSidebar, LeaveReview } from '../components'
+import {
+  PlayButton,
+  Genres,
+  Slider,
+  MovieSidebar,
+  LeaveReview,
+} from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -28,7 +34,7 @@ import {
   TextStyle,
   TouchableOpacity,
   Image,
-  AccessibilityInfo
+  AccessibilityInfo,
 } from 'react-native'
 import { LinearGradient } from 'expo'
 import { formatDate } from '../lib'
@@ -40,6 +46,7 @@ import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { database } from 'firebase'
+import console = require('console')
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -51,13 +58,13 @@ interface IProps {
 interface IState {
   movie: Movie | null
   isLoaded: boolean
-  wantsToRev: boolean;
+  wantsToRev: boolean
   images: Array<IImage>
   castImages: Array<IImage>
   showMenu: boolean
   isReviewing: boolean
-  critiqueReviewList: [],
-  userReviewList: [],
+  critiqueReviewList: []
+  userReviewList: []
   isAccessible: boolean
   currentUid: string
   currentUsername: string
@@ -77,7 +84,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       headerBackgroundTransitionPreset: 'fade',
       headerLeft: (
         <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.goBack()} transparent
+          <Button
+            onPress={() => navigation.goBack()}
+            transparent
             accessible
             accessibilityRole="button"
             accessibilityLabel="Go back"
@@ -109,35 +118,33 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible: false,
       currentUid: null,
       currentUsername: null,
-      likes : 0,
+      likes: 0,
     }
   }
 
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
-    
-    database().ref(`liked/${id}`).on(
-      'value',
-      element => {
-        this.setState({likes: element.val().liked})
-    },
-    )
+
+    database()
+      .ref(`liked/${id}`)
+      .on('value', element => {
+        console.log(element)
+        if (element.val()) this.setState({ likes: element.val().liked })
+      })
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
     let castImages = new Array<IImage>()
-    let Uid =  'test'
+    let Uid = 'test'
     let username = 'test'
 
-
     let currUser = new Authentication()
-    if(currUser.isLoggedIn()){
+    if (currUser.isLoggedIn()) {
       Uid = currUser.getCurrentUser().uid
       let CurrUSerDetails = await new SetOfUsers().getById(Uid)
       username = CurrUSerDetails.name
     }
-
 
     let critReview = await movie.getReview()
     let userReview = await movie.getMMDBReview()
@@ -220,10 +227,8 @@ export default class MovieScreen extends Component<IProps, IState> {
           accessibilityLabel="Sidebar"
           accessibilityHint="Double tap to open a modal where you can add the movie to your watchlist, share with your friends and like or unlike it."
           onPress={() => {
-            if (MovieStore.showMenu)
-              MovieStore.setShowMenu(false)
-            else
-              MovieStore.setShowMenu(true)
+            if (MovieStore.showMenu) MovieStore.setShowMenu(false)
+            else MovieStore.setShowMenu(true)
           }}
         >
           <Image
@@ -237,7 +242,6 @@ export default class MovieScreen extends Component<IProps, IState> {
         </TouchableOpacity>
         <MovieSidebar movie={movie} userid={currentUid} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
-
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
             <PlayContainer />
@@ -302,41 +306,42 @@ export default class MovieScreen extends Component<IProps, IState> {
                 marginTop: 40,
               }}
             >
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'PoppinsMedium',
-                marginBottom: 10,
-                width: '100%',
-              }}
-            >
-              Reviews
-            </Text>
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                top: -10,
-                alignSelf: 'flex-end',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onPress={() =>{this.setState({ isReviewing: !isReviewing })}}            
-              
-            >
-              <View style={{ 
-                height: 40,
-                width: 40,
-                borderRadius: 40 / 2,
-                backgroundColor: 'red',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                <MaterialIcons name="add" color="#12152D" size={38} />
-              </View>
-            </TouchableOpacity>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  marginBottom: 10,
+                  width: '100%',
+                }}
+              >
+                Reviews
+              </Text>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: -10,
+                  alignSelf: 'flex-end',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => {
+                  this.setState({ isReviewing: !isReviewing })
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 40 / 2,
+                    backgroundColor: 'red',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <MaterialIcons name="add" color="#12152D" size={38} />
+                </View>
+              </TouchableOpacity>
             </View>
-
-
 
             <View
               style={{
@@ -344,10 +349,13 @@ export default class MovieScreen extends Component<IProps, IState> {
                 flex: 1,
                 flexWrap: 'wrap',
                 marginTop: 40,
-              }} >
+              }}
+            >
               <LeaveReview
                 username={currentUsername}
-                url={"https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655"}
+                url={
+                  'https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655'
+                }
                 movieId={movie.getId()}
                 userId={currentUid}
                 isReviewing={isReviewing}
@@ -355,7 +363,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             </View>
             <View style={{ marginBottom: 40 }}>
               {userReviewList.map((element: any) => {
-              return (
+                return (
                   <Review
                     key={element.id}
                     url={'something image'}
@@ -366,9 +374,6 @@ export default class MovieScreen extends Component<IProps, IState> {
                 )
               })}
             </View>
-
-            
-
           </View>
         </Content>
       </Container>
@@ -442,9 +447,12 @@ function ReleaseDate(props: any) {
           style={{ color: '#fff' }}
         />
       </View>
-      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 14 }}
+      <Text
+        style={{ color: '#fff', marginHorizontal: 5, fontSize: 14 }}
         accessible
-        accessibilityHint={`The release date of this movie was the ${props.data}`}
+        accessibilityHint={`The release date of this movie was the ${
+          props.data
+        }`}
       >
         {props.date}
       </Text>
@@ -465,7 +473,8 @@ function Runtime(props: any) {
       <View style={{ marginHorizontal: 5 }}>
         <Icon type="EvilIcons" name="clock" style={{ color: '#fff' }} />
       </View>
-      <Text style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+      <Text
+        style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
         accessible
         accessibilityRole="text"
         accessibilityLabel={`Total runtime is ${props.time}`}
