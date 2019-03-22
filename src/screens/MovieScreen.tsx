@@ -20,7 +20,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
 import {
   PlayButton,
-  Genres,
+  GenreContainer,
   Slider,
   MovieSidebar,
   LeaveReview,
@@ -33,7 +33,7 @@ import {
   ViewStyle,
   TextStyle,
   TouchableOpacity,
-  Image,
+  Linking,
   AccessibilityInfo,
 } from 'react-native'
 import { LinearGradient } from 'expo'
@@ -45,6 +45,7 @@ import MovieStore from '../stores/MovieStore'
 import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import { database } from 'firebase'
 
 interface IProps {
@@ -121,14 +122,32 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
 
+  onTrailerPlayPress = async () => {
+    const trailer = await this.state.movie.getTrailer(0)
+    Linking.openURL(`https://www.youtube.com/embed/${trailer[0].key}`)
+  }
+
+  getLikesByMovieId(id: string) {
+    return new Promise((resolve, reject) => {
+      database()
+        .ref()
+        .child('liked')
+        .child(id)
+        .on('value', snap => {
+          if (!snap.val()) return reject()
+          return resolve(snap.val())
+        })
+    })
+  }
+
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
-
+    const likes = await this.getLikesByMovieId(id)
+    console.log('likes', likes)
     database()
       .ref(`liked/${id}`)
       .on('value', element => {
-        console.log(element)
         if (element.val()) this.setState({ likes: element.val().liked })
       })
     const images = await movie.getImages(5, { type: 'backdrops' })
@@ -166,6 +185,7 @@ export default class MovieScreen extends Component<IProps, IState> {
   }
 
   render() {
+    const sidebarIconsMargin = 2
     const {
       movie,
       isLoaded,
@@ -230,20 +250,47 @@ export default class MovieScreen extends Component<IProps, IState> {
             else MovieStore.setShowMenu(true)
           }}
         >
-          <Image
+          <View
             style={{
-              height: 60,
-              width: 30,
-              alignSelf: 'center',
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            source={require('../../assets/icons/SideBar.png')}
-          />
+          >
+            <FontAwesomeIcons
+              name="circle"
+              size={10}
+              color="white"
+              style={{
+                marginTop: sidebarIconsMargin,
+                marginBottom: sidebarIconsMargin,
+              }}
+            />
+            <FontAwesomeIcons
+              name="circle"
+              size={10}
+              color="white"
+              style={{
+                marginTop: sidebarIconsMargin,
+                marginBottom: sidebarIconsMargin,
+              }}
+            />
+            <FontAwesomeIcons
+              name="circle"
+              size={10}
+              color="white"
+              style={{
+                marginTop: sidebarIconsMargin,
+                marginBottom: sidebarIconsMargin,
+              }}
+            />
+          </View>
         </TouchableOpacity>
         <MovieSidebar movie={movie} userid={currentUid} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
-            <PlayContainer />
+            <PlayContainer onPress={this.onTrailerPlayPress} />
             <Title title={movie.getTitle()} />
             <GenreContainer genres={movie.getGenres(true, 3)} />
             <ReleaseDateRuntime
@@ -324,7 +371,11 @@ export default class MovieScreen extends Component<IProps, IState> {
                   justifyContent: 'center',
                 }}
                 onPress={() => {
-                  this.setState({ isReviewing: !isReviewing })
+                  // this.setState({ isReviewing: !isReviewing })
+                  this.props.navigation.push('Review', {
+                    movie: movie,
+                    userId: 1,
+                  })
                 }}
               >
                 <View
@@ -332,7 +383,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                     height: 40,
                     width: 40,
                     borderRadius: 40 / 2,
-                    backgroundColor: 'red',
+                    backgroundColor: '#E10F0F',
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -367,7 +418,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                     key={element.id}
                     url={'something image'}
                     review={element.content}
-                    numberOfDays={2}
+                    date={element.createdAt}
                     username={element.author}
                   />
                 )
@@ -513,26 +564,18 @@ function Storyline(props: any) {
   )
 }
 
-function PlayContainer() {
+function PlayContainer(props: any) {
   return (
     <View style={styles.playButtonView}>
-      <PlayButton />
+      <PlayButton onPress={props.onPress} />
     </View>
   )
 }
 
-function Title(props: any) {
+export function Title(props: any) {
   return (
     <View style={styles.titleView}>
       <H1 style={styles.title}>{props.title}</H1>
-    </View>
-  )
-}
-
-function GenreContainer(props: any) {
-  return (
-    <View style={{ marginTop: 20, flexDirection: 'row' }}>
-      <Genres genres={props.genres} />
     </View>
   )
 }

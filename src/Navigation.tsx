@@ -9,6 +9,7 @@ import {
   ProfileScreen,
   ResultsScreen,
   SettingsScreen,
+  ReviewScreen,
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -21,6 +22,7 @@ const RootStack = createStackNavigator(
     Profile: ProfileScreen,
     Results: ResultsScreen,
     Settings: SettingsScreen,
+    Review: ReviewScreen,
   },
   {
     initialRouteName: 'Home',
