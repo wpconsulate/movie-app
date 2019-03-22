@@ -9,7 +9,7 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from '../screens/SettingsScreen'
-import { Button } from 'native-base';
+import { Button, Spinner } from 'native-base';
 import UserStore from '../stores/UserStore';
 
 interface IState{
@@ -19,7 +19,45 @@ interface IState{
   isLoading: boolean
   refreshing: boolean
 }
-class OverAllStatus extends React.Component <any,IState>{
+
+interface IProps{
+  userID: string
+}
+class ProfileScreen extends React.Component <any,any>{
+  constructor(props:any){
+    super(props)
+    this.state={
+      userID:'',
+      isLoading:true
+    }
+  }
+  async componentWillMount(){
+    let UId = this.props.navigation.getParam('userId')
+    if (UId!= null){
+      console.log("userID: "+ UId)
+      this.setState({userID: UId, isLoading:false})
+    }
+    else{
+      let currUser = new Authentication()
+      let userID = currUser.getCurrentUser().uid
+      this.setState({userID: userID, isLoading:false})
+    }
+  }
+  render(){
+    console.log("user states"+this.state.userID)
+    return(
+      <View>
+      {
+        this.state.isLoading ? <Spinner /> : 
+        <ProfileContent userID={this.state.userID}/>
+      }
+      </View>
+    )
+  }
+}
+
+
+class ProfileContent extends React.Component <IProps,IState>{
   constructor(props: any){
     super(props)
     this.state={
@@ -31,10 +69,10 @@ class OverAllStatus extends React.Component <any,IState>{
     }
   }
   async componentWillMount(){
-    let currUser = new Authentication()
-    let userID = currUser.getCurrentUser().uid
-    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    let CurrUSerDetails = await new SetOfUsers().getById(userID)
+    //let currUser = new Authentication()
+    //let userID = currUser.getCurrentUser().uid
+    const userID = this.props.userID;
+    const CurrUSerDetails = await new SetOfUsers().getById(userID)
     //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, isLoading: false})
   }
@@ -92,6 +130,8 @@ class OverAllStatus extends React.Component <any,IState>{
   }
 }
 
+
+
 class FriendsList extends React.Component {
   render() {
     return (
@@ -125,7 +165,7 @@ class ReviewsList extends React.Component {
 }
 
 const TabNavigator = createBottomTabNavigator({
-  All: { screen: OverAllStatus },
+  All: { screen: ProfileScreen },
   Friends: { screen: FriendsList },
   Review:{screen: ReviewsList},
   Setting: SettingsScreens
