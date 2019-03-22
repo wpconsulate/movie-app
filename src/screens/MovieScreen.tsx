@@ -39,6 +39,7 @@ import MovieStore from '../stores/MovieStore'
 import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { database } from 'firebase'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -60,6 +61,7 @@ interface IState {
   isAccessible: boolean
   currentUid: string
   currentUsername: string
+  likes: number
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -107,12 +109,20 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible: false,
       currentUid: null,
       currentUsername: null,
+      likes : 0,
     }
   }
 
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
+    
+    database().ref(`liked/${id}`).on(
+      'value',
+      element => {
+        this.setState({likes: element.val().liked})
+    },
+    )
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()

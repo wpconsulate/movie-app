@@ -106,26 +106,15 @@ class MovieSidebar extends React.Component<IProps, any> {
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 50,
-            }}
-            accessible
-            accessibilityLabel="Share with your friends"
-            accessibilityRole="button"
-            accessibilityHint="Double tap to share with your friends"
-          >
-            <View style={styles.circle}>
-              <MaterialIcons name="share" color="#12152D" size={52} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
             accessible
             accessibilityLabel="Like"
             accessibilityRole="button"
             accessibilityHint="Double tap to like it."
+            onPress={() => {
+              this.props.movie.setLike()
+              Alert.alert("liked")
+            }}
           >
             <View style={styles.circle}>
               <MaterialIcons name="thumb-up" color="#12152D" size={52} />
