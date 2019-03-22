@@ -4,33 +4,34 @@ import {
   Col,
   Row,
   Button,
-  Textarea
 } from 'native-base'
 import {
-  Image
+  Image, TextInput
 } from 'react-native'
 import { Movie } from './../api'
 import { any } from 'prop-types';
-
 
 interface IProps {
   username: string
   url: string
   movieId: number
   userId: string
+  isReviewing: boolean
 }
 interface IState {
-    review: String
+    review: string
     numberOfDays?: number
+    height: number
 }
 
 
-export default class ReviewTest extends Component<IProps, IState> {
+export default class LeaveReview extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
       review: "",
-      numberOfDays: 0
+      numberOfDays: 0,
+      height: 40
     }
   }
   private movie = new Movie(any)
@@ -38,16 +39,45 @@ export default class ReviewTest extends Component<IProps, IState> {
       this.movie.addReview(review, this.props.movieId, this.props.userId, this.props.username)
   }
 
+  updateSize = (height: number) => {
+    this.setState({
+      height
+    });
+  }
   render(){
-    const { username, url } = this.props
+    const { username, url, isReviewing } = this.props
     const { review } = this.state
 
+      if(!isReviewing){
+        return(
+          <Row>
 
+          </Row>
+        )
+      }
+      if(username == 'test' && isReviewing){
+        console.log("HELLO")
+        console.log(username)
+        console.log(isReviewing)
+
+        
+        return(
+          <Row>
+            <Text style={{              
+              color: 'white',
+              fontFamily: 'PoppinsMedium',
+              fontSize:18,                
+            }}>
+              User must be logged in to leave a review
+            </Text>
+          </Row>
+        )
+      }
 
 
       return(
         <Row style={{
-          flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 40
+          flexDirection: 'row', flex: 1, flexWrap: 'wrap', marginTop: 5, marginLeft: 5
         }}>
         <Col style={{ backgroundColor: '#12152D', width:40, marginRight:15}}>
         <Image
@@ -69,20 +99,24 @@ export default class ReviewTest extends Component<IProps, IState> {
               }}
             >
               Name: {username}
-            </Text>
-          <Textarea
-              rowSpan={5}
-              onChangeText={text => {
-                this.setState({ review: text })
-              }}
-              style={{
-                color: 'white',
-                fontFamily: 'PoppinsMedium',
-                fontSize:10
-              }}
-          />    
+            </Text>  
+          <TextInput
+            style={{ backgroundColor: '#12182D',                 
+              color: 'white',
+              fontFamily: 'PoppinsMedium',
+              fontSize:18,
+              marginBottom: 8
+              
+            }}
+            placeholder="review"
+            onChangeText={(text) => this.setState({review: text})}
+            editable={true}
+            multiline={true}
+            value={review}
+            onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.height)}
+          />
           <Button
-            style={{ width: '100%' }}
+            style={{ width: '100%', margin: 'auto' }}
             onPress={() => this.onLeaveReview(review)}
           >
             <Text

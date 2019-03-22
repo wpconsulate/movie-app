@@ -6,22 +6,18 @@ import {
   Header,
   Row,
   Col,
-  StyleProvider,
   Button,
-  Icon,
   Input,
   Form,
   Item,
   Label,
 } from 'native-base'
-import AutoHeightImage from 'react-native-auto-height-image'
-import getTheme from '../native-base-theme/components'
-import mmdb from '../native-base-theme/variables/mmdb'
-import { NavigationScreenProps } from 'react-navigation'
-import { Dimensions, Alert, TouchableWithoutFeedback } from 'react-native'
+import { Dimensions, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Authentication } from '../api'
 import UserStore from '../stores/UserStore';
-import {Keyboard} from 'react-native'
+import { navigationOptions } from '../helpers/header'
+import { NavigationScreenProps } from 'react-navigation'
+import AutoHeightImage from 'react-native-auto-height-image'
 
 interface IState {
   email: string
@@ -31,30 +27,7 @@ interface IState {
 interface IProps extends NavigationScreenProps { }
 
 class LoginScreen extends Component<IProps, IState> {
-  public navigationOptions = ({ navigation }: NavigationScreenProps) => {
-    return {
-      headerTransparent: true,
-      headerBackgroundTransitionPreset: 'fade',
-      headerLeft: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Home')} transparent>
-            <Icon name="close" style={{ color: '#fff' }} />
-          </Button>
-        </StyleProvider>
-      ),
-      headerTitle: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Home')} transparent>
-            <Text
-              style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-            >
-              mmdb
-            </Text>
-          </Button>
-        </StyleProvider>
-      ),
-    }
-  }
+  static navigationOptions = navigationOptions
   private auth: Authentication
 
   constructor(props: NavigationScreenProps) {
@@ -73,6 +46,7 @@ class LoginScreen extends Component<IProps, IState> {
     this.auth
       .login(email, password)
       .then(() => {
+        Keyboard.dismiss
         Alert.alert('Successfully logged in!')
         this.props.navigation.navigate("Profile", {
           userId: this.auth.getCurrentUser().uid,
@@ -80,7 +54,8 @@ class LoginScreen extends Component<IProps, IState> {
         UserStore.setIsLoggedIn(true)
       })
       .catch((error: any) => {
-        Alert.alert(error.message)
+        console.log(error)
+        this.props.navigation.navigate("Login")
       })
   }
 
@@ -88,7 +63,12 @@ class LoginScreen extends Component<IProps, IState> {
     const { email, password } = this.state
     return (
       <Container>
-        <Header transparent />
+        <Header
+          transparent
+          translucent
+          iosBarStyle="light-content"
+          noShadow
+        />
         <AutoHeightImage
           source={require('../../assets/header.png')}
           style={{
@@ -105,23 +85,23 @@ class LoginScreen extends Component<IProps, IState> {
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Col>
+            <Col size={3}>
               <Text
                 style={{
                   fontFamily: 'PoppinsBold',
-                  fontSize: 26,
+                  fontSize: 24,
                   color: '#12152D',
                 }}
               >
                 Login
               </Text>
             </Col>
-            <Col>
+            <Col size={4}>
               <Text
                 style={{
                   fontFamily: 'PoppinsMedium',
-                  fontSize: 14,
-                  color: 'black',
+                  fontSize: 13,
+                  color: '#696969',
                   fontWeight: 'bold'
                 }}
               >

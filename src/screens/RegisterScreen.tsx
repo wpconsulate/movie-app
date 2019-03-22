@@ -12,7 +12,7 @@ import {
   Input,
   Form,
   Item,
-  Label
+  Label,
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -23,9 +23,12 @@ import { Authentication, Database } from '../api'
 interface IState {
   email: string
   password: string
+  confirmPassword: string
   name: string
   isLoaded: boolean
   username: string
+  createDate: Date
+  showPass: boolean
 }
 interface IProps extends NavigationScreenProps { }
 
@@ -63,9 +66,12 @@ class RegisterScreen extends Component<IProps, IState> {
     this.state = {
       email: null,
       password: null,
+      confirmPassword: null,
       name: null,
       isLoaded: true,
-      username: null
+      username: null,
+      createDate: new Date(),
+      showPass: true,
     }
 
     this.auth = new Authentication()
@@ -73,15 +79,17 @@ class RegisterScreen extends Component<IProps, IState> {
   }
   // user = new User('', 'test');
   onRegisterPress() {
-    const { email, password, name, username } = this.state
-    if (email !== null && password !== null && name !== null && username !== null)
+    const { email, password, confirmPassword, name, username } = this.state
+    if (email !== null && password !== null && name !== null && username !== null )
     {
+      if(password === confirmPassword)
+      {
       this.setState({ isLoaded: false })
       this.auth
         .register(email, password, {
           email,
           name,
-          username
+          username,
         })
         .then(() => {
           this.setState({ isLoaded: true })
@@ -90,7 +98,12 @@ class RegisterScreen extends Component<IProps, IState> {
         })
         .catch(error => {
           Alert.alert(error.message)
+          this.props.navigation.navigate('Login');
+          
         })
+      } else {
+        Alert.alert('The two Passwords must be the same')
+      }
     }
     else {
       Alert.alert('Please Input all the data before Registering!')
@@ -122,23 +135,24 @@ class RegisterScreen extends Component<IProps, IState> {
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Col>
+            <Col size={3}>
               <Text
                 style={{
                   fontFamily: 'PoppinsBold',
-                  fontSize: 26,
+                  fontSize: 24,
                   color: '#12152D',
                 }}
               >
                 Register
               </Text>
             </Col>
-            <Col>
+            <Col size={4}>
               <Text
                 style={{
                   fontFamily: 'PoppinsMedium',
-                  fontSize: 14,
+                  fontSize: 13,
                   color: '#696969',
+                  textAlign:'center'
                 }}
               >
                 Sign up for a new account
@@ -161,7 +175,6 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="YOUR NAME"
                     autoFocus
-                    keyboardType="name-phone-pad"
                     autoCapitalize="words"
                     value={this.state.name}
                     onChangeText={text => {
@@ -182,6 +195,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="EMAIL"
                     keyboardType="email-address"
+                    autoCapitalize="none"
                     value={this.state.email}
                     onChangeText={text => {
                       this.setState({ email: text })
@@ -201,6 +215,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Input
                     label="USERNAME"
                     keyboardType="default"
+                    autoCapitalize="none"
                     value={this.state.username}
                     onChangeText={text => {
                       this.setState({ username: text })
@@ -220,19 +235,21 @@ class RegisterScreen extends Component<IProps, IState> {
                   <Row>
                     <Input
                       label="PASSWORD"
-                      keyboardType="visible-password"
-                      secureTextEntry
+                      keyboardType="default"
+                      autoCapitalize="none"
+                      secureTextEntry={this.state.showPass}
                       value={this.state.password}
                       onChangeText={text => {
                         this.setState({ password: text })
                       }}
                     />
-                    <Button transparent>
+                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
                       <Text
                         style={{
                           color: '#E20F0F',
                           fontFamily: 'PoppinsMedium',
                           fontSize: 12,
+                          fontWeight: 'bold',
                         }}
                       >
                         Show
@@ -250,12 +267,18 @@ class RegisterScreen extends Component<IProps, IState> {
                   >
                     CONFIRM PASSWORD
                   </Label>
+                  <Row>
                   <Input
-                    label="CONFIRM PASSWORD"
-                    keyboardType="visible-password"
-                    secureTextEntry
-                  />
-                </Item>
+                      label="CONFIRM PASSWORD"
+                      keyboardType="default"
+                      autoCapitalize="none"
+                      secureTextEntry
+                      onChangeText={text => {
+                        this.setState({ confirmPassword: text })
+                      }}
+                    />
+                    </Row>
+                    </Item>
                 <Row
                   style={{
                     marginTop: 40,
@@ -283,10 +306,12 @@ class RegisterScreen extends Component<IProps, IState> {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginTop: 20,
+              paddingLeft: 40,
+              paddingBottom: 50,
             }}
           >
             <Col>
-              <Text>Already a user?</Text>
+              <Text style={{textAlign: 'center'}}>Already a user?</Text>
             </Col>
             <Col>
               <Button
