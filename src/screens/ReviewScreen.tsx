@@ -10,11 +10,13 @@ import {
   H1,
   Grid,
   Row,
+  Textarea,
 } from 'native-base'
 import { TouchableOpacity } from 'react-native'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps, withNavigation } from 'react-navigation'
+import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import Movie from '../api/Movie/Movie'
 import { GenreContainer } from '../components'
 
@@ -59,6 +61,7 @@ class ReviewScreen extends Component<any, any> {
               borderRadius: 20,
               justifyContent: 'center',
               alignItems: 'center',
+              marginRight: 15,
             }}
             accessible
             accessibilityRole="button"
@@ -74,17 +77,36 @@ class ReviewScreen extends Component<any, any> {
 
   constructor(props: any) {
     super(props)
+    this.state = {
+      stars: ['star-o', 'star-o', 'star-o', 'star-o', 'star-o'],
+    }
+  }
+
+  onStarPress = (index: number) => {
+    const { stars } = this.state
+
+    stars.forEach((_item: string, _index: number) => {
+      stars[_index] = 'star-o'
+
+      if (index >= _index) {
+        stars[_index] = 'star'
+      }
+    })
+    this.setState({
+      stars,
+    })
   }
 
   render() {
     const { navigation } = this.props
+    const { stars } = this.state
     const movie: Movie = navigation.getParam('movie')
     return (
       <Container
         style={{
           backgroundColor: '#12152D',
-          paddingLeft: 30,
-          paddingRight: 30,
+          paddingLeft: 20,
+          paddingRight: 20,
         }}
       >
         <Header transparent translucent iosBarStyle="light-content" noShadow />
@@ -95,7 +117,7 @@ class ReviewScreen extends Component<any, any> {
                 style={{
                   fontFamily: 'PoppinsSemiBold',
                   color: '#fff',
-                  fontSize: 40,
+                  fontSize: 36,
                   padding: 5,
                   lineHeight: 50,
                   flex: 1,
@@ -106,6 +128,34 @@ class ReviewScreen extends Component<any, any> {
             </Row>
             <Row>
               <GenreContainer genres={movie.getGenres(true, 3)} />
+            </Row>
+            <Row style={{ marginTop: 30 }}>
+              {stars.map((item: string, index: number) => (
+                <TouchableOpacity
+                  key={index}
+                  style={{ marginRight: 10 }}
+                  onPress={() => this.onStarPress(index)}
+                >
+                  <FontAwesomeIcons name={item} color="white" size={50} />
+                </TouchableOpacity>
+              ))}
+            </Row>
+            <Row style={{ marginTop: 60 }}>
+              <Textarea
+                rowSpan={5}
+                autoCapitalize="sentences"
+                autoFocus
+                blurOnSubmit
+                maxLength={500}
+                multiline
+                placeholder="Write your review here."
+                style={{
+                  backgroundColor: '#2D3041',
+                  flex: 1,
+                  borderRadius: 12,
+                  padding: 20,
+                }}
+              />
             </Row>
           </Grid>
         </Content>

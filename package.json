@@ -50,7 +50,6 @@
     "react-native-fit-image": "^1.5.4",
     "react-native-image-zoom-viewer": "^2.2.24",
     "react-native-paper": "^2.13.0",
-    "react-native-ratings": "git+https://github.com/lukepaoloni/react-native-ratings.git",
     "react-native-simple-toast": "^0.0.8",
     "react-native-snap-carousel": "^3.7.5",
     "react-native-svg-charts": "^5.2.0",
