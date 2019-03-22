@@ -14,7 +14,7 @@ import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-//import SettingsScreens from '../screens/SettingsScreen'
+import SettingsScreens from './SettingsScreen'
 import { Button, Spinner } from 'native-base'
 import UserStore from '../stores/UserStore'
 
@@ -263,11 +263,13 @@ const TabNavigator = createBottomTabNavigator(
     All: { screen: ProfileScreen },
     Friends: { screen: FriendsList },
     Review: { screen: ReviewsList },
+    Settings: SettingsScreens,
   },
   {
     tabBarOptions: {
       activeTintColor: 'red',
       inactiveTintColor: 'white',
+      showIcon: true,
       labelStyle: {
         fontSize: 18,
         fontWeight: '400',
