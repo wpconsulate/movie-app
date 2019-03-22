@@ -11,7 +11,6 @@ import {
 import { Movie } from './../api'
 import { any } from 'prop-types';
 
-
 interface IProps {
   username: string
   url: string
@@ -26,7 +25,7 @@ interface IState {
 }
 
 
-export default class ReviewTest extends Component<IProps, IState> {
+export default class LeaveReview extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -49,8 +48,6 @@ export default class ReviewTest extends Component<IProps, IState> {
     const { username, url, isReviewing } = this.props
     const { review } = this.state
 
-    console.log(username)
-
       if(!isReviewing){
         return(
           <Row>
@@ -58,9 +55,6 @@ export default class ReviewTest extends Component<IProps, IState> {
           </Row>
         )
       }
-
-
-
       if(username == 'test' && isReviewing){
         console.log("HELLO")
         console.log(username)

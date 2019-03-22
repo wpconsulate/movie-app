@@ -232,6 +232,8 @@ class Movie extends Database implements IMovie {
 
     let data = { author: username, content: reviewContent,  date: currentDate}
     await this.write('review/' + movieId + "/" + userId, data)
+    await this.write("users/" + userId + "/reviews/" + movieId +"/", data)
+    
   }
 
   public async getMMDBReview(): Promise<any> {
