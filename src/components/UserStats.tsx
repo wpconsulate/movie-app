@@ -1,10 +1,10 @@
 import React from 'react'
 import { StackedBarChart } from 'react-native-svg-charts'
 import { View, Text } from 'native-base'
-import { StyleSheet  } from 'react-native'
-import {Row, Col, Grid} from 'native-base'
-import { withNavigation } from 'react-navigation';
-
+import { StyleSheet } from 'react-native'
+import { Row, Col, Grid } from 'native-base'
+import { withNavigation } from 'react-navigation'
+import moment from 'moment'
 
 //given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
@@ -12,10 +12,10 @@ interface IProps {
   colour: string
   total: string
 }
-interface IPropsUser{
+interface IPropsUser {
   userData: any
 }
-interface IState{
+interface IState {
   completeCount: number
   watchingCount: number
   plannedCount: number
@@ -36,7 +36,7 @@ function StatsKey(props: IProps) {
       height: 15,
       borderRadius: 100 / 2,
       backgroundColor: props.colour,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
     },
     text: {
       color: 'white',
@@ -46,8 +46,12 @@ function StatsKey(props: IProps) {
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <View style={styles.view} />
       <Text
-        style={
-          { marginLeft: 10, flex: 3, fontFamily: 'PoppinsMedium' , color: "white"}}
+        style={{
+          marginLeft: 10,
+          flex: 3,
+          fontFamily: 'PoppinsMedium',
+          color: 'white',
+        }}
       >
         {props.text}{' '}
       </Text>
@@ -57,9 +61,9 @@ function StatsKey(props: IProps) {
 }
 
 class UserStats extends React.Component<IPropsUser, IState> {
-  constructor(props:any){
+  constructor(props: any) {
     super(props)
-    this.state={
+    this.state = {
       completeCount: 0,
       watchingCount: 0,
       plannedCount: 0,
@@ -67,28 +71,31 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: 0,
       totalRuntime: 0,
       totalHours: 0,
-      totalDays:0
+      totalDays: 0,
     }
-
   }
 
-  async componentDidMount(){
-    const {userData} = this.props
-    let countComplete = Object.keys(userData.watchlist.completed).length;
-    let countWatching = Object.keys(userData.watchlist.watching).length;
-    let countPlanned = Object.keys(userData.watchlist.planned).length;
-    let countDropped = Object.keys(userData.watchlist.dropped).length;
+  async componentDidMount() {
+    const { userData } = this.props
+    let countComplete = Object.keys(userData.watchlist.completed).length
+    let countWatching = Object.keys(userData.watchlist.watching).length
+    let countPlanned = Object.keys(userData.watchlist.planned).length
+    let countDropped = Object.keys(userData.watchlist.dropped).length
     let calResult = await this.calculateResults()
 
-    this.setState({completeCount: countComplete, watchingCount: countWatching,
-                   plannedCount: countPlanned, droppedCount: countDropped,
-                   totalEntries: calResult.totalEntries, totalHours: calResult.totalHours,
-                  totalRuntime: calResult.totalMin, totalDays: calResult.totalDays})
-
-
+    this.setState({
+      completeCount: countComplete,
+      watchingCount: countWatching,
+      plannedCount: countPlanned,
+      droppedCount: countDropped,
+      totalEntries: calResult.totalEntries,
+      totalHours: calResult.totalHours,
+      totalRuntime: calResult.totalMin,
+      totalDays: calResult.totalDays,
+    })
   }
 
-  async calculateResults(){
+  async calculateResults() {
     let totalEntries = 0
     let list = this.props.userData.watchlist //containts all the watchlist as objects
     let totalRuntime = 0
@@ -96,31 +103,31 @@ class UserStats extends React.Component<IPropsUser, IState> {
     let days = 0
 
     for (let key in list) {
-      for(let k in list[key]){
-        if(list[key][k].runtime)
-          totalRuntime += list[key][k].runtime
+      for (let k in list[key]) {
+        if (list[key][k].runtime) totalRuntime += list[key][k].runtime
         totalEntries += 1
       }
     }
-  totalHours =Math.floor (totalRuntime/60)
-  days = Math.floor(totalHours/24)
-  let userDetails = {
-    totalEntries: totalEntries,
-    totalMin: totalRuntime,
-    totalHours: totalHours,
-    totalDays: days
-  }
-  return userDetails
+    totalHours = Math.floor(totalRuntime / 60)
+    days = Math.floor(totalHours / 24)
+    let userDetails = {
+      totalEntries: totalEntries,
+      totalMin: totalRuntime,
+      totalHours: totalHours,
+      totalDays: days,
+    }
+    return userDetails
   }
 
   render() {
     const style = StyleSheet.create({
       parent: {
         flex: 1,
-        marginLeft: 10
-      }, text:{
-        color:'white'
-      }
+        marginLeft: 10,
+      },
+      text: {
+        color: 'white',
+      },
     })
     const data = [
       {
@@ -151,27 +158,46 @@ class UserStats extends React.Component<IPropsUser, IState> {
           horizontal={true}
         />
 
-        <StatsKey text="Watching" colour="#2A59FF" total={this.state.watchingCount.toString()} />
-        <StatsKey text="Completed" colour="#56CCF2" total={this.state.completeCount.toString()} />
-        <StatsKey text="Dropped" colour="#FF0000" total={this.state.droppedCount.toString()} />
-        <StatsKey text="Plan To Watch" colour="#C4C4C4" total={this.state.plannedCount.toString()} />
+        <StatsKey
+          text="Watching"
+          colour="#2A59FF"
+          total={this.state.watchingCount.toString()}
+        />
+        <StatsKey
+          text="Completed"
+          colour="#56CCF2"
+          total={this.state.completeCount.toString()}
+        />
+        <StatsKey
+          text="Dropped"
+          colour="#FF0000"
+          total={this.state.droppedCount.toString()}
+        />
+        <StatsKey
+          text="Plan To Watch"
+          colour="#C4C4C4"
+          total={this.state.plannedCount.toString()}
+        />
 
         <Grid>
-        <Row>
-          <Col>
-          <Text style={style.text}>Total Entries:{this.state.totalEntries}</Text>
-          <Text style={style.text}>Review:0</Text>
-          </Col>
+          <Row>
+            <Col>
+              <Text style={style.text}>
+                Total Entries:{this.state.totalEntries}
+              </Text>
+              <Text style={style.text}>Review:0</Text>
+            </Col>
 
-          <Col >
-          <Text style={style.text}>Days:{this.state.totalDays}</Text>
-          <Text style={style.text}>Hours:{this.state.totalHours}</Text> 
-          <Text style={style.text}>Minutes: {this.state.totalRuntime}</Text>
-          <Text style={style.text}>Joined: {this.props.userData.joined}</Text>      
-          </Col>
-        </Row>
+            <Col>
+              <Text style={style.text}>Days:{this.state.totalDays}</Text>
+              <Text style={style.text}>Hours:{this.state.totalHours}</Text>
+              <Text style={style.text}>Minutes: {this.state.totalRuntime}</Text>
+              <Text style={style.text}>
+                Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
+              </Text>
+            </Col>
+          </Row>
         </Grid>
-
       </View>
     )
   }

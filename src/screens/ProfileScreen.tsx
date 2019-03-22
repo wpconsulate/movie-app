@@ -263,12 +263,13 @@ const TabNavigator = createBottomTabNavigator(
     All: { screen: ProfileScreen },
     Friends: { screen: FriendsList },
     Review: { screen: ReviewsList },
-    Settings: SettingsScreens
+    Settings: SettingsScreens,
   },
   {
     tabBarOptions: {
       activeTintColor: 'red',
       inactiveTintColor: 'white',
+      showIcon: true,
       labelStyle: {
         fontSize: 18,
         fontWeight: '400',
