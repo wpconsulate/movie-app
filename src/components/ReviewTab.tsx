@@ -14,6 +14,7 @@ interface IProps {
     numberOfDays?: number
     username: String
     url: string
+    movieName?: string
 }
 interface IState {
   show: boolean
@@ -27,23 +28,34 @@ export default class ReviewTest extends Component<IProps, IState> {
       show: false,
     }
   }
-
-
+  
   text(txt: String){
     return (
       <View>
-        <Text style={{color:"white"}}>
+        <Text style={{
+          marginTop: 9,
+          color: 'grey',
+          fontFamily: 'PoppinsMedium',
+          fontSize:10
+        }}>
         {txt} 
         </Text>
       <TouchableOpacity style={{justifyContent:'flex-end'}} onPress={() => this.setState({ show: true })} >
-      <Text style={{color:'red'}}>Read More</Text>
+      <Text style={{
+        color:'red',
+        alignSelf: 'flex-end',
+        marginRight: 5,
+        marginTop: 10,
+        fontFamily: 'PoppinsMedium',
+        fontSize:10
+        }}>Read More</Text>
       </TouchableOpacity>
       </View>
     )
   }
 
   render(){
-    const { review, numberOfDays, username, url } = this.props
+    const { review, numberOfDays, username, url, movieName } = this.props
     const { show } = this.state
     
     if(!show){
@@ -67,30 +79,38 @@ export default class ReviewTest extends Component<IProps, IState> {
             style={{
               color: 'white',
               fontFamily: 'PoppinsMedium',
-              fontSize:18
+              fontSize:18,
+              marginTop: 5
             }}
           >
-            {username}
-          </Text>
-        <Text
-            style={{
-              color: 'white',
-              fontFamily: 'PoppinsMedium',
-              fontSize:10
-            }}
-          >
-            {numberOfDays} days ago
+            {username} {movieName}
           </Text>
           {
             review.length > 100 ?
             (this.text(review.substr(0,100) + '...')):
             (
-              <Text style={{color:"white"}}>
+              <Text style={{ 
+                color: 'grey',
+                fontFamily: 'PoppinsMedium',
+                fontSize:10
+               }} >
                 {review}
               </Text>
             )
           }
-        </Col>
+        </Col>        
+        <Text
+            style={{
+              marginTop: 9,
+              position: 'absolute',
+              right: 5,
+              color: 'grey',
+              fontFamily: 'PoppinsMedium',
+              fontSize:10
+            }}
+          >
+            {numberOfDays} days ago
+          </Text>      
         </Row>
       )
     } else {
@@ -117,22 +137,37 @@ export default class ReviewTest extends Component<IProps, IState> {
                 fontSize:18
               }}
             >
-              {username}
+              {username}   {movieName}
             </Text>
           <Text
               style={{
-                color: 'white',
+                marginTop: 9,
+                position: 'absolute',
+                right: 5,
+                color: 'grey',
                 fontFamily: 'PoppinsMedium',
                 fontSize:10
               }}
             >
               {numberOfDays} days ago
             </Text>            
-            <Text style={{color:"white"}}>
+            <Text style={{                
+                color:"grey",
+                marginBottom: 5, 
+                fontSize:10,
+                marginTop: 10,
+                fontFamily: 'PoppinsMedium'
+              }}>
               {review}
             </Text>    
             <TouchableOpacity style={{justifyContent:'flex-end'}} onPress={() => this.setState({ show: false })} >
-              <Text style={{color:'red'}}>Read Less</Text>
+              <Text style={{
+                color:'red',
+                alignSelf: 'flex-end',
+                marginTop: 10,
+                fontFamily: 'PoppinsMedium',
+                fontSize:10
+              }}>Read Less</Text>
             </TouchableOpacity>         
           </Col>
         </Row>

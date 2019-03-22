@@ -8,7 +8,7 @@ import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-import SettingsScreens from '../screens/SettingsScreen'
+import SettingsScreen from '../screens/SettingsScreen'
 import { Button } from 'native-base';
 import UserStore from '../stores/UserStore';
 
@@ -31,11 +31,11 @@ class OverAllStatus extends React.Component <any,IState>{
     }
   }
   async componentWillMount(){
-    let currUser = new Authentication()
-    let userID = currUser.getCurrentUser().uid
-    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    let CurrUSerDetails = await new SetOfUsers().getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    // let currUser = new Authentication()
+    // let userID = currUser.getCurrentUser().uid
+    let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    // let CurrUSerDetails = await new SetOfUsers().getById(userID)
+    let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, isLoading: false})
   }
  // logout = () => {
@@ -69,7 +69,9 @@ class OverAllStatus extends React.Component <any,IState>{
       >
       <View style={{flex:1, backgroundColor:'#12152D', paddingTop:5}}>
             <Text style={{alignSelf: 'center', fontSize:30, color: 'red',fontWeight: 'bold'}}>Profile Page</Text>
-        <View style={{flexDirection:'row', alignItems:"center", padding:6, color: 'white'}}>
+        <View style={{flexDirection:'row', alignItems:"center", padding:6 }}>
+        {/* Not asignable to style so took out -> color: 'white'}}> */}
+
           <ProfilePic username={this.state.username}/>
           <UserStats userData={this.state.userData}/>
         </View>
@@ -108,18 +110,75 @@ class FriendsList extends React.Component {
   }
 }
 
-class ReviewsList extends React.Component {
+interface IState2{
+  userID: string
+  username: string
+  userData: any
+  isLoading: boolean
+  reviewList: []
+}
+
+class ReviewsList extends React.Component <any,IState2> {
+  private users = new SetOfUsers()
+  constructor(props: any){
+    super(props)
+    this.state={
+      userID: '',
+      username: '',
+      userData: null,
+      isLoading: true,
+      reviewList: null
+    }
+  }
+  async componentWillMount(){
+    let currUser = new Authentication()
+    let userID = currUser.getCurrentUser().uid
+    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    let CurrUSerDetails = await this.users.getById(userID)
+    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    let userReviews = await this.users.getUserReviewsById(userID)
+    
+    this.setState({
+      userID: userID,
+      username: CurrUSerDetails.name, 
+      userData: CurrUSerDetails, 
+      isLoading: false, 
+      reviewList: userReviews})
+  }
+
   render() {
+    const { reviewList,isLoading } = this.state
+
+    if (isLoading) {
+      return (
+        <View>
+          <ActivityIndicator />
+        </View>
+      )
+    }
+
     return (
-      <View>
-        <ScrollView>
-        <Review review="testing this review" username="shezan" url="sdfs"/>
-        <Review review="testing this review" username="shezan" url="sdfs"/>
-        <Review review="testing this review" username="shezan" url="sdfs"/>
-        <Review review="testing this review" username="shezan" url="sdfs"/>
-        <Review review="testing this review" username="shezan" url="sdfs"/>
-         </ScrollView>
-      </View>
+        <ScrollView style={{ backgroundColor: '#12152D' }} >   
+            <Text style={{
+              alignSelf: 'center', 
+              fontSize:30, color: 'red',
+              fontWeight: 'bold'}}>
+              Your reviews
+            </Text>
+
+            {reviewList.map((element: any) => {
+            return (
+                <Review
+                  key={element.id}
+                  url={'something image'}
+                  review={element.content}
+                  numberOfDays={2}
+                  username={element.author}
+                  movieName={element.movieName}
+                />
+              )
+            })}
+        </ScrollView>
     );
   }
 }
@@ -128,7 +187,7 @@ const TabNavigator = createBottomTabNavigator({
   All: { screen: OverAllStatus },
   Friends: { screen: FriendsList },
   Review:{screen: ReviewsList},
-  Setting: SettingsScreens
+  Settings: SettingsScreen,
 }, {tabBarOptions: {
   activeTintColor: 'red',
   inactiveTintColor: 'white',

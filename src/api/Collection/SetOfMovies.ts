@@ -1,8 +1,9 @@
 import Movie from '../Movie/Movie'
 import Config from '../../Config'
+import axios from 'axios'
 
 class SetOfMovies extends Array<Movie> {
-  constructor() { 
+  constructor() {
     super()
   }
 
@@ -20,21 +21,19 @@ class SetOfMovies extends Array<Movie> {
   }
 
   public async getUpcoming(): Promise<SetOfMovies> | null {
-    try {
-      const response = await fetch(
-        `${Config.BASE_URL + Movie.ENTITY}/upcoming?api_key=${
-          Config.API_KEY
-        }&language=en-US&page=1`
+    const upcomingResponse = await axios.get(
+      `${Config.BASE_URL + Movie.ENTITY}/upcoming?api_key=${
+        Config.API_KEY
+      }&language=en-US&page=1`
+    )
+    const upcomingMovies = upcomingResponse.data.results
+    for (const upcomingMovie of upcomingMovies) {
+      const movieResponse = await axios.get(
+        `${Config.BASE_URL}movie/${upcomingMovie.id}?api_key=${Config.API_KEY}`
       )
-      const responseJson = await response.json()
-      responseJson.results.forEach((movie: Movie) => {
-        this.addMovie(movie)
-      })
-      return this
-    } catch (error) {
-      console.log(error)
+      this.addMovie(movieResponse.data)
     }
-    return null
+    return this
   }
 
   public async getTopRated(page?: number): Promise<SetOfMovies> | null {
@@ -45,6 +44,7 @@ class SetOfMovies extends Array<Movie> {
     try {
       const response = await fetch(url)
       const responseJson = await response.json()
+      // console.log(url);
       responseJson.results.forEach((movie: Movie) => {
         this.addMovie(movie)
       })

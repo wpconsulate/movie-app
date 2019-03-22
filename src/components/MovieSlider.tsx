@@ -83,7 +83,7 @@ function MovieSlider(props: IProps) {
               fontFamily: 'PoppinsLight',
             }}
           >
-            View all
+            {topRated.length > 0 ? 'View All' : null}
           </Text>
         </TouchableOpacity>
       </View>
@@ -124,6 +124,9 @@ function MovieSlider(props: IProps) {
             </TouchableOpacity>
           )
         })}
+        {topRated.length == 0 ? (
+          <Text style={{ color: 'white' }}>No Movies</Text>
+        ) : null}
       </ScrollView>
     </View>
   )

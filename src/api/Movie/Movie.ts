@@ -93,21 +93,7 @@ class Movie extends Database implements IMovie {
     return res.data.results
   }
 
-  // @ts-ignore
-  public async getGenres(sort?: boolean, max?: number): Promise<IGenre[]> {
-    if (!this.genres) {
-      const list = await this.getGenreList()
-      if (this.genre_ids) {
-        this.genre_ids.forEach(item => {
-          list.forEach((_item: any) => {
-            if (_item.id === item) {
-              this.genres.push({ id: _item.id, name: _item.name })
-            }
-          })
-        })
-        console.log('genres', this.genres)
-      }
-    }
+  public getGenres(sort?: boolean, max?: number) {
     if (sort) this.genres = sortArray(this.genres, 'name')
     if (max) this.genres = this.genres.splice(0, max)
 
@@ -246,25 +232,13 @@ class Movie extends Database implements IMovie {
           }
         })
       })
-    //   let id = this.id;
-    //   let returnVal = false;
-    // await this.database.ref(`users/${userId}/watchlist`).once('value', await async function(snap) {
-    //   snap.forEach(await function (snapshot) {
-    //     snapshot.forEach( function (value) {
-    //       let obj = value.val();
-    //       if(obj.id === id) {
-    //         returnVal = true;
-    //       }
-    //     })
-    //   })
-    // })
     return returnVal
   }
 
   public getData(): any {
-    const { backdrop_path, title, popularity, poster_path, id } = this
+    const { backdrop_path, title, popularity, poster_path, id, runtime } = this
     //  console.log(this);
-    return { backdrop_path, title, popularity, poster_path, id }
+    return { backdrop_path, title, popularity, poster_path, id, runtime }
     // return null
   }
 
@@ -290,30 +264,34 @@ class Movie extends Database implements IMovie {
     await this.write('review/' + movieId + '/' + userId, data)
   }
 
-  // public async getMMDBReview(): Promise<any> {
-  //   interface reviewObject {
-  //     id: String
-  //     author: String,
-  //     content: String,
-  //     date: String,
-  //   }
-  //   let reviewList = new Array<reviewObject>()
-  //   this.database.ref("review/" + this.id).on(
-  //     'value',
-  //     element => {
-  //       let reviewID = element.key
-  //       element.forEach((review: any) => {
-  //         let element = review.toJSON()
-  //         reviewList.push({ id: reviewID, author: element.author, content: element.content, date: element.date })
-  //       })
-
-  //   },
-  //     (error: any) => {
-  //       console.error(error)
-  //     }
-  //   )
-  //   return reviewList
-  // }
+  public async getMMDBReview(): Promise<any> {
+    interface reviewObject {
+      id: String
+      author: String
+      content: String
+      date: String
+    }
+    let reviewList = new Array<reviewObject>()
+    await this.database.ref('review/' + this.id).once(
+      'value',
+      element => {
+        element.forEach((review: any) => {
+          let reviewID = review.key
+          let element = review.toJSON()
+          reviewList.push({
+            id: reviewID,
+            author: element.author,
+            content: element.content,
+            date: element.date,
+          })
+        })
+      },
+      (error: any) => {
+        console.error(error)
+      }
+    )
+    return reviewList
+  }
 
   public async getReview(): Promise<any> {
     let reviewURL =

@@ -6,22 +6,18 @@ import {
   Header,
   Row,
   Col,
-  StyleProvider,
   Button,
-  Icon,
   Input,
   Form,
   Item,
   Label,
 } from 'native-base'
-import AutoHeightImage from 'react-native-auto-height-image'
-import getTheme from '../native-base-theme/components'
-import mmdb from '../native-base-theme/variables/mmdb'
-import { NavigationScreenProps } from 'react-navigation'
-import { Dimensions, Alert, TouchableWithoutFeedback } from 'react-native'
+import { Dimensions, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Authentication } from '../api'
 import UserStore from '../stores/UserStore';
-import {Keyboard} from 'react-native'
+import { navigationOptions } from '../helpers/header'
+import { NavigationScreenProps } from 'react-navigation'
+import AutoHeightImage from 'react-native-auto-height-image'
 
 interface IState {
   email: string
@@ -31,30 +27,7 @@ interface IState {
 interface IProps extends NavigationScreenProps { }
 
 class LoginScreen extends Component<IProps, IState> {
-  public navigationOptions = ({ navigation }: NavigationScreenProps) => {
-    return {
-      headerTransparent: true,
-      headerBackgroundTransitionPreset: 'fade',
-      headerLeft: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Home')} transparent>
-            <Icon name="close" style={{ color: '#fff' }} />
-          </Button>
-        </StyleProvider>
-      ),
-      headerTitle: (
-        <StyleProvider style={getTheme(mmdb)}>
-          <Button onPress={() => navigation.navigate('Home')} transparent>
-            <Text
-              style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
-            >
-              mmdb
-            </Text>
-          </Button>
-        </StyleProvider>
-      ),
-    }
-  }
+  static navigationOptions = navigationOptions
   private auth: Authentication
 
   constructor(props: NavigationScreenProps) {
@@ -88,7 +61,12 @@ class LoginScreen extends Component<IProps, IState> {
     const { email, password } = this.state
     return (
       <Container>
-        <Header transparent />
+        <Header
+          transparent
+          translucent
+          iosBarStyle="light-content"
+          noShadow
+        />
         <AutoHeightImage
           source={require('../../assets/header.png')}
           style={{

@@ -9,19 +9,12 @@ import {
   View,
 } from 'react-native'
 import { NavigationInjectedProps, withNavigation } from 'react-navigation'
-import {
-  Card as NativeCard,
-  CardItem,
-  Body,
-  Text,
-  Button,
-  // Row,
-} from 'native-base'
+import { Card as NativeCard, CardItem, Body, Text, Button } from 'native-base'
 import SvgUri from 'react-native-svg-uri'
 import { LinearGradient, Linking } from 'expo'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Movie from '../api/Movie/Movie'
-// import { Pill } from '.'
+import { Pill } from '.'
 
 interface ICardParams {
   movieId: number
@@ -53,7 +46,7 @@ class Card extends Component<IProps, any> {
   }
   onPress = async () => {
     const trailer = await this.props.movie.getTrailer(0)
-    Linking.openURL(`https://www.youtube.com/embed/${trailer.key}`)
+    Linking.openURL(`https://www.youtube.com/embed/${trailer[0].key}`)
   }
   renderStars = (stars: number) => {
     let starsArray = []
@@ -178,7 +171,7 @@ class Card extends Component<IProps, any> {
                     justifyContent: 'center',
                     alignItems: 'center',
                     alignSelf: 'center',
-                    maxWidth: '60%',
+                    minWidth: '65%',
                   }}
                 >
                   <Button
@@ -196,24 +189,25 @@ class Card extends Component<IProps, any> {
                     />
                   </Button>
                   <Text style={styles.text}>{title}</Text>
-                  {/* <View
+                  <View
                     style={{
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexDirection: 'row',
+                      marginTop: 15,
+                      marginBottom: 15,
                     }}
                   >
-                    {this.state.genres
-                      ? this.state.genres.map((item: any) => (
-                          <Pill
-                            key={item.id}
-                            colour="#B90D0D"
-                            text={item.name}
-                            textColour="#E20F0F"
-                          />
-                        ))
-                      : ''}
-                  </View> */}
+                    {movie.getGenres(true, 3).map((item: any) => (
+                      <Pill
+                        key={item.id}
+                        colour="#B90D0D"
+                        text={item.name}
+                        textColour="#E20F0F"
+                        size={22}
+                      />
+                    ))}
+                  </View>
                   <View
                     style={{
                       alignItems: 'center',

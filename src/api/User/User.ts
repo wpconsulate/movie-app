@@ -89,6 +89,19 @@ class User extends Model implements IUser {
       })
     return snapshot
   }
+
+  public async addFriendToList(friendId: number, friendName : string) {
+    return await this.database.ref(User.ENTITY).set({
+      'friends' : {'friendId' : friendId,'friendName' : friendName}
+    });
+  }
+
+  public async addFavActor(actorID: number) {
+    return await this.database.ref(User.ENTITY).set({
+      'actors' : {'actorID' : actorID}
+    });
+  }
+  
 }
 
 export default User

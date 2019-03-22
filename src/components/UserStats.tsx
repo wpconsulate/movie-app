@@ -118,7 +118,9 @@ class UserStats extends React.Component<IPropsUser, IState> {
       parent: {
         flex: 1,
         marginLeft: 10
-      },
+      }, text:{
+        color:'white'
+      }
     })
     const data = [
       {
@@ -157,15 +159,15 @@ class UserStats extends React.Component<IPropsUser, IState> {
         <Grid>
         <Row>
           <Col>
-          <Text style={{color: 'white',padding:5, fontSize: 13}}>Total Entries: {this.state.totalEntries}</Text>
-          <Text style={{color: 'white',fontSize: 13}}>  Review: 19</Text>
+          <Text style={style.text}>Total Entries:{this.state.totalEntries}</Text>
+          <Text style={style.text}>Review:0</Text>
           </Col>
 
           <Col >
-          <Text style={{color: 'white', fontSize: 13}}>Days: {this.state.totalDays}</Text>
-          <Text style={{color: 'white', fontSize: 13}}>Hours: {this.state.totalHours}</Text>
-          <Text style={{color: 'white', fontSize: 13}}>Minutes: {this.state.totalRuntime}</Text>
-          <Text style={{color: 'white', fontSize: 13}}>Joined: 17:03:2019{this.props.userData.joined}</Text>
+          <Text style={style.text}>Days:{this.state.totalDays}</Text>
+          <Text style={style.text}>Hours:{this.state.totalHours}</Text> 
+          <Text style={style.text}>Minutes: {this.state.totalRuntime}</Text>
+          <Text style={style.text}>Joined: {this.props.userData.joined}</Text>      
           </Col>
         </Row>
         </Grid>

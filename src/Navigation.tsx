@@ -8,6 +8,7 @@ import {
   MovieScreen,
   ProfileScreen,
   ResultsScreen,
+  SettingsScreen,
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -19,6 +20,7 @@ const RootStack = createStackNavigator(
     Movie: MovieScreen,
     Profile: ProfileScreen,
     Results: ResultsScreen,
+    Settings: SettingsScreen,
   },
   {
     initialRouteName: 'Home',
