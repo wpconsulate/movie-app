@@ -247,7 +247,6 @@ class ReviewsList extends React.Component<any, IState2> {
               key={element.id}
               url={'something image'}
               review={element.content}
-              numberOfDays={2}
               username={element.author}
               movieName={element.movieName}
             />
