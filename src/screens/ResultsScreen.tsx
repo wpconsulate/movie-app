@@ -17,6 +17,7 @@ import Movies from '../containers/Movies';
 import { Header } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import Algolia from './../api/Algolia';
+import UserIcon from '../components/userIcon';
 
 const navigationOptions: any = () => ({
   headerTransparent: true,
@@ -36,6 +37,7 @@ class ResultsScreen extends Component<any, IState> {
     this.setOfMovies = new SetOfMovies()
     this.search = new Search()
     this.algolia = new Algolia('users')
+
   }
 
   async componentWillMount() {
@@ -64,9 +66,20 @@ class ResultsScreen extends Component<any, IState> {
             this.setOfMovies.addMovie(result)
         })
         const users = await this.algolia.search({ query })
-        console.log('user index', users)
+        let foundUser: {id:number,username:string}[];
+        users.hits.forEach(element => {
+          if(foundUser != null)
+            foundUser.push({id:element.id, username:element.username})
+          else
+            foundUser = [{id:element.id, username:element.username}]
+          console.log(element.id)
+          console.log(element.username)
+        });
+        console.log(foundUser)
+        //console.log('user index', users)
         this.setState({
           movies: this.setOfMovies,
+          user: foundUser
         })
       } catch (err) {
         console.error(err)
@@ -126,15 +139,14 @@ class ResultsScreen extends Component<any, IState> {
                     </Col>
                   </Row>
                 </Grid>
-                {this.state.isLoading ? (
-                  <Spinner />
-                ) : this.state.movies ? (
-                  <Movies
-                    data={this.setOfMovies}
-                  />
-                ) : (
-                      ''
-                    )}
+                {this.state.isLoading ? (<Spinner />) 
+                  : this.state.movies ? (<Movies data={this.setOfMovies}/>) : ('')}
+                
+                <Grid>
+                {this.state.user? this.state.user.map((e:any)=>{
+                  return (<UserIcon key={e.id} userId={e.id} username={e.username} />)
+                  }) : undefined}
+                </Grid>
               </Content>
             </React.Fragment>
         }
