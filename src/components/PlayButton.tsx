@@ -3,7 +3,7 @@ import { Button } from 'native-base'
 import SvgUri from 'react-native-svg-uri'
 
 interface IProps {
-  onPress?: void
+  onPress?: any
 }
 function PlayButton(props: IProps) {
   return (
@@ -13,7 +13,7 @@ function PlayButton(props: IProps) {
         width: 85,
         height: 85,
       }}
-      onPress={() => props.onPress}
+      onPress={props.onPress}
       accessible
       accessibilityRole="button"
       accessibilityLabel="Play trailer"

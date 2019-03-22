@@ -248,19 +248,11 @@ class Movie extends Database implements IMovie {
     userId: string,
     username: string
   ) {
-    let today = new Date()
-    let dd = today.getDate()
-    let mm = today.getMonth() + 1
-    let yyyy = today.getFullYear()
-    if (dd < 10) {
-      dd = 0 + dd
+    let data = {
+      author: username,
+      content: reviewContent,
+      date: new Date().getTime(),
     }
-    if (mm < 10) {
-      mm = 0 + mm
-    }
-    let currentDate = mm + '/' + dd + '/' + yyyy
-
-    let data = { author: username, content: reviewContent, date: currentDate }
     await this.write('review/' + movieId + '/' + userId, data)
     await this.write('users/' + userId + '/reviews/' + movieId + '/', data)
   }
