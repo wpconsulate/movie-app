@@ -102,7 +102,8 @@ class LoginScreen extends Component<IProps, IState> {
                   fontFamily: 'PoppinsMedium',
                   fontSize: 13,
                   color: '#696969',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  textAlign: 'right'
                 }}
               >
                 Sign in to your account
