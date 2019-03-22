@@ -5714,13 +5714,6 @@ react-native-paper@^2.13.0:
     react-lifecycles-compat "^3.0.4"
     react-native-safe-area-view "^0.12.0"
 
-"react-native-ratings@git+https://github.com/lukepaoloni/react-native-ratings.git":
-  version "6.3.0"
-  resolved "git+https://github.com/lukepaoloni/react-native-ratings.git#f06e0bf93206e76c04d5c10be891cd41b2ec42ee"
-  dependencies:
-    lodash "^4.17.4"
-    prop-types "^15.5.10"
-
 react-native-reanimated@1.0.0-alpha.10:
   version "1.0.0-alpha.10"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.0.0-alpha.10.tgz#e9e6fb35a2cf52fdc912b9fbc76f34f80698e530"
