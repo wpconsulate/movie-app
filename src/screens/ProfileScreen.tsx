@@ -15,7 +15,7 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from './SettingsScreen'
-import { Button, Spinner } from 'native-base'
+import { Button, Spinner, Icon } from 'native-base'
 import UserStore from '../stores/UserStore'
 
 interface IState {
@@ -263,21 +263,47 @@ const TabNavigator = createBottomTabNavigator(
     All: { screen: ProfileScreen },
     Friends: { screen: FriendsList },
     Review: { screen: ReviewsList },
-    Settings: SettingsScreens,
+    Settings: { screen: SettingsScreens },
   },
   {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused }) => {
+        const { routeName } = navigation.state
+        let type: any = 'Feather',
+          name
+        let color = focused ? 'white' : '#686C86'
+        if (routeName === 'All') {
+          name = 'user'
+        } else if (routeName === 'Settings') {
+          name = 'settings'
+        } else if (routeName == 'Review') {
+          name = 'rate-review'
+          type = 'MaterialIcons'
+        } else if (routeName == 'Friends') {
+          name = 'users'
+        }
+
+        // You can return any component that you like here! We usually use an
+        // icon component from react-native-vector-icons
+        return (
+          <Icon
+            type={type}
+            name={name}
+            style={{ color: color, fontSize: 30, paddingTop: 5 }}
+          />
+        )
+      },
+    }),
     tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'white',
-      showIcon: true,
+      activeTintColor: 'white',
+      inactiveTintColor: '#686C86',
       labelStyle: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: '400',
-        textDecorationLine: 'underline',
       },
       style: {
-        backgroundColor: '#12152D',
-        height: 40,
+        backgroundColor: '#1d2249',
+        height: 60,
       },
     },
   }
