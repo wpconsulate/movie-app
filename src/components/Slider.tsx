@@ -22,8 +22,8 @@ class Slider extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
-      isModalOpened: false,
       currentImageIndex: 0,
+      isModalOpened: false
     }
   }
 
@@ -36,8 +36,8 @@ class Slider extends Component<IProps, IState> {
 
   closeModal(index: number) {
     this.setState({
-      isModalOpened: false,
       currentImageIndex: index,
+      isModalOpened: false
     })
   }
 

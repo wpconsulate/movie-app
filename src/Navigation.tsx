@@ -3,26 +3,26 @@ import { Constants } from 'expo'
 import {
   HomeScreen,
   LoginScreen,
-  RegisterScreen,
-  SearchScreen,
   MovieScreen,
   ProfileScreen,
+  RegisterScreen,
   ResultsScreen,
-  SettingsScreen,
-  ReviewScreen
+  ReviewScreen,
+  SearchScreen,
+  SettingsScreen
 } from './screens'
 
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
     Login: LoginScreen,
-    Register: RegisterScreen,
-    Search: SearchScreen,
     Movie: MovieScreen,
     Profile: ProfileScreen,
+    Register: RegisterScreen,
     Results: ResultsScreen,
-    Settings: SettingsScreen,
-    Review: ReviewScreen
+    Review: ReviewScreen,
+    Search: SearchScreen,
+    Settings: SettingsScreen
   },
   {
     initialRouteName: 'Home',

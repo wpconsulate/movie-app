@@ -9,207 +9,254 @@ import {
   Input,
   Form,
   Item,
-  Label,
+  Label
 } from 'native-base'
-import { CameraRoll, Image, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import { 
+  View, 
+  TouchableWithoutFeedback, 
+  Keyboard, 
+  ActivityIndicator 
+} from 'react-native'
 import { Database } from '../api'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { Avatar }  from 'react-native-elements'
 
 interface IState {
-  userID: string
+  email: string,
+  isLoading: boolean, 
+  name: string,            
+  newPassword: string,
+  oldPassword: string,         
+  userAvatarColour: string,    
+  userData: any,     
+  userID: string,
+  userInitials: string,
   username: string
-  password: string
-  userData: any
-  email: string
-  darkmode: boolean
-  userPic: any
-  currPic: string
-  selectedPic: string
-  lookingAtPictures: boolean
 }
 interface IProps extends NavigationScreenProps {}
 
 class SettingsScreen extends Component<IProps, IState> {
   static navigationOptions = navigationOptions
-
-
-
+  auth: Authentication
   database: Database
-
+  private users = new SetOfUsers()
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
-      userID: '',
-      username: '',
-      password: '',
-      userData: null,
       email: '',
-      darkmode: false,
-      userPic: [],
-      selectedPic: '',
-      lookingAtPictures: false,
-      currPic: 'http://www.cruciblefactory.com/images/membersprofilepic/noprofilepicture.gif',
+      isLoading: false, 
+      name: '',            
+      newPassword: '',
+      oldPassword: '',         
+      userAvatarColour: 'blue',    
+      userData: undefined,     
+      userID: '',
+      userInitials: 'MT',
+      username: ''
+
     }
     this.database = new Database()
   }
-  
-
   async componentWillMount(){
-    let currUser = new Authentication()
-    let userID = currUser.getCurrentUser().uid
-    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    let CurrUSerDetails = await new SetOfUsers().getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-    this.setState({userID: userID ,username: CurrUSerDetails.name, userData: CurrUSerDetails, email: CurrUSerDetails.email })
+    const currUser = new Authentication()
+    const userID = currUser.getCurrentUser().uid
+    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    const CurrUSerDetails = await this.users.getById(userID)
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+   
+    this.setState({
+      email: CurrUSerDetails.email,
+      isLoading: true,
+      name: CurrUSerDetails.name,      
+      userAvatarColour: CurrUSerDetails.userAvatarColour,
+      userData: CurrUSerDetails, 
+      userID: userID,      
+      userInitials: CurrUSerDetails.userInitials,
+      username: CurrUSerDetails.username
+    })
   }
 
-  setPic(newP: any){
-    this.setState({ currPic: newP })
-    this.setState({ userPic: [] })
-  }
+  // onRegisterPress() {
+  //   const { email, newPassword, oldPassword, name, username, userInitials, userAvatarColour } = this.state
+  //   if (email !== null && name !== null && username !== null )
+  //   {
+  //   this.setState({ isLoading: true })
+  //   this.auth
+  //     .register(email, password, {
+  //       email,
+  //       name,
+  //       username,
+  //       userInitials,
+  //       userAvatarColour
+        
+  //     })
+  //     .then(() => {
+  //       this.setState({ isLoading: false })
+  //       Alert.alert('Successfully registered!')
+  //       this.props.navigation.navigate('Home');
+  //     })
+  //     .catch(error => {
+  //       Alert.alert(error.message)
+  //       this.props.navigation.navigate('Login');        
+  //     })
+  //   }
+  //   else {
+  //     Alert.alert('Please Input all the data before Registering!')
+  //   }
+  // }
 
-  _handleButtonPress = () => {
-    let reverse = !this.state.lookingAtPictures
-    this.setState({ lookingAtPictures: reverse })
-    CameraRoll.getPhotos({
-        first: 20,
-        assetType: 'Photos',
-      })
-      .then(r => {
-        console.log(r)
-        this.setState({ userPic: r.edges })
-      })
-      .catch((err) => {
-        console.log(err)
-         //Error Loading Images
-      });
-    };
+  setUserAvatar(name: string){
+    name  = name || ''    
+    let charIndex = 0
+    let colourChosen = ''    
+    let colourIndex = 0
+    const colours = [
+      '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', 
+      '#f1c40f', '#e67e22', '#e74c3c', '#ecf0f1', '#95a5a6', '#f39c12', '#d35400', '#c0392b', '#bdc3c7', '#7f8c8d'
+    ]
+    let initials = ''
+    const nameSplit = String(name).toUpperCase().split(' ')
+
+    // Collects Initials of persons NAME (First and second first character)
+    if (nameSplit.length === 1) {
+      // console.log("Length = 1")
+      initials = nameSplit[0] ? nameSplit[0].charAt(0) : ' ? '
+    } else {
+    // console.log("length > 1")
+      initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0)
+    }
+    charIndex     = (initials === '?' ? 72 : initials.charCodeAt(0)) - 64
+    colourIndex   = charIndex % 20
+
+    colourChosen = colours[colourIndex]
+
+    this.setState({ userInitials: initials, userAvatarColour: colourChosen })
+  }
 
   render() {
-    const { email, username, userPic, selectedPic, currPic , password} = this.state
+    const { email, username, oldPassword, newPassword, userAvatarColour, userInitials, isLoading, name} = this.state
+
+    if ( ! isLoading ){
+      return (
+      <View style={{ flex: 1, padding: 20 }}>
+        <ActivityIndicator />
+      </View>
+      )
+    }
 
     return (
-      <Container style={{ backgroundColor: '#12152D' }} >
-
+      <Container style={{ backgroundColor: '#12152D', paddingBottom: 10 }} >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Content style={{ paddingHorizontal: 30, paddingBottom: 20 }}>
+        <Content style={{ paddingHorizontal: 30 }}>
               <Row style={{ marginTop: 30 }}>
             <Col>
 
               <Text style={{
                 alignSelf: 'center', 
-                fontSize:30, 
                 color: 'red',
+                fontSize: 30, 
                 fontWeight: 'bold',
-                marginBottom: 40
+                marginBottom: 20
               }}>
                 Settings
               </Text>
 
               <Form>
-              <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
-              <Image
+              <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
+              {/* <Image
                 style={{width: 50, height: 50}}
                 source={{ uri: currPic }}
+              /> */}
+              <Avatar
+                size="large"   
+                rounded={true}             
+                title={userInitials}
+                // title="MT"
+                overlayContainerStyle={{ backgroundColor: userAvatarColour }}
+                activeOpacity={0.7}
               />
               <Text 
-              style={{
-                fontSize: 14,
-                fontFamily: 'PoppinsMedium',
+              style={{                               
                 color: '#FFF',
-                marginBottom: 20
+                fontFamily: 'PoppinsMedium',
+                fontSize: 14,                
+                marginBottom: 20,
+                marginTop: 20
               }}
               >CURRENT PROFILE PICTURE</Text>
-              <TouchableOpacity
-                style={{
-                  position: 'absolute',
-                  top: -10,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => this._handleButtonPress()}                     
-              >
-                <View style={{ 
-                  height: 40,
-                  width: 40,
-                  borderRadius: 40 / 2,
-                  backgroundColor: 'red',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                  <MaterialIcons name="add" color="#12152D" size={38} />
-                </View>
-              </TouchableOpacity>
               </Item>
-              <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
-              {userPic.map((p: any, i: number) => {
-              return (
-                <TouchableOpacity key={i} onPress={() => this.setState({ selectedPic: p.node.image.uri })} >
-                    <Image
-                    style={{width: 50, height: 50}}
-                    source={{ uri: p.node.image.uri }}
-                    />
-                    <Text> Picture: {i} </Text>
-                </TouchableOpacity>
-                );
-              })}
-              <Button
-                onPress={() => this.setPic(selectedPic)}
-                rounded
-                primary
-                block
-                style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
-              >
-                <Text>confirm Picture</Text>
-              </Button>
-              </Item>
-                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
                     style={{
-                      fontSize: 16,
-                      fontFamily: 'PoppinsMedium',
                       color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 16    
                     }}
                   >
                     EMAIL
                   </Label>
                   <Input
                     style={{
-                      fontSize: 14,
-                      fontFamily: 'PoppinsMedium',
                       color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 14    
                     }}
                     label="EMAIL"
-                    autoFocus
+                    autoFocus={false}
                     keyboardType="email-address"
-                    autoCorrect
+                    autoCorrect={true}
                     value={email}
                     onChangeText={text => {
                       this.setState({ email: text })
                     }}
                   />
                 </Item>
-                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
                     style={{
-                      fontSize: 16,
-                      fontFamily: 'PoppinsMedium',
                       color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 16    
+                    }}
+                  >
+                  FULLNAME
+                  </Label>
+                  <Row>
+                    <Input
+                      style={{
+                        color: '#FFF',
+                        fontFamily: 'PoppinsMedium',
+                        fontSize: 14    
+                      }}
+                      label="Fullname"
+                      keyboardType="default"
+                      value={name}
+                      onChangeText={text => {
+                        this.setState({ name: text }) 
+                        this.setUserAvatar(text)
+                      }}
+                    />
+                  </Row>
+                </Item>      
+                <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{                      
+                      color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 16
                     }}
                   >
                     USERNAME
                   </Label>
                   <Row>
                     <Input
-                      style={{
-                        fontSize: 14,
-                        fontFamily: 'PoppinsMedium',
+                      style={{                       
                         color: '#FFF',
+                        fontFamily: 'PoppinsMedium',
+                        fontSize: 14
                       }}
                       label="Username"
                       keyboardType="default"
@@ -219,34 +266,84 @@ class SettingsScreen extends Component<IProps, IState> {
                       }}
                     />
                   </Row>
-                </Item>   
-                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                </Item>           
+                <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
                   <Label
-                    style={{
-                      fontSize: 16,
-                      fontFamily: 'PoppinsMedium',
+                    style={{                      
                       color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 16
                     }}
                   >
-                    PASSWORD
+                    NEW PASSWORD
                   </Label>
                   <Row>
                     <Input
-                      style={{
-                        fontSize: 14,
-                        fontFamily: 'PoppinsMedium',
+                      style={{                        
                         color: '#FFF',
+                        fontFamily: 'PoppinsMedium',
+                        fontSize: 14
                       }}
                       label="Password"
                       keyboardType="visible-password"
-                      secureTextEntry
-                      value={password}
+                      secureTextEntry={true}
+                      value={newPassword}
                       onChangeText={text => {
-                        this.setState({ password: text })
+                        this.setState({ newPassword: text })
                       }}
                     />
                   </Row>
-                </Item>              
+                </Item>
+
+                {newPassword.length > 0 &&
+                <Item stackedLabel={true} style={{ marginLeft: 0, marginTop: 20 }}>
+                  <Label
+                    style={{                      
+                      color: '#FFF',
+                      fontFamily: 'PoppinsMedium',
+                      fontSize: 16
+                    }}
+                  >
+                    PLEASE ENTER OLD PASSWORD
+                  </Label>
+                  <Row>
+                    <Input
+                      style={{                        
+                        color: '#FFF',
+                        fontFamily: 'PoppinsMedium',
+                        fontSize: 14
+                      }}
+                      label="Password"
+                      keyboardType="visible-password"
+                      secureTextEntry={true}
+                      value={oldPassword}
+                      onChangeText={text => {
+                        this.setState({ oldPassword: text })
+                      }}
+                    />
+                  </Row>
+                </Item>
+                }
+
+                <Row
+                  style={{
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    marginTop: 40
+                  }}
+                >
+                  <Col style={{ maxWidth: 250, marginBottom: 20 }}>
+                    <Button
+                      rounded={true}
+                      primary={true}
+                      block={true}
+                      // onPress={() => this.onRegisterPress()}
+                      style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
+                    >
+                      <Text>Update Account</Text>
+                    </Button>
+                  </Col>
+                </Row>              
               </Form>
             </Col>
           </Row>
