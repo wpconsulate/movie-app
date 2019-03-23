@@ -1,30 +1,21 @@
 import React, { Component } from 'react'
-import {
-  Container,
-  Content,
-  Spinner,
-  Row,
-  Col,
-  Text,
-  Grid
-} from 'native-base'
+import { Container, Content, Spinner, Row, Col, Text, Grid } from 'native-base'
 import SetOfMovies from '../api/Collection/SetOfMovies'
 import { IResultsScreenState as IState } from '../state/ResultsScreenState'
 import Search from '../api/Search'
-import { TouchableOpacity, StatusBar } from 'react-native';
+import { TouchableOpacity, StatusBar } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import Movies from '../containers/Movies';
-import { Header } from 'native-base';
-import { withNavigation } from 'react-navigation';
-import Algolia from './../api/Algolia';
-import UserIcon from '../components/userIcon';
+import Movies from '../containers/Movies'
+import { Header } from 'native-base'
+import { withNavigation } from 'react-navigation'
+import Algolia from './../api/Algolia'
+import UserIcon from '../components/userIcon'
 
 const navigationOptions: any = () => ({
-  headerTransparent: true,
+  header: undefined as any,
   headerMode: 'none',
-  header: null as any
+  headerTransparent: true
 })
-
 
 class ResultsScreen extends Component<any, IState> {
   static navigationOptions = navigationOptions
@@ -37,46 +28,44 @@ class ResultsScreen extends Component<any, IState> {
     this.setOfMovies = new SetOfMovies()
     this.search = new Search()
     this.algolia = new Algolia('users')
-
   }
 
   async componentWillMount() {
     this.setState({
       isLoading: true
-    });
-    let header: String = await this.props.navigation.getParam('query');
-    if (await this.props.navigation.getParam('setOfMovie') != null) {
+    })
+    const header: string = await this.props.navigation.getParam('query')
+    if ((await this.props.navigation.getParam('setOfMovie')) !== undefined) {
       try {
         const query = await this.props.navigation.getParam('setOfMovie')
         this.setOfMovies = query
         this.setState({
-          movies: this.setOfMovies,
+          movies: this.setOfMovies
         })
-      }
-      catch (err) {
+      } catch (err) {
         console.error(err)
       }
-    }
-    else {
+    } else {
       try {
         const query = await this.props.navigation.getParam('query')
         const results = await this.search.search(query)
         results.forEach((result: any) => {
-          if (result.title && result.poster_path)
+          if (result.title && result.poster_path) {
             this.setOfMovies.addMovie(result)
+          }
         })
         const users = await this.algolia.search({ query })
-        let foundUser: {id:number,username:string}[];
+        let foundUser: Array<{ id: number; username: string }> = []
         users.hits.forEach(element => {
-          if(foundUser != null)
-            foundUser.push({id:element.id, username:element.username})
-          else
-            foundUser = [{id:element.id, username:element.username}]
+          if (foundUser !== undefined) {
+            foundUser.push({ id: element.id, username: element.username })
+          } else {
+            foundUser = [{ id: element.id, username: element.username }]
+          }
           console.log(element.id)
           console.log(element.username)
-        });
-        console.log(foundUser)
-        //console.log('user index', users)
+        })
+        // console.log('user index', users)
         this.setState({
           movies: this.setOfMovies,
           user: foundUser
@@ -93,63 +82,101 @@ class ResultsScreen extends Component<any, IState> {
   }
 
   render() {
-
     return (
       <Container
         style={{
-          backgroundColor: '#12152D',
+          backgroundColor: '#12152D'
         }}
       >
         <StatusBar barStyle="light-content" />
-        {
-          this.state.isLoading ?
-            <Spinner />
-            :
-            <React.Fragment>
-              <Header transparent iosBarStyle="light-content" style={{ flexDirection: 'row' }}>
-                <Grid>
-                  <Row style={{ marginTop: 5, alignItems: 'center', height: '100%', width: '100%', flex: 1 }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}
-                      accessible
-                      accessibilityRole="button"
-                      accessibilityLabel="Go back"
-                      accessibilityHint="Double tap to go back to the search screen."
-                    >
-                      <FeatherIcon name="chevron-left" size={30} color="white" />
-                    </TouchableOpacity>
+        {this.state.isLoading ? (
+          <Spinner />
+        ) : (
+          <React.Fragment>
+            <Header
+              transparent={true}
+              iosBarStyle="light-content"
+              style={{ flexDirection: 'row' }}
+            >
+              <Grid>
+                <Row
+                  style={{
+                    alignItems: 'center',
+                    flex: 1,
+                    height: '100%',
+                    marginTop: 5,
+                    width: '100%'
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.goBack()}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Go back"
+                    accessibilityHint="Double tap to go back to the search screen."
+                  >
+                    <FeatherIcon name="chevron-left" size={30} color="white" />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      alignSelf: 'center',
+                      color: 'white',
+                      flex: 1,
+                      fontSize: 14,
+                      fontWeight: 'bold',
+                      marginRight: 5,
+                      textAlign: 'center'
+                    }}
+                  >
+                    Showing {this.state.movies.length} results for
+                  </Text>
+                </Row>
+              </Grid>
+            </Header>
+            <Content
+              style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 20 }}
+            >
+              <Grid>
+                <Row style={{ alignItems: 'center', width: '100%' }}>
+                  <Col>
                     <Text
                       style={{
-                        color: 'white',
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
                         alignSelf: 'center',
-                        marginRight: 5,
-                        flex: 1
+                        color: '#E20F0F',
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        textTransform: 'capitalize'
                       }}
-                    >Showing {this.state.movies.length} results for</Text>
-                  </Row>
-                </Grid>
-              </Header>
-              <Content style={{ paddingLeft: 20, paddingRight: 20 , paddingBottom: 20}}>
-                <Grid>
-                  <Row style={{ alignItems: 'center', width: '100%' }}>
-                    <Col>
-                      <Text style={{ alignSelf: 'center', textTransform: 'capitalize', fontSize: 24, fontWeight: 'bold', color: '#E20F0F' }}>{this.state.title}</Text>
-                    </Col>
-                  </Row>
-                </Grid>
-                {this.state.isLoading ? (<Spinner />) 
-                  : this.state.movies ? (<Movies data={this.setOfMovies}/>) : ('')}
-                
-                <Grid>
-                {this.state.user? this.state.user.map((e:any)=>{
-                  return (<UserIcon key={e.id} userId={e.id} username={e.username} />)
-                  }) : undefined}
-                </Grid>
-              </Content>
-            </React.Fragment>
-        }
+                    >
+                      {this.state.title}
+                    </Text>
+                  </Col>
+                </Row>
+              </Grid>
+              {this.state.isLoading ? (
+                <Spinner />
+              ) : this.state.movies ? (
+                <Movies data={this.setOfMovies} />
+              ) : (
+                ''
+              )}
+
+              <Grid>
+                {this.state.user
+                  ? this.state.user.map((e: any) => {
+                      return (
+                        <UserIcon
+                          key={e.id}
+                          userId={e.id}
+                          username={e.username}
+                        />
+                      )
+                    })
+                  : undefined}
+              </Grid>
+            </Content>
+          </React.Fragment>
+        )}
       </Container>
     )
   }

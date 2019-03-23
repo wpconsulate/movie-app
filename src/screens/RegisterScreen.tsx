@@ -97,7 +97,7 @@ class RegisterScreen extends Component<IProps, IState> {
           username,
           userInitials,
           userAvatarColour
-          
+
         })
         .then(() => {
           this.setState({ isLoaded: true })
@@ -107,7 +107,7 @@ class RegisterScreen extends Component<IProps, IState> {
         .catch(error => {
           Alert.alert(error.message)
           this.props.navigation.navigate('Login');
-          
+
         })
       } else {
         Alert.alert('The two Passwords must be the same')
@@ -127,7 +127,7 @@ class RegisterScreen extends Component<IProps, IState> {
     let colourIndex = 0
     let colourChosen = ''
     let colours = [
-      "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50", 
+      "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
       "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
     ]
 
@@ -148,7 +148,7 @@ class RegisterScreen extends Component<IProps, IState> {
     this.setState({ userInitials: initials, userAvatarColour: colourChosen })
   }
 
-    
+
 
   render() {
     if (!this.state.isLoaded) {
@@ -169,6 +169,7 @@ class RegisterScreen extends Component<IProps, IState> {
             left: 0,
             right: 0,
             width: '100%',
+            height: '15%'
           }}
           width={Dimensions.get('window').width}
         />
@@ -182,6 +183,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   fontFamily: 'PoppinsBold',
                   fontSize: 24,
                   color: '#12152D',
+                  marginTop: 50,
                 }}
               >
                 Register
@@ -193,7 +195,8 @@ class RegisterScreen extends Component<IProps, IState> {
                   fontFamily: 'PoppinsMedium',
                   fontSize: 13,
                   color: '#696969',
-                  textAlign:'center'
+                  textAlign:'center',
+                  marginTop: 50,
                 }}
               >
                 Sign up for a new account
@@ -334,7 +337,7 @@ class RegisterScreen extends Component<IProps, IState> {
                       primary
                       block
                       onPress={() => this.onRegisterPress()}
-                      style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
+                      style={{ backgroundColor: '#E20F0F', minHeight: 50, marginTop:15 }}
                     >
                       <Text>Create Account</Text>
                     </Button>
@@ -353,7 +356,7 @@ class RegisterScreen extends Component<IProps, IState> {
             }}
           >
             <Col>
-              <Text style={{textAlign: 'center'}}>Already a user?</Text>
+              <Text style={{textAlign: 'center', fontSize: 13}}>Already a user?</Text>
             </Col>
             <Col>
               <Button
@@ -362,7 +365,9 @@ class RegisterScreen extends Component<IProps, IState> {
                   this.props.navigation.navigate('Login')
                 }}
               >
-                <Text>Login now</Text>
+                <Text style={{
+                  color:'black',
+                  fontSize:13}}>Login now</Text>
               </Button>
             </Col>
           </Row>

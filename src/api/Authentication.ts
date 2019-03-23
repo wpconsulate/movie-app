@@ -14,11 +14,11 @@ class Authentication {
   }
 
   public async login(email: string, password: string) {
-    return await this.auth.signInWithEmailAndPassword(email, password)
+    return this.auth.signInWithEmailAndPassword(email, password)
   }
 
   public async logout() {
-    return await this.auth.signOut()
+    return this.auth.signOut()
   }
 
   public async register(
@@ -26,26 +26,24 @@ class Authentication {
     password: string,
     data: IRegisterParams
   ) {
-    //TODO: Check to see if username exists!
+    // TODO: Check to see if username exists!
     const user = await this.auth.createUserWithEmailAndPassword(email, password)
-    const userId = this.auth.currentUser.uid
+    const userId = (this.auth.currentUser as firebase.User).uid
     await this.database.write('users/' + userId, {
       ...data,
-      joined: new Date().getTime(),
+      joined: new Date().getTime()
     })
     await this.algolia.add({
       id: userId,
-      username: data.username,
+      username: data.username
     })
     return user
   }
   public getCurrentUser() {
-    const user = this.auth.currentUser
-    return user
+    return this.auth.currentUser as firebase.User
   }
   public getCurrentUserUid() {
-    const user = this.auth.currentUser.uid
-    return user
+    return this.getCurrentUser().uid
   }
 
   public isLoggedIn() {

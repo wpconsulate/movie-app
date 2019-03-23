@@ -8,34 +8,40 @@ class SetOfUsers extends Array<User> {
     let value
     value = await this.database.database
       .ref('users/' + id)
-      .once('value', function (snap) {
-        //change the above to users/movie to make it the folders under the correct location -- this will work
+      .once('value', snap => {
+        // change the above to users/movie to make it the folders under the correct location -- this will work
         return (value = snap.val())
-        //console.log(snap);
+        // console.log(snap);
       })
-    let jsonVar = JSON.stringify(value)
-    let returnVar = JSON.parse(jsonVar)
+    const jsonVar = JSON.stringify(value)
+    const returnVar = JSON.parse(jsonVar)
     return returnVar
   }
 
   public async getUserReviewsById(userId: string): Promise<any> {
-    interface reviewObject {
-      id: String
-      author: String,
-      content: String,
-      date: String,
-      movieName: String,
+    interface ReviewObject {
+      id: string
+      author: string
+      content: string
+      date: string
+      movieName: string
     }
-    let reviewList = new Array<reviewObject>()
-    await this.database.database.ref("users/" + userId + "/reviews/").once(
+    const reviewList = new Array<ReviewObject>()
+    await this.database.database.ref('users/' + userId + '/reviews/').once(
       'value',
       element => {
         element.forEach((review: any) => {
-          let reviewID = review.key
-          let element = review.toJSON()
-          reviewList.push({ id: reviewID, author: element.author, content: element.content, date: element.date, movieName: element.movieName })    
+          const reviewID = review.key
+          const element = review.toJSON()
+          reviewList.push({
+            author: element.author,
+            content: element.content,
+            date: element.date,
+            id: reviewID,
+            movieName: element.movieName
+          })
         })
-    },
+      },
       (error: any) => {
         console.error(error)
       }

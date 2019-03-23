@@ -4,7 +4,7 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
-  RefreshControl,
+  RefreshControl
 } from 'react-native'
 import ProfilePic from '../components/ProfilePic'
 import UserStats from '../components/UserStats'
@@ -15,7 +15,7 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from './SettingsScreen'
-import { Button, Spinner } from 'native-base'
+import { Button, Spinner, Icon } from 'native-base'
 import UserStore from '../stores/UserStore'
 
 interface IState {
@@ -33,18 +33,18 @@ class ProfileScreen extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
     this.state = {
-      userID: '',
       isLoading: true,
+      userID: ''
     }
   }
   async componentWillMount() {
-    let UId = this.props.navigation.getParam('userId')
-    if (UId != null) {
+    const UId = this.props.navigation.getParam('userId')
+    if (UId) {
       console.log('userID: ' + UId)
       this.setState({ userID: UId, isLoading: false })
     } else {
-      let currUser = new Authentication()
-      let userID = currUser.getCurrentUser().uid
+      const currUser = new Authentication()
+      const userID = (currUser.getCurrentUser() as firebase.User).uid
       this.setState({ userID: userID, isLoading: false })
     }
   }
@@ -66,24 +66,24 @@ class ProfileContent extends React.Component<IProps, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      userID: '',
-      username: '',
-      userData: null,
       isLoading: true,
       refreshing: false,
+      userData: undefined,
+      userID: '',
+      username: ''
     }
   }
   async componentWillMount() {
-    //let currUser = new Authentication()
-    //let userID = currUser.getCurrentUser().uid
+    // let currUser = new Authentication()
+    // let userID = currUser.getCurrentUser().uid
     const userID = this.props.userID
     const CurrUSerDetails = await new SetOfUsers().getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({
-      userID: userID,
-      username: CurrUSerDetails.name,
-      userData: CurrUSerDetails,
       isLoading: false,
+      userData: CurrUSerDetails,
+      userID: userID,
+      username: CurrUSerDetails.name
     })
   }
   // logout = () => {
@@ -101,7 +101,7 @@ class ProfileContent extends React.Component<IProps, IState> {
     })
   }
   render() {
-    //show loading icon for profile page
+    // show loading icon for profile page
     if (this.state.isLoading) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -123,9 +123,9 @@ class ProfileContent extends React.Component<IProps, IState> {
           <Text
             style={{
               alignSelf: 'center',
+              color: 'white',
               fontSize: 30,
-              color: 'red',
-              fontWeight: 'bold',
+              fontWeight: 'bold'
             }}
           >
             Profile Page
@@ -148,8 +148,8 @@ class ProfileContent extends React.Component<IProps, IState> {
         <Button
           onPress={() => {
             console.log('i logged out!')
-            let currUser = new Authentication()
-            currUser.auth.signOut().then(function() {
+            const currUser = new Authentication()
+            currUser.auth.signOut().then(() => {
               UserStore.setIsLoggedIn(false)
             }) /*this.props.navigation.navigate('home');*/
           }}
@@ -164,9 +164,15 @@ class ProfileContent extends React.Component<IProps, IState> {
 class FriendsList extends React.Component {
   render() {
     return (
-      <View>
-        <Text>Settings</Text>
-        <ScrollView>
+      <ScrollView style={{ backgroundColor: '#12152D' }}>
+        <Text style={{
+          alignSelf: 'center',
+          color: 'white',
+          fontSize: 30,
+          fontWeight: 'bold'
+          }}>Settings</Text>
+
+
           <Review
             review="testing this review"
             username="shezan"
@@ -174,8 +180,8 @@ class FriendsList extends React.Component {
           />
           <Review review="testing this review" username="shezan" url="sdfs" />
           <Review review="testing this review" username="shezan" url="sdfs" />
-        </ScrollView>
-      </View>
+
+      </ScrollView>
     )
   }
 }
@@ -193,27 +199,27 @@ class ReviewsList extends React.Component<any, IState2> {
   constructor(props: any) {
     super(props)
     this.state = {
-      userID: '',
-      username: '',
-      userData: null,
       isLoading: true,
-      reviewList: null,
+      reviewList: [],
+      userData: undefined,
+      userID: '',
+      username: ''
     }
   }
   async componentWillMount() {
-    let currUser = new Authentication()
-    let userID = currUser.getCurrentUser().uid
-    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    let CurrUSerDetails = await this.users.getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-    let userReviews = await this.users.getUserReviewsById(userID)
+    const currUser = new Authentication()
+    const userID = (currUser.getCurrentUser() as firebase.User).uid
+    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    const CurrUSerDetails = await this.users.getById(userID)
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    const userReviews = await this.users.getUserReviewsById(userID)
 
     this.setState({
-      userID: userID,
-      username: CurrUSerDetails.name,
-      userData: CurrUSerDetails,
       isLoading: false,
       reviewList: userReviews,
+      userData: CurrUSerDetails,
+      userID: userID,
+      username: CurrUSerDetails.name
     })
   }
 
@@ -233,25 +239,24 @@ class ReviewsList extends React.Component<any, IState2> {
         <Text
           style={{
             alignSelf: 'center',
+            color: 'white',
             fontSize: 30,
-            color: 'red',
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }}
         >
           Your reviews
         </Text>
 
-        {/* {reviewList.map((element: any) => {
+         {/* {reviewList.map((element: any) => {
           return (
-            // <Review
-            //   key={element.id}
-            //   url={'something image'}
-            //   review={element.content}
-            //   numberOfDays={2}
-            //   username={element.author}
-            //   movieName={element.movieName}
-            // />
-          //)
+            <Review
+              key={element.id}
+              url={'something image'}
+              review={element.content}
+              username={element.author}
+              movieName={element.movieName}
+            />
+          )
         })} */}
       </ScrollView>
     )
@@ -263,23 +268,49 @@ const TabNavigator = createBottomTabNavigator(
     All: { screen: ProfileScreen },
     Friends: { screen: FriendsList },
     Review: { screen: ReviewsList },
-    Settings: SettingsScreens,
+    Settings: { screen: SettingsScreens }
   },
   {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused }) => {
+        const { routeName } = navigation.state
+        let type: any = 'Feather'
+        let name
+        const color = focused ? 'white' : '#686C86'
+        if (routeName === 'All') {
+          name = 'user'
+        } else if (routeName === 'Settings') {
+          name = 'settings'
+        } else if (routeName === 'Review') {
+          name = 'rate-review'
+          type = 'MaterialIcons'
+        } else if (routeName === 'Friends') {
+          name = 'users'
+        }
+
+        // You can return any component that you like here! We usually use an
+        // icon component from react-native-vector-icons
+        return (
+          <Icon
+            type={type}
+            name={name as string}
+            style={{ color: color, fontSize: 30, paddingTop: 5 }}
+          />
+        )
+      }
+    }),
     tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'white',
-      showIcon: true,
+      activeTintColor: 'white',
+      inactiveTintColor: '#686C86',
       labelStyle: {
-        fontSize: 18,
-        fontWeight: '400',
-        textDecorationLine: 'underline',
+        fontSize: 15,
+        fontWeight: '400'
       },
       style: {
-        backgroundColor: '#12152D',
-        height: 40,
-      },
-    },
+        backgroundColor: '#1d2249',
+        height: 60
+      }
+    }
   }
 )
 

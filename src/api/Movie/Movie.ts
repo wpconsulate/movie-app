@@ -11,17 +11,17 @@ interface IParams {
 
 class Movie extends Database implements IMovie {
   static ENTITY = 'movie'
-  private id: number
-  private overview: string
-  private poster_path: string
-  private title: string
-  private popularity: number
-  private release_date: string
-  private revenue: number
-  private genres: Array<IGenre>
-  private runtime: number
-  private backdrop_path: string
-  private vote_average: number
+  private id!: number
+  private overview!: string
+  private poster_path!: string
+  private title!: string
+  private popularity!: number
+  private release_date!: string
+  private revenue!: number
+  private genres!: Array<IGenre>
+  private runtime!: number
+  private backdrop_path!: string
+  private vote_average!: number
   // private genre_ids: Array<number>
 
   constructor(movie: any) {
@@ -46,7 +46,7 @@ class Movie extends Database implements IMovie {
   }
 
   public getPoster(width?: string | number): string {
-    let posterWidth = width ? `w${width}` : 'original'
+    const posterWidth = width ? `w${width}` : 'original'
     return Config.IMAGE_URL + posterWidth + this.poster_path
   }
 
@@ -95,8 +95,12 @@ class Movie extends Database implements IMovie {
   }
 
   public getGenres(sort?: boolean, max?: number) {
-    if (sort) this.genres = sortArray(this.genres, 'name')
-    if (max) this.genres = this.genres.splice(0, max)
+    if (sort) {
+      this.genres = sortArray(this.genres, 'name') as Array<IGenre>
+    }
+    if (max) {
+      this.genres = this.genres.splice(0, max)
+    }
 
     return this.genres
   }
@@ -104,17 +108,19 @@ class Movie extends Database implements IMovie {
   public getRuntime(accessible?: boolean): string {
     const minutes = this.runtime % 60
     const hours = Math.floor(this.runtime / 60)
-    if (accessible) `${hours} hours and ${minutes} minutes`
+    if (accessible) {
+      return `${hours} hours and ${minutes} minutes`
+    }
     return `${hours}h ${minutes}min`
   }
 
   public getBackdrop(width?: string | number): string {
-    let posterWidth = width ? `w${width}` : 'original'
+    const posterWidth = width ? `w${width}` : 'original'
     return Config.IMAGE_URL + posterWidth + this.backdrop_path
   }
 
   public async getBackdrops() {
-    let images = new Array<IBackdrop>()
+    const images = new Array<IBackdrop>()
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
@@ -126,12 +132,16 @@ class Movie extends Database implements IMovie {
 
     if (backdrops.length < 100) {
       backdrops.forEach((item: any) => {
-        if (item.file_path) images.push({ url: item.file_path })
+        if (item.file_path) {
+          images.push({ url: item.file_path })
+        }
       })
     } else {
       backdrops.forEach((item: any) => {
         item.forEach((value: any) => {
-          if (value.file_path) images.push({ url: value.file_path })
+          if (value.file_path) {
+            images.push({ url: value.file_path })
+          }
         })
       })
     }
@@ -140,7 +150,7 @@ class Movie extends Database implements IMovie {
   }
 
   public async getPosters() {
-    let images = new Array<IPoster>()
+    const images = new Array<IPoster>()
 
     const url = `${Config.BASE_URL}${
       Movie.ENTITY
@@ -150,7 +160,9 @@ class Movie extends Database implements IMovie {
     const posters = responseJson.posters
 
     posters.forEach((item: any) => {
-      if (item.file_path) images.push({ url: item.file_path })
+      if (item.file_path) {
+        images.push({ url: item.file_path })
+      }
     })
 
     return images
@@ -164,7 +176,7 @@ class Movie extends Database implements IMovie {
     limit?: number,
     params?: IParams
   ): Promise<Array<IImage>> {
-    let images = new Array<IImage>()
+    const images = new Array<IImage>()
     limit = limit ? limit : 15
     const backdrops = await this.getBackdrops()
     const posters = await this.getPosters()
@@ -172,7 +184,7 @@ class Movie extends Database implements IMovie {
     for (let i = 0; i < backdrops.length && limit; i++) {
       const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
       const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-      switch (params.type.toLowerCase()) {
+      switch ((params as any).type.toLowerCase()) {
         case 'backdrops':
           images.push({ url: backdropUrl })
           break
@@ -188,9 +200,9 @@ class Movie extends Database implements IMovie {
     return images
   }
 
-  public async getCasts(): Promise<Array<Cast> | null> {
+  public async getCasts() {
     try {
-      let setOfCasts = new Array<Cast>()
+      const setOfCasts = new Array<Cast>()
       const url = `${Config.BASE_URL}movie/${this.id}/credits?api_key=${
         Config.API_KEY
       }`
@@ -202,15 +214,15 @@ class Movie extends Database implements IMovie {
       return setOfCasts
     } catch (error) {
       console.error(error)
-      return null
+      return undefined
     }
   }
 
-  public async AddToWatchlist(userId: string, type: String) {
-    let planned = await this.searchForCopy(userId, 'planned')
-    let completed = await this.searchForCopy(userId, 'completed')
-    let watching = await this.searchForCopy(userId, 'watching')
-    let dropped = await this.searchForCopy(userId, 'dropped')
+  public async AddToWatchlist(userId: string, type: string) {
+    const planned = await this.searchForCopy(userId, 'planned')
+    const completed = await this.searchForCopy(userId, 'completed')
+    const watching = await this.searchForCopy(userId, 'watching')
+    const dropped = await this.searchForCopy(userId, 'dropped')
 
     if (!planned && !completed && !watching && !dropped) {
       await this.database
@@ -220,13 +232,13 @@ class Movie extends Database implements IMovie {
   }
 
   public async searchForCopy(userId: string, type: string) {
-    let id = this.id
+    const id = this.id
     let returnVal = false
     await this.database
       .ref(`users/${userId}/watchlist/${type}`)
-      .once('value', function(snap) {
-        snap.forEach(function(value) {
-          let obj = value.val()
+      .once('value', snap => {
+        snap.forEach(value => {
+          const obj = value.val()
           if (obj.id === id) {
             returnVal = true
             console.log('A repeat is here')
@@ -237,6 +249,7 @@ class Movie extends Database implements IMovie {
   }
 
   public getData(): any {
+    // tslint:disable-next-line: no-this-assignment
     const { backdrop_path, title, popularity, poster_path, id, runtime } = this
     //  console.log(this);
     return { backdrop_path, title, popularity, poster_path, id, runtime }
@@ -244,39 +257,39 @@ class Movie extends Database implements IMovie {
   }
 
   public async addReview(
-    reviewContent: String,
+    reviewContent: string,
     movieId: number,
     userId: string,
     username: string
   ) {
-    let data = {
+    const data = {
       author: username,
       content: reviewContent,
-      date: new Date().getTime(),
+      date: new Date().getTime()
     }
     await this.write('review/' + movieId + '/' + userId, data)
     await this.write('users/' + userId + '/reviews/' + movieId + '/', data)
   }
 
   public async getMMDBReview(): Promise<any> {
-    interface reviewObject {
-      id: String
-      author: String
-      content: String
-      date: String
+    interface ReviewObject {
+      id: string
+      author: string
+      content: string
+      date: string
     }
-    let reviewList = new Array<reviewObject>()
+    const reviewList = new Array<ReviewObject>()
     await this.database.ref('review/' + this.id).once(
       'value',
       element => {
         element.forEach((review: any) => {
-          let reviewID = review.key
-          let element = review.toJSON()
+          const reviewID = review.key
+          const element = review.toJSON()
           reviewList.push({
-            id: reviewID,
             author: element.author,
             content: element.content,
             date: element.date,
+            id: reviewID
           })
         })
       },
@@ -288,26 +301,26 @@ class Movie extends Database implements IMovie {
   }
 
   public async getReview(): Promise<any> {
-    let reviewURL =
+    const reviewURL =
       Config.BASE_URL +
       'movie/' +
       this.id +
       '/reviews?api_key=' +
       Config.API_KEY
-    let content = await fetch(reviewURL)
-    let parsedContent = await content.json()
-    interface reviewObject {
-      id: String
-      author: String
-      content: String
+    const content = await fetch(reviewURL)
+    const parsedContent = await content.json()
+    interface ReviewObject {
+      id: string
+      author: string
+      content: string
     }
-    let reviewList = new Array<reviewObject>()
+    const reviewList = new Array<ReviewObject>()
 
     parsedContent.results.forEach((element: any) => {
       reviewList.push({
-        id: element.id,
         author: element.author,
         content: element.content,
+        id: element.id
       })
     })
 
