@@ -8,7 +8,7 @@ export enum ReviewType {
 }
 
 interface Review {
-    getReview(id: number) : any
+    getLikes(id: number) : any
     create(id:number, type: ReviewType) : any
 }
 
@@ -17,10 +17,15 @@ class Likes extends Database implements Review {
         super();
     }
 
-    async getReview(id :number) {
-        await this.database.ref(`liked/${id}`).on('value', snap => {
-            return snap.val()
-        })
+    getLikes(id :number) : Promise<{count : number, id : number, type: string }> {
+      return new Promise((resolve, reject) => {
+        this.database.ref(`liked/${id.toString()}`)
+          .on('value', snap => {
+            console.log(snap);
+            if (!snap) return reject()
+              return resolve(snap.val())
+          })
+      })
     }
 
     async create(id: number , type: ReviewType) {
@@ -57,7 +62,7 @@ class Likes extends Database implements Review {
         return new Promise((resolve, reject) => {
           this.database.ref(collection)
             .on('value', snap => {
-              if (!snap.val()) return reject()
+              if (!snap) return reject()
               return resolve(snap.val())
             })
         })

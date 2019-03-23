@@ -143,8 +143,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     const casts = (await movie.getCasts()) as Array<Cast>
     const isAccessible = await AccessibilityInfo.fetch()
     const castImages = new Array<IImage>()
-    const likes = await this.likes.getReview(movie.getId())
-    console.log('likes', likes)
+    let likeObj = await this.likes.getLikes(movie.getId())
     let Uid = 'test'
     let username = 'test'
 
@@ -161,6 +160,13 @@ export default class MovieScreen extends Component<IProps, IState> {
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
+    let result;
+    if(likeObj == null)
+    {
+      result = 0;
+    } else {
+      result = likeObj.count
+    }
     this.setState({
       castImages,
       critiqueReviewList: critReview,
@@ -171,12 +177,12 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: true,
       isReviewing: false,
       movie,
-      userReviewList: userReview
+      userReviewList: userReview,
+      likeCount: result
     })
   }
 
   render() {
-    this.likes = new Likes();
     const sidebarIconsMargin = 2
     const {
       movie,
@@ -188,7 +194,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible,
       isReviewing,
       currentUid,
-      currentUsername
+      currentUsername,
+      likeCount
     } = this.state
     const navigation: any = this.props.navigation
     if (!isLoaded) {
@@ -291,6 +298,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             <ReleaseDateRuntime
               date={formatDate(movie.getReleaseDate())}
               time={isAccessible ? movie.getRuntime(true) : movie.getRuntime()}
+              likes={likeCount}
             />
             <Storyline content={movie.getOverview()} />
             <View
@@ -472,6 +480,7 @@ function ReleaseDateRuntime(props: any) {
     >
       <ReleaseDate date={props.date} />
       <Runtime time={props.time} />
+      <MovieLikes likes={props.likes} />
     </View>
   )
 }
@@ -525,6 +534,31 @@ function Runtime(props: any) {
         accessibilityLabel={`Total runtime is ${props.time}`}
       >
         {props.time}
+      </Text>
+    </View>
+  )
+}
+
+function MovieLikes(props: any) {
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginLeft: 10
+      }}
+    >
+      <View style={{ marginHorizontal: 5 }}>
+        <Icon type="EvilIcons" name="arrow-up" style={{ color: '#fff' }} />
+      </View>
+      <Text
+        style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`Total Likes are ${props.likes}`}
+      >
+       {props.likes} 
       </Text>
     </View>
   )

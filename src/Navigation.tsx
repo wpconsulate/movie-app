@@ -25,7 +25,7 @@ const RootStack = createStackNavigator(
     Review: ReviewScreen,
   },
   {
-    initialRouteName: 'Movie',
+    initialRouteName: 'Home',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight,
