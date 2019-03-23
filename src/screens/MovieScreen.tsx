@@ -42,13 +42,15 @@ import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
 import { observer } from 'mobx-react'
 import MovieStore from '../stores/MovieStore'
+import MessageStore from '../stores/MessageStore'
+import { Message } from '../stores/MessageStore'
 import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import { database } from 'firebase'
 import Cast from '../api/Cast/Cast'
-
+import DropdownAlert from 'react-native-dropdownalert'
 interface IProps {
   navigation?: NavigationScreenProp<
     NavigationRoute<NavigationParams>,
@@ -70,6 +72,7 @@ interface IState {
   currentUid: string
   currentUsername: string
   likes: number
+  messages: Array<Message>
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -104,6 +107,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
   private movies = new SetOfMovies()
+  private dropdown: any
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -119,7 +123,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       movie: new Movie({}),
       showMenu: false,
       userReviewList: [],
-      wantsToRev: false
+      wantsToRev: false,
+      messages: []
     }
   }
 
@@ -154,6 +159,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = (await movie.getCasts()) as Array<Cast>
     const isAccessible = await AccessibilityInfo.fetch()
+    const errorMessages = MessageStore.errorMessages
+    const successMessages = MessageStore.successMessages
     const castImages = new Array<IImage>()
     let Uid = 'test'
     let username = 'test'
@@ -183,6 +190,13 @@ export default class MovieScreen extends Component<IProps, IState> {
       movie,
       userReviewList: userReview
     })
+    if (MessageStore.message) {
+      this.dropdown.alertWithType(
+        MessageStore.message.type,
+        MessageStore.message.type.toUpperCase(),
+        MessageStore.message.message
+      )
+    }
   }
 
   render() {
@@ -213,6 +227,7 @@ export default class MovieScreen extends Component<IProps, IState> {
           backgroundColor: '#12152D'
         }}
       >
+        <DropdownAlert ref={ref => (this.dropdown = ref)} />
         <Header
           transparent={true}
           translucent={true}
@@ -378,7 +393,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                   // this.setState({ isReviewing: !isReviewing })
                   navigation.push('Review', {
                     movie: movie,
-                    userId: 1
+                    userId: 'uRl0sszVPNfy5oQGznGuSzunhhB2'
                   })
                 }}
               >
@@ -395,25 +410,6 @@ export default class MovieScreen extends Component<IProps, IState> {
                   <MaterialIcons name="add" color="#12152D" size={38} />
                 </View>
               </TouchableOpacity>
-            </View>
-
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                marginTop: 40
-              }}
-            >
-              <LeaveReview
-                username={currentUsername}
-                url={
-                  'https://vignette.wikia.nocookie.net/leagueoflegends/images/7/7c/Urgot_OriginalCentered.jpg/revision/latest/scale-to-width-down/1215?cb=20180414203655'
-                }
-                movieId={movie.getId()}
-                userId={currentUid}
-                isReviewing={isReviewing}
-              />
             </View>
             <View style={{ marginBottom: 40 }}>
               {userReviewList.map((element: any) => {
@@ -559,7 +555,7 @@ function Storyline(props: any) {
           color: 'white',
           fontFamily: 'PoppinsLight',
           fontSize: 15,
-          width: '100%',
+          width: '100%'
         }}
       >
         {props.content}

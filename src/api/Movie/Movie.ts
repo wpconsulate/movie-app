@@ -8,6 +8,17 @@ import axios from 'axios'
 interface IParams {
   type?: 'backdrops' | 'posters'
 }
+
+interface IAddToReview {
+  review: {
+    rating: number
+    content: string
+  }
+  user: {
+    id: string
+    name: string
+  }
+}
 class Movie extends Database implements IMovie {
   static ENTITY = 'movie'
   private id!: number
@@ -255,19 +266,19 @@ class Movie extends Database implements IMovie {
     // return null
   }
 
-  public async addReview(
-    reviewContent: string,
-    movieId: number,
-    userId: string,
-    username: string
-  ) {
-    const data = {
-      author: username,
-      content: reviewContent,
-      date: new Date().getTime()
-    }
-    await this.write('review/' + movieId + '/' + userId, data)
-    await this.write('users/' + userId + '/reviews/' + movieId + '/', data)
+  public async addReview(data: IAddToReview) {
+    const date = new Date().getTime()
+    await this.write(`review/${this.getId()}/${data.user.id}`, {
+      author: data.user.name,
+      createdAt: date,
+      content: data.review.content,
+      rating: data.review.rating
+    })
+    await this.write(`users/${data.user.id}/reviews/${this.getId()}`, {
+      rating: data.review.rating,
+      content: data.review.content,
+      createdAt: date
+    })
   }
 
   public async getMMDBReview(): Promise<any> {

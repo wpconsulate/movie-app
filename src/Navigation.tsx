@@ -9,7 +9,7 @@ import {
   ProfileScreen,
   ResultsScreen,
   SettingsScreen,
-  ReviewScreen,
+  ReviewScreen
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -22,16 +22,16 @@ const RootStack = createStackNavigator(
     Profile: ProfileScreen,
     Results: ResultsScreen,
     Settings: SettingsScreen,
-    Review: ReviewScreen,
+    Review: ReviewScreen
   },
   {
-    initialRouteName: 'Movie',
+    initialRouteName: 'Home',
     navigationOptions: {
       headerStyle: {
-        marginTop: Constants.statusBarHeight,
+        marginTop: Constants.statusBarHeight
       },
-      headerTransparent: true,
-    },
+      headerTransparent: true
+    }
   }
 )
 
