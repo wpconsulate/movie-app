@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Text, Col, Row } from 'native-base'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import moment from 'moment'
 import UserAvatar from './UserAvatar'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-import Movie from '../api/Movie/Movie'
+import { SetOfMovies } from '../api';
+import Container from '../native-base-theme/components/Container';
 
 interface IProps {
   review: string
@@ -36,28 +37,22 @@ export default class Review extends Component<IProps, IState> {
       username: ''
     }
   }
-
   async componentWillMount() {
     let userID = this.props.userId
     const currMovieId = this.props.movieId
-    let movieName = ''
-    
-    console.log('currMovieId')
-    console.log(currMovieId)
-    console.log('userID')
-    console.log(userID)
+    let movieTitle =''
+    // console.log('currMovieId')
+    // console.log(currMovieId)
+    // console.log('userID')
+    // console.log(userID)
 
     if (userID === undefined){
       const currUser = new Authentication()
       userID = currUser.getCurrentUser().uid
     } 
 
-    if ( currMovieId !== undefined ){
-      const currentMovie = await new Movie(currMovieId)
-      movieName = currentMovie.getTitle()
-      console.log('movieName')
-      console.log(movieName)
-
+    if ( currMovieId !== undefined ){      
+      movieTitle = await new SetOfMovies().getTitleById(currMovieId)
     }
 
     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
@@ -67,7 +62,7 @@ export default class Review extends Component<IProps, IState> {
     this.setState({
       avatarColour: CurrUSerDetails.userAvatarColour,
       isLoading: false,  
-      movieName: movieName,
+      movieName: movieTitle,
       userInitials: CurrUSerDetails.userInitials,  
       username: CurrUSerDetails.name
     })
@@ -75,8 +70,8 @@ export default class Review extends Component<IProps, IState> {
 
   _renderStars = (stars: number) => {
     const starsArray = []
-    console.log('stars')
-    console.log(stars)
+    // console.log('stars')
+    // console.log(stars)
     for (let i = 0; i < 5; i++) {
       if (stars <= i) {
         starsArray.push(
@@ -126,23 +121,49 @@ export default class Review extends Component<IProps, IState> {
   }
 
   render() {
-    const { review, date, movieName, rating } = this.props
-    const { isLoading, show, username, userInitials, avatarColour, userId } = this.state
+    const { review, date, rating } = this.props
+    const { isLoading, show, username, movieName, userInitials, avatarColour, userId } = this.state
 
     if (isLoading){
       return(
-        <Row/>
+        <View>
+         <ActivityIndicator />
+        </View>
       )
     }
 
     if (!show) {
       return (
+        <View>
         <Row
           style={{
             flex: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
-            marginTop: 40
+            marginTop: 20
+          }}
+        > 
+        
+        {movieName !== '' &&
+        <Text
+            style={{
+              alignSelf: 'center',
+              color: 'white',
+              fontFamily: 'PoppinsMedium',
+              fontSize: 18
+            }}
+          >
+            {movieName}
+          </Text>
+        }
+        
+        </Row>
+        <Row
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            marginTop: 10
           }}
         >
           <Col
@@ -162,7 +183,7 @@ export default class Review extends Component<IProps, IState> {
                 marginTop: 5
               }}
             >
-              {username} {movieName}
+              {username}
             </Text>
             {review.length > 100 ? (
               this.text(review.substr(0, 100) + '...')
@@ -199,6 +220,7 @@ export default class Review extends Component<IProps, IState> {
             {this._renderStars(rating)}
           </Row>
         </Row>
+        </View>
       )
     } else {
       return (
@@ -273,7 +295,7 @@ export default class Review extends Component<IProps, IState> {
               </Text>
             </TouchableOpacity>
           </Col>
-        </Row>
+        </Row>      
       )
     }
   }
