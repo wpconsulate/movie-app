@@ -35,6 +35,7 @@
     "react-instantsearch-native": "^5.4.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-auto-height-image": "^1.1.0",
+    "react-native-dropdownalert": "^3.9.2",
     "react-native-elements": "^1.1.0",
     "react-native-fit-image": "^1.5.4",
     "react-native-image-zoom-viewer": "^2.2.25",

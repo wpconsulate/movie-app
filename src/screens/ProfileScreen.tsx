@@ -172,14 +172,13 @@ class FriendsList extends React.Component {
           fontWeight: 'bold'
           }}>Settings</Text>
 
-
-          <Review
+          {/* <Review
             review="testing this review"
             username="shezan"
             url="../../assets/profilePicture/p1.png"
           />
           <Review review="testing this review" username="shezan" url="sdfs" />
-          <Review review="testing this review" username="shezan" url="sdfs" />
+          <Review review="testing this review" username="shezan" url="sdfs" /> */}
 
       </ScrollView>
     )
@@ -208,14 +207,14 @@ class ReviewsList extends React.Component<any, IState2> {
   }
   async componentWillMount() {
     const currUser = new Authentication()
-    const userID = (currUser.getCurrentUser() as firebase.User).uid
+    const userID = currUser.getCurrentUser().uid
     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
     const CurrUSerDetails = await this.users.getById(userID)
     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     const userReviews = await this.users.getUserReviewsById(userID)
 
     this.setState({
-      isLoading: false,
+      isLoading: false,     
       reviewList: userReviews,
       userData: CurrUSerDetails,
       userID: userID,
@@ -239,7 +238,7 @@ class ReviewsList extends React.Component<any, IState2> {
         <Text
           style={{
             alignSelf: 'center',
-            color: 'white',
+            color: 'red',
             fontSize: 30,
             fontWeight: 'bold'
           }}
@@ -251,10 +250,10 @@ class ReviewsList extends React.Component<any, IState2> {
           return (
             <Review
               key={element.id}
-              url={'something image'}
               review={element.content}
-              username={element.author}
-              movieName={element.movieName}
+              movieId={element.movieId}
+              rating={element.rating}
+              userId={element.userId}
             />
           )
         })} */}

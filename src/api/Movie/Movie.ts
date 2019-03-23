@@ -9,6 +9,16 @@ interface IParams {
   type?: 'backdrops' | 'posters'
 }
 
+interface IAddToReview {
+  review: {
+    rating: number
+    content: string
+  }
+  user: {
+    id: string
+    name: string
+  }
+}
 class Movie extends Database implements IMovie {
   static ENTITY = 'movie'
   private id!: number
@@ -256,19 +266,19 @@ class Movie extends Database implements IMovie {
     // return null
   }
 
-  public async addReview(
-    reviewContent: string,
-    movieId: number,
-    userId: string,
-    username: string
-  ) {
-    const data = {
-      author: username,
-      content: reviewContent,
-      date: new Date().getTime()
-    }
-    await this.write('review/' + movieId + '/' + userId, data)
-    await this.write('users/' + userId + '/reviews/' + movieId + '/', data)
+  public async addReview(data: IAddToReview) {
+    const date = new Date().getTime()
+    await this.write(`review/${this.getId()}/${data.user.id}`, {
+      author: data.user.name,
+      createdAt: date,
+      content: data.review.content,
+      rating: data.review.rating
+    })
+    await this.write(`users/${data.user.id}/reviews/${this.getId()}`, {
+      rating: data.review.rating,
+      content: data.review.content,
+      createdAt: date
+    })
   }
 
   public async getMMDBReview(): Promise<any> {
@@ -277,6 +287,8 @@ class Movie extends Database implements IMovie {
       author: string
       content: string
       date: string
+      rating: number
+      // userId: string
     }
     const reviewList = new Array<ReviewObject>()
     await this.database.ref('review/' + this.id).once(
@@ -285,11 +297,17 @@ class Movie extends Database implements IMovie {
         element.forEach((review: any) => {
           const reviewID = review.key
           const element = review.toJSON()
+          // console.log("element")
+          // console.log(review)
+          // console.log("element.rating")
+          // console.log(element.rating)
           reviewList.push({
             author: element.author,
             content: element.content,
             date: element.date,
-            id: reviewID
+            id: reviewID,
+            rating: element.rating
+            // userId: element.id
           })
         })
       },
