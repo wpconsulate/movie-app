@@ -7,12 +7,12 @@ import {
   Content,
   H1,
   Text,
-  Header,
+  Header
 } from 'native-base'
 import {
   NavigationScreenProp,
   NavigationRoute,
-  NavigationParams,
+  NavigationParams
 } from 'react-navigation'
 import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
@@ -23,7 +23,7 @@ import {
   GenreContainer,
   Slider,
   MovieSidebar,
-  LeaveReview,
+  LeaveReview
 } from '../components'
 import {
   ActivityIndicator,
@@ -34,7 +34,7 @@ import {
   TextStyle,
   TouchableOpacity,
   Linking,
-  AccessibilityInfo,
+  AccessibilityInfo
 } from 'react-native'
 import { LinearGradient } from 'expo'
 import { formatDate } from '../lib'
@@ -47,6 +47,7 @@ import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
 import { database } from 'firebase'
+import Cast from '../api/Cast/Cast'
 
 interface IProps {
   navigation?: NavigationScreenProp<
@@ -56,7 +57,7 @@ interface IProps {
 }
 
 interface IState {
-  movie: Movie | null
+  movie: Movie
   isLoaded: boolean
   wantsToRev: boolean
   images: Array<IImage>
@@ -80,14 +81,13 @@ interface IStyle {
 export default class MovieScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
     return {
-      headerTransparent: true,
       headerBackgroundTransitionPreset: 'fade',
       headerLeft: (
         <StyleProvider style={getTheme(mmdb)}>
           <Button
             onPress={() => navigation.goBack()}
-            transparent
-            accessible
+            transparent={true}
+            accessible={true}
             accessibilityRole="button"
             accessibilityLabel="Go back"
             accessibilityHint="Double tap to go back to the previous screen."
@@ -100,31 +100,35 @@ export default class MovieScreen extends Component<IProps, IState> {
           </Button>
         </StyleProvider>
       ),
+      headerTransparent: true
     }
   }
   private movies = new SetOfMovies()
   constructor(props: IProps) {
     super(props)
     this.state = {
-      movie: null,
-      wantsToRev: false,
-      isLoaded: false,
-      showMenu: false,
-      isReviewing: false,
-      images: null,
-      castImages: null,
-      critiqueReviewList: null,
-      userReviewList: null,
+      castImages: [],
+      critiqueReviewList: [],
+      currentUid: '',
+      currentUsername: '',
+      images: [],
       isAccessible: false,
-      currentUid: null,
-      currentUsername: null,
+      isLoaded: false,
+      isReviewing: false,
       likes: 0,
+      movie: new Movie({}),
+      showMenu: false,
+      userReviewList: [],
+      wantsToRev: false
     }
   }
 
   onTrailerPlayPress = async () => {
-    const trailer = await this.state.movie.getTrailer(0)
-    Linking.openURL(`https://www.youtube.com/embed/${trailer[0].key}`)
+    const { movie } = this.state
+    if (movie) {
+      const trailer = await movie.getTrailer(0)
+      Linking.openURL(`https://www.youtube.com/embed/${trailer[0].key}`)
+    }
   }
 
   getLikesByMovieId(id: string) {
@@ -134,46 +138,50 @@ export default class MovieScreen extends Component<IProps, IState> {
         .child('liked')
         .child(id)
         .on('value', snap => {
-          if (!snap.val()) return reject()
+          if (!snap) {
+            return reject()
+          }
           return resolve(snap.val())
         })
     })
   }
 
   async componentWillMount() {
-    const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
-    const movie = await this.movies.findMovieById(parseInt(id))
+    const { navigation } = this.props
+    const id = await (navigation as any).getParam('movieId', 181808) // Star Wars: The Last Jedi
+    // tslint:disable-next-line: radix
+    const movie = (await this.movies.findMovieById(parseInt(id))) as Movie
     const images = await movie.getImages(5, { type: 'backdrops' })
-    const casts = await movie.getCasts()
+    const casts = (await movie.getCasts()) as Array<Cast>
     const isAccessible = await AccessibilityInfo.fetch()
-    let castImages = new Array<IImage>()
+    const castImages = new Array<IImage>()
     let Uid = 'test'
     let username = 'test'
 
-    let currUser = new Authentication()
+    const currUser = new Authentication()
     if (currUser.isLoggedIn()) {
-      Uid = currUser.getCurrentUser().uid
-      let CurrUSerDetails = await new SetOfUsers().getById(Uid)
+      Uid = (currUser.getCurrentUser() as firebase.User).uid
+      const CurrUSerDetails = await new SetOfUsers().getById(Uid)
       username = CurrUSerDetails.name
     }
 
-    let critReview = await movie.getReview()
-    let userReview = await movie.getMMDBReview()
+    const critReview = await movie.getReview()
+    const userReview = await movie.getMMDBReview()
 
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
     this.setState({
-      movie,
-      images,
-      isLoaded: true,
-      isReviewing: false,
       castImages,
       critiqueReviewList: critReview,
-      userReviewList: userReview,
-      isAccessible,
       currentUid: Uid,
       currentUsername: username,
+      images,
+      isAccessible,
+      isLoaded: true,
+      isReviewing: false,
+      movie,
+      userReviewList: userReview
     })
   }
 
@@ -189,9 +197,9 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible,
       isReviewing,
       currentUid,
-      currentUsername,
+      currentUsername
     } = this.state
-
+    const navigation: any = this.props.navigation
     if (!isLoaded) {
       return (
         <Container>
@@ -202,52 +210,55 @@ export default class MovieScreen extends Component<IProps, IState> {
     return (
       <Container
         style={{
-          backgroundColor: '#12152D',
+          backgroundColor: '#12152D'
         }}
       >
         <Header
-          transparent
-          translucent
+          transparent={true}
+          translucent={true}
           iosBarStyle="light-content"
-          noShadow
+          noShadow={true}
           style={{
             position: 'absolute',
-            zIndex: -2,
+            zIndex: -2
           }}
         />
         <TouchableOpacity
           style={{
+            backgroundColor: '#12152D',
+            borderBottomLeftRadius: 10,
+            borderTopLeftRadius: 10,
+            height: 100,
+            justifyContent: 'center',
             position: 'absolute',
             right: 0,
-            top: '15%',
-            height: 100,
-            width: 35,
-            backgroundColor: '#12152D',
-            borderTopLeftRadius: 10,
-            borderBottomLeftRadius: 10,
-            zIndex: 15,
-            justifyContent: 'center',
             shadowColor: 'rgba(0, 0, 0, 0.32)',
             shadowOffset: {
-              width: -5,
               height: 2,
+              width: -5
             },
             shadowOpacity: 10,
+            top: '15%',
+            width: 35,
+            zIndex: 15
           }}
-          accessible
+          accessible={true}
           accessibilityRole="button"
           accessibilityLabel="Sidebar"
           accessibilityHint="Double tap to open a modal where you can add the movie to your watchlist, share with your friends and like or unlike it."
           onPress={() => {
-            if (MovieStore.showMenu) MovieStore.setShowMenu(false)
-            else MovieStore.setShowMenu(true)
+            if (MovieStore.showMenu) {
+              MovieStore.setShowMenu(false)
+            } else {
+              MovieStore.setShowMenu(true)
+            }
           }}
         >
           <View
             style={{
-              flex: 1,
               alignItems: 'center',
-              justifyContent: 'center',
+              flex: 1,
+              justifyContent: 'center'
             }}
           >
             <FontAwesomeIcons
@@ -255,8 +266,8 @@ export default class MovieScreen extends Component<IProps, IState> {
               size={10}
               color="white"
               style={{
-                marginTop: sidebarIconsMargin,
                 marginBottom: sidebarIconsMargin,
+                marginTop: sidebarIconsMargin
               }}
             />
             <FontAwesomeIcons
@@ -264,8 +275,8 @@ export default class MovieScreen extends Component<IProps, IState> {
               size={10}
               color="white"
               style={{
-                marginTop: sidebarIconsMargin,
                 marginBottom: sidebarIconsMargin,
+                marginTop: sidebarIconsMargin
               }}
             />
             <FontAwesomeIcons
@@ -273,8 +284,8 @@ export default class MovieScreen extends Component<IProps, IState> {
               size={10}
               color="white"
               style={{
-                marginTop: sidebarIconsMargin,
                 marginBottom: sidebarIconsMargin,
+                marginTop: sidebarIconsMargin
               }}
             />
           </View>
@@ -293,10 +304,10 @@ export default class MovieScreen extends Component<IProps, IState> {
             <Storyline content={movie.getOverview()} />
             <View
               style={{
-                flexDirection: 'row',
                 flex: 1,
+                flexDirection: 'row',
                 flexWrap: 'wrap',
-                marginTop: 40,
+                marginTop: 40
               }}
             >
               <Text
@@ -304,7 +315,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                   color: 'white',
                   fontFamily: 'PoppinsMedium',
                   marginBottom: 10,
-                  width: '100%',
+                  width: '100%'
                 }}
               >
                 Photos
@@ -314,10 +325,10 @@ export default class MovieScreen extends Component<IProps, IState> {
             </View>
             <View
               style={{
-                flexDirection: 'row',
                 flex: 1,
+                flexDirection: 'row',
                 flexWrap: 'wrap',
-                marginTop: 40,
+                marginTop: 40
               }}
             >
               <Text
@@ -325,7 +336,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                   color: 'white',
                   fontFamily: 'PoppinsMedium',
                   marginBottom: 10,
-                  width: '100%',
+                  width: '100%'
                 }}
               >
                 Cast
@@ -339,10 +350,10 @@ export default class MovieScreen extends Component<IProps, IState> {
             </View>
             <View
               style={{
-                flexDirection: 'column',
                 flex: 1,
+                flexDirection: 'column',
                 flexWrap: 'wrap',
-                marginTop: 40,
+                marginTop: 40
               }}
             >
               <Text
@@ -350,35 +361,35 @@ export default class MovieScreen extends Component<IProps, IState> {
                   color: 'white',
                   fontFamily: 'PoppinsMedium',
                   marginBottom: 10,
-                  width: '100%',
+                  width: '100%'
                 }}
               >
                 Reviews
               </Text>
               <TouchableOpacity
                 style={{
-                  position: 'absolute',
-                  top: -10,
-                  alignSelf: 'flex-end',
                   alignItems: 'center',
+                  alignSelf: 'flex-end',
                   justifyContent: 'center',
+                  position: 'absolute',
+                  top: -10
                 }}
                 onPress={() => {
                   // this.setState({ isReviewing: !isReviewing })
-                  this.props.navigation.push('Review', {
+                  navigation.push('Review', {
                     movie: movie,
-                    userId: 1,
+                    userId: 1
                   })
                 }}
               >
                 <View
                   style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 40 / 2,
-                    backgroundColor: '#E10F0F',
-                    justifyContent: 'center',
                     alignItems: 'center',
+                    backgroundColor: '#E10F0F',
+                    borderRadius: 40 / 2,
+                    height: 40,
+                    justifyContent: 'center',
+                    width: 40
                   }}
                 >
                   <MaterialIcons name="add" color="#12152D" size={38} />
@@ -388,10 +399,10 @@ export default class MovieScreen extends Component<IProps, IState> {
 
             <View
               style={{
-                flexDirection: 'row',
                 flex: 1,
+                flexDirection: 'row',
                 flexWrap: 'wrap',
-                marginTop: 40,
+                marginTop: 40
               }}
             >
               <LeaveReview
@@ -428,20 +439,20 @@ function Backdrop(props: any) {
     <View
       style={{
         height: mmdb.isIphoneX ? '55%' : '55%',
-        width: mmdb.deviceWidth,
-        position: 'absolute',
-        top: 0,
         left: 0,
+        position: 'absolute',
         right: 0,
+        top: 0,
+        width: mmdb.deviceWidth
       }}
     >
       <ImageBackground
         source={{
-          uri: props.uri,
+          uri: props.uri
         }}
         style={{
-          width: '100%',
           height: '100%',
+          width: '100%'
         }}
       >
         <LinearGradient
@@ -449,8 +460,8 @@ function Backdrop(props: any) {
           start={[0.5, 1]}
           end={[0.5, 0]}
           style={{
-            width: '100%',
             height: '100%',
+            width: '100%'
           }}
         />
       </ImageBackground>
@@ -463,9 +474,9 @@ function ReleaseDateRuntime(props: any) {
     <View
       style={{
         alignContent: 'center',
-        flexDirection: 'row',
         flex: 1,
-        marginTop: 40,
+        flexDirection: 'row',
+        marginTop: 40
       }}
     >
       <ReleaseDate date={props.date} />
@@ -479,8 +490,8 @@ function ReleaseDate(props: any) {
     <View
       style={{
         alignItems: 'center',
-        justifyContent: 'space-between',
         flexDirection: 'row',
+        justifyContent: 'space-between'
       }}
     >
       <View style={{ marginHorizontal: 5 }}>
@@ -492,7 +503,7 @@ function ReleaseDate(props: any) {
       </View>
       <Text
         style={{ color: '#fff', marginHorizontal: 5, fontSize: 14 }}
-        accessible
+        accessible={true}
         accessibilityHint={`The release date of this movie was the ${
           props.data
         }`}
@@ -508,9 +519,9 @@ function Runtime(props: any) {
     <View
       style={{
         alignItems: 'center',
-        justifyContent: 'space-between',
         flexDirection: 'row',
-        marginLeft: 10,
+        justifyContent: 'space-between',
+        marginLeft: 10
       }}
     >
       <View style={{ marginHorizontal: 5 }}>
@@ -518,7 +529,7 @@ function Runtime(props: any) {
       </View>
       <Text
         style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
-        accessible
+        accessible={true}
         accessibilityRole="text"
         accessibilityLabel={`Total runtime is ${props.time}`}
       >
@@ -538,7 +549,7 @@ function Storyline(props: any) {
           color: 'white',
           fontFamily: 'PoppinsMedium',
           marginBottom: 10,
-          width: '100%',
+          width: '100%'
         }}
       >
         Background
@@ -548,7 +559,7 @@ function Storyline(props: any) {
           color: 'white',
           fontFamily: 'PoppinsLight',
           fontSize: 20,
-          width: '100%',
+          width: '100%'
         }}
       >
         {props.content}
@@ -575,25 +586,25 @@ export function Title(props: any) {
 
 const styles = StyleSheet.create<IStyle>({
   playButtonView: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
     marginTop: 80,
-  },
-  titleView: {
-    maxWidth: 250,
-    marginTop: 45,
-    flexDirection: 'row',
+    width: '100%'
   },
   title: {
-    fontFamily: 'PoppinsSemiBold',
     color: '#fff',
-    fontSize: 40,
-    padding: 5,
-    lineHeight: 50,
     flex: 1,
     flexWrap: 'wrap',
+    fontFamily: 'PoppinsSemiBold',
+    fontSize: 40,
+    lineHeight: 50,
+    padding: 5
   },
+  titleView: {
+    flexDirection: 'row',
+    marginTop: 45,
+    maxWidth: 250
+  }
 })

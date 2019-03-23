@@ -10,8 +10,8 @@ class Search {
     const url = this.url.getUrl('search/multi', [
       {
         param: 'query',
-        value: query,
-      },
+        value: query
+      }
     ])
 
     const response = await axios.get(url)
@@ -23,49 +23,49 @@ class Search {
     const url = this.url.getUrl('search/multi', [
       {
         param: 'query',
-        value: query,
-      },
+        value: query
+      }
     ])
 
     const response = await axios.get(url)
     const data = response.data.results
-    let results: any[] | { name: any; release_date: string; id: number }[] = []
+    const results: any = []
     data.forEach((item: any) => {
       if (item.media_type === 'movie') {
         results.push({
-          name: item.title,
           id: item.id,
+          name: item.title,
           release_date: item.release_date
             ? new Date(item.release_date).getFullYear().toString()
-            : null,
+            : undefined
         })
       } else if (item.media_type === 'person') {
         item.known_for.forEach((subItem: any) => {
           if (subItem.media_type === 'movie') {
             results.push({
-              name: subItem.title,
               id: subItem.id,
+              name: subItem.title,
               release_date: subItem.release_date
                 ? new Date(subItem.release_date).getFullYear().toString()
-                : null,
+                : undefined
             })
           } else {
             results.push({
-              name: subItem.name,
               id: subItem.id,
+              name: subItem.name,
               release_date: subItem.release_date
                 ? new Date(subItem.release_date).getFullYear().toString()
-                : null,
+                : undefined
             })
           }
         })
       } else {
         results.push({
-          name: item.name,
           id: item.id,
+          name: item.name,
           release_date: item.release_date
             ? new Date(item.release_date).getFullYear().toString()
-            : null,
+            : undefined
         })
       }
     })

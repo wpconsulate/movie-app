@@ -4,6 +4,14 @@ import Movie from './Movie/Movie'
 import User from './User/User'
 import Database from './Database'
 import Authentication from './Authentication'
-import Algolia from './Algolia';
+import Algolia from './Algolia'
 
-export { SetOfMovies, SetOfUsers, Movie, User, Database, Authentication, Algolia }
+export {
+  SetOfMovies,
+  SetOfUsers,
+  Movie,
+  User,
+  Database,
+  Authentication,
+  Algolia
+}

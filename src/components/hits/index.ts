@@ -1,5 +1,3 @@
-import { Hits } from './Hits';
+import { Hits } from './Hits'
 
-export {
-    Hits
-}
+export { Hits }

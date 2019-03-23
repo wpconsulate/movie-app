@@ -11,7 +11,9 @@ interface IMovie {
   setTitle(title: string): void
   getTitle(excerpt?: number): string
 
+  // tslint:disable-next-line: adjacent-overload-signatures
   setOverview(overview: string): void
+  // tslint:disable-next-line: adjacent-overload-signatures
   getOverview(): string
 
   getPopularity(): number

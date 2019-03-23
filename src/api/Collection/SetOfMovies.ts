@@ -20,7 +20,7 @@ class SetOfMovies extends Array<Movie> {
     }
   }
 
-  public async getUpcoming(): Promise<SetOfMovies> | null {
+  public async getUpcoming() {
     const upcomingResponse = await axios.get(
       `${Config.BASE_URL + Movie.ENTITY}/upcoming?api_key=${
         Config.API_KEY
@@ -36,8 +36,8 @@ class SetOfMovies extends Array<Movie> {
     return this
   }
 
-  public async getTopRated(page?: number): Promise<SetOfMovies> | null {
-    let pageNumber = page ? page : 1
+  public async getTopRated(page?: number) {
+    const pageNumber = page ? page : 1
     const url = `${Config.BASE_URL + Movie.ENTITY}/top_rated?api_key=${
       Config.API_KEY
     }&language=en-US&page=${pageNumber}`
@@ -52,10 +52,10 @@ class SetOfMovies extends Array<Movie> {
     } catch (error) {
       console.log(error)
     }
-    return null
+    return undefined
   }
 
-  public async getTrending(): Promise<SetOfMovies> | null {
+  public async getTrending() {
     const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`
     try {
       const response = await fetch(url)
@@ -67,7 +67,7 @@ class SetOfMovies extends Array<Movie> {
     } catch (error) {
       console.log(error)
     }
-    return null
+    return undefined
   }
 
   public showMovies() {
@@ -82,7 +82,7 @@ class SetOfMovies extends Array<Movie> {
     return list
   }
 
-  public async findMovieById(id: number): Promise<Movie | null> {
+  public async findMovieById(id: number) {
     const url = `${Config.BASE_URL}movie/${id}?api_key=${Config.API_KEY}`
 
     try {
@@ -92,7 +92,7 @@ class SetOfMovies extends Array<Movie> {
     } catch (error) {
       console.error(error)
     }
-    return null
+    return undefined
   }
 }
 

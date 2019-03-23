@@ -6,9 +6,9 @@ import { Row, Col, Grid } from 'native-base'
 import { withNavigation } from 'react-navigation'
 import moment from 'moment'
 
-//given to StatsKey to provide circle colour, text next to circle and total watch in that section
+// given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
-  text: String
+  text: string
   colour: string
   total: string
 }
@@ -26,9 +26,9 @@ interface IState {
   totalDays: number
 }
 
-//colour wouldnt take props colour
+// colour wouldnt take props colour
 
-//return circle with text and total eg <O completed      500>
+// return circle with text and total eg <O completed      500>
 function StatsKey(props: IProps) {
   const styles = StyleSheet.create({
     view: {
@@ -36,11 +36,11 @@ function StatsKey(props: IProps) {
       height: 15,
       borderRadius: 100 / 2,
       backgroundColor: props.colour,
-      fontWeight: 'bold',
+      fontWeight: 'bold'
     },
     text: {
-      color: 'white',
-    },
+      color: 'white'
+    }
   })
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -50,7 +50,7 @@ function StatsKey(props: IProps) {
           marginLeft: 10,
           flex: 3,
           fontFamily: 'PoppinsMedium',
-          color: 'white',
+          color: 'white'
         }}
       >
         {props.text}{' '}
@@ -71,17 +71,17 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: 0,
       totalRuntime: 0,
       totalHours: 0,
-      totalDays: 0,
+      totalDays: 0
     }
   }
 
   async componentDidMount() {
     const { userData } = this.props
-    let countComplete = Object.keys(userData.watchlist.completed).length
-    let countWatching = Object.keys(userData.watchlist.watching).length
-    let countPlanned = Object.keys(userData.watchlist.planned).length
-    let countDropped = Object.keys(userData.watchlist.dropped).length
-    let calResult = await this.calculateResults()
+    const countComplete = Object.keys(userData.watchlist.completed).length
+    const countWatching = Object.keys(userData.watchlist.watching).length
+    const countPlanned = Object.keys(userData.watchlist.planned).length
+    const countDropped = Object.keys(userData.watchlist.dropped).length
+    const calResult = await this.calculateResults()
 
     this.setState({
       completeCount: countComplete,
@@ -91,30 +91,32 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: calResult.totalEntries,
       totalHours: calResult.totalHours,
       totalRuntime: calResult.totalMin,
-      totalDays: calResult.totalDays,
+      totalDays: calResult.totalDays
     })
   }
 
   async calculateResults() {
     let totalEntries = 0
-    let list = this.props.userData.watchlist //containts all the watchlist as objects
+    const list = this.props.userData.watchlist // containts all the watchlist as objects
     let totalRuntime = 0
     let totalHours = 0
     let days = 0
 
-    for (let key in list) {
-      for (let k in list[key]) {
-        if (list[key][k].runtime) totalRuntime += list[key][k].runtime
+    for (const key in list) {
+      for (const k in list[key]) {
+        if (list[key][k].runtime) {
+          totalRuntime += list[key][k].runtime
+        }
         totalEntries += 1
       }
     }
     totalHours = Math.floor(totalRuntime / 60)
     days = Math.floor(totalHours / 24)
-    let userDetails = {
-      totalEntries: totalEntries,
-      totalMin: totalRuntime,
-      totalHours: totalHours,
+    const userDetails = {
       totalDays: days,
+      totalEntries: totalEntries,
+      totalHours: totalHours,
+      totalMin: totalRuntime
     }
     return userDetails
   }
@@ -123,19 +125,19 @@ class UserStats extends React.Component<IPropsUser, IState> {
     const style = StyleSheet.create({
       parent: {
         flex: 1,
-        marginLeft: 10,
+        marginLeft: 10
       },
       text: {
-        color: 'white',
-      },
+        color: 'white'
+      }
     })
     const data = [
       {
         Watching: this.state.watchingCount,
         Completed: this.state.completeCount,
         Dropped: this.state.droppedCount,
-        PlanToWatch: this.state.plannedCount,
-      },
+        PlanToWatch: this.state.plannedCount
+      }
     ]
 
     const colors = ['#2A59FF', '#56CCF2', '#FF0000', '#C4C4C4']
@@ -143,7 +145,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       'Watching',
       'Completed',
       'Dropped',
-      'PlanToWatch',
+      'PlanToWatch'
     ]
 
     return (
@@ -202,4 +204,4 @@ class UserStats extends React.Component<IPropsUser, IState> {
     )
   }
 }
-export default withNavigation(UserStats)
+export default withNavigation(UserStats as any)

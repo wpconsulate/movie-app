@@ -1,7 +1,4 @@
 import User from './User'
-import IRegisterParams from './IRegisterParams';
+import IRegisterParams from './IRegisterParams'
 
-export {
-    User,
-    IRegisterParams
-}
+export { User, IRegisterParams }

@@ -1,77 +1,84 @@
 import algoliasearch, { Client, Index, QueryParameters } from 'algoliasearch'
-import firebase from 'firebase';
+import firebase from 'firebase'
 import Config from '../Config'
 
 class Algolia {
+  public algolia: Client
+  private index: Index
 
-    public algolia: Client
-    private index: Index
+  constructor(index: string) {
+    this.algolia = algoliasearch(
+      Config.ALGOLIA_APP_ID,
+      Config.ALGOLIA_ADMIN_KEY
+    )
+    this.index = this.algolia.initIndex(index)
+  }
 
-    constructor(index: string) {
-        this.algolia = algoliasearch(Config.ALGOLIA_APP_ID, Config.ALGOLIA_ADMIN_KEY)
-        this.index = this.algolia.initIndex(index);
-    }
+  public async addOrUpdateIndexRecord<T extends Index>(
+    item: firebase.database.DataSnapshot,
+    index: T
+  ) {
+    const record = item.val()
 
-    public async addOrUpdateIndexRecord<T extends Index>(item: firebase.database.DataSnapshot, index: T) {
+    record.objectID = item.key
 
-        const record = item.val()
+    return index.saveObject(record)
+  }
 
-        record.objectID = item.key
+  public async deleteIndexRecord<T extends Index>(
+    item: firebase.database.DataSnapshot,
+    index: T
+  ) {
+    const objectID = item.key
+    return index.deleteObject(objectID as string)
+  }
+  public async clearIndex() {
+    return this.index.clearIndex()
+  }
 
-        return await index.saveObject(record);
-    }
+  public async search(query: QueryParameters) {
+    return this.index.search(query)
+  }
 
-    public async deleteIndexRecord<T extends Index>(item: firebase.database.DataSnapshot, index: T) {
-        const objectID = item.key;
-        return await index.deleteObject(objectID);
-    }
-    public async clearIndex() {
-        return await this.index.clearIndex();
-    }
+  public async add<T>(data: T) {
+    return this.index.addObject(data)
+  }
 
-    public async search(query: QueryParameters) {
-        return await this.index.search(query);
-    }
+  public async addMany<T>(data: Array<T>) {
+    return this.index.addObjects(data)
+  }
 
-    public async add<T>(data: T) {
-        return await this.index.addObject(data);
-    }
+  public async save<T>(data: T) {
+    return this.index.saveObject(data)
+  }
 
-    public async addMany<T>(data: T[]) {
-        return await this.index.addObjects(data);
-    }
+  public async saveMany(data: Array<object>) {
+    return this.index.saveObjects(data)
+  }
 
-    public async save<T>(data: T) {
-        return await this.index.saveObject(data);
-    }
+  public async update<T>(data: T) {
+    return this.index.partialUpdateObject(data)
+  }
 
-    public async saveMany(data: object[]) {
-        return await this.index.saveObjects(data);
-    }
+  public async updateMany<T>(data: Array<T>) {
+    return this.index.partialUpdateObjects(data)
+  }
 
-    public async update<T>(data: T) {
-        return await this.index.partialUpdateObject(data);
-    }
+  public async delete(objectId: string) {
+    return this.index.deleteObject(objectId)
+  }
 
-    public async updateMany<T>(data: T[]) {
-        return await this.index.partialUpdateObjects(data);
-    }
+  public async deleteMany(objectIds: Array<string>) {
+    return this.index.deleteObjects(objectIds)
+  }
 
-    public async delete(objectId: string) {
-        return await this.index.deleteObject(objectId);
-    }
+  public async getManyByIds(objectIds: Array<string>) {
+    return this.index.getObjects(objectIds)
+  }
 
-    public async deleteMany(objectIds: string[]) {
-        return await this.index.deleteObjects(objectIds);
-    }
-
-    public async getManyByIds(objectIds: string[]) {
-        return await this.index.getObjects(objectIds);
-    }
-
-    public async getById<T>(objectId: string) {
-        return await this.index.getObject(objectId) as T;
-    }
+  public async getById<T>(objectId: string) {
+    return (await this.index.getObject(objectId)) as T
+  }
 }
 
 export default Algolia
