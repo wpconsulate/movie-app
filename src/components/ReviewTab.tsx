@@ -14,6 +14,7 @@ interface IProps {
   movieId: number
   userId?: string
   rating: number
+  likes: number
 }
 interface IState {
   show: boolean
@@ -41,23 +42,22 @@ export default class Review extends Component<IProps, IState> {
     let userID = this.props.userId
     const currMovieId = this.props.movieId
     let movieName = ''
-    
+
     console.log('currMovieId')
     console.log(currMovieId)
     console.log('userID')
     console.log(userID)
 
-    if (userID === undefined){
+    if (userID === undefined) {
       const currUser = new Authentication()
       userID = currUser.getCurrentUser().uid
-    } 
+    }
 
-    if ( currMovieId !== undefined ){
+    if (currMovieId !== undefined) {
       const currentMovie = await new Movie(currMovieId)
       movieName = currentMovie.getTitle()
       console.log('movieName')
       console.log(movieName)
-
     }
 
     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
@@ -66,9 +66,9 @@ export default class Review extends Component<IProps, IState> {
 
     this.setState({
       avatarColour: CurrUSerDetails.userAvatarColour,
-      isLoading: false,  
+      isLoading: false,
       movieName: movieName,
-      userInitials: CurrUSerDetails.userInitials,  
+      userInitials: CurrUSerDetails.userInitials,
       username: CurrUSerDetails.name
     })
   }
@@ -127,12 +127,17 @@ export default class Review extends Component<IProps, IState> {
 
   render() {
     const { review, date, movieName, rating } = this.props
-    const { isLoading, show, username, userInitials, avatarColour, userId } = this.state
+    const {
+      isLoading,
+      show,
+      username,
+      userInitials,
+      avatarColour,
+      userId
+    } = this.state
 
-    if (isLoading){
-      return(
-        <Row/>
-      )
+    if (isLoading) {
+      return <Row />
     }
 
     if (!show) {
@@ -148,10 +153,10 @@ export default class Review extends Component<IProps, IState> {
           <Col
             style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
           >
-          <UserAvatar 
-            userInitials={userInitials}
-            avatarColour={avatarColour}
-          />
+            <UserAvatar
+              userInitials={userInitials}
+              avatarColour={avatarColour}
+            />
           </Col>
           <Col style={{ backgroundColor: '#12152D' }}>
             <Text
@@ -186,7 +191,7 @@ export default class Review extends Component<IProps, IState> {
               fontSize: 10,
               marginRight: 5,
               marginTop: 10,
-              position: 'absolute',              
+              position: 'absolute',
               right: 5,
               top: -5
             }}
@@ -213,10 +218,10 @@ export default class Review extends Component<IProps, IState> {
           <Col
             style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
           >
-          <UserAvatar 
-            userInitials={userInitials}
-            avatarColour={avatarColour}
-          />
+            <UserAvatar
+              userInitials={userInitials}
+              avatarColour={avatarColour}
+            />
           </Col>
           <Col style={{ backgroundColor: '#12152D' }}>
             <Text
@@ -236,7 +241,7 @@ export default class Review extends Component<IProps, IState> {
                 fontSize: 10,
                 marginRight: 5,
                 marginTop: 10,
-                position: 'absolute',              
+                position: 'absolute',
                 right: 5,
                 top: -5
               }}
@@ -251,7 +256,6 @@ export default class Review extends Component<IProps, IState> {
                 marginBottom: 5,
                 marginTop: 10,
                 right: 5
-
               }}
             >
               {review}

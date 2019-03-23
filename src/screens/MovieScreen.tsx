@@ -416,10 +416,12 @@ export default class MovieScreen extends Component<IProps, IState> {
                 return (
                   <Review
                     key={element.id}
-                    url={'something image'}
                     review={element.content}
                     date={element.createdAt}
-                    username={element.author}
+                    rating={element.rating}
+                    userId={element.id}
+                    movieId={movie.getId()}
+                    likes={element.likes ? element.likes : 0}
                   />
                 )
               })}
