@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Text, Col, Row } from 'native-base'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import moment from 'moment'
 import UserAvatar from './UserAvatar'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-import Movie from '../api/Movie/Movie'
+import { SetOfMovies } from '../api'
+import Container from '../native-base-theme/components/Container'
 
 interface IProps {
   review: string
@@ -37,16 +38,14 @@ export default class Review extends Component<IProps, IState> {
       username: ''
     }
   }
-
   async componentWillMount() {
     let userID = this.props.userId
     const currMovieId = this.props.movieId
-    let movieName = ''
-
-    console.log('currMovieId')
-    console.log(currMovieId)
-    console.log('userID')
-    console.log(userID)
+    let movieTitle = ''
+    // console.log('currMovieId')
+    // console.log(currMovieId)
+    // console.log('userID')
+    // console.log(userID)
 
     if (userID === undefined) {
       const currUser = new Authentication()
@@ -54,10 +53,7 @@ export default class Review extends Component<IProps, IState> {
     }
 
     if (currMovieId !== undefined) {
-      const currentMovie = await new Movie(currMovieId)
-      movieName = currentMovie.getTitle()
-      console.log('movieName')
-      console.log(movieName)
+      movieTitle = await new SetOfMovies().getTitleById(currMovieId)
     }
 
     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
@@ -67,7 +63,7 @@ export default class Review extends Component<IProps, IState> {
     this.setState({
       avatarColour: CurrUSerDetails.userAvatarColour,
       isLoading: false,
-      movieName: movieName,
+      movieName: movieTitle,
       userInitials: CurrUSerDetails.userInitials,
       username: CurrUSerDetails.name
     })
@@ -75,8 +71,8 @@ export default class Review extends Component<IProps, IState> {
 
   _renderStars = (stars: number) => {
     const starsArray = []
-    console.log('stars')
-    console.log(stars)
+    // console.log('stars')
+    // console.log(stars)
     for (let i = 0; i < 5; i++) {
       if (stars <= i) {
         starsArray.push(
@@ -126,84 +122,116 @@ export default class Review extends Component<IProps, IState> {
   }
 
   render() {
-    const { review, date, movieName, rating } = this.props
+    const { review, date, rating } = this.props
     const {
       isLoading,
       show,
       username,
+      movieName,
       userInitials,
       avatarColour,
       userId
     } = this.state
 
     if (isLoading) {
-      return <Row />
+      return (
+        <View>
+          <ActivityIndicator />
+        </View>
+      )
     }
 
     if (!show) {
       return (
-        <Row
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            marginTop: 40
-          }}
-        >
-          <Col
-            style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
-          >
-            <UserAvatar
-              userInitials={userInitials}
-              avatarColour={avatarColour}
-            />
-          </Col>
-          <Col style={{ backgroundColor: '#12152D' }}>
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'PoppinsMedium',
-                fontSize: 18,
-                marginTop: 5
-              }}
-            >
-              {username} {movieName}
-            </Text>
-            {review.length > 100 ? (
-              this.text(review.substr(0, 100) + '...')
-            ) : (
-              <Text
-                style={{
-                  color: 'grey',
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 10
-                }}
-              >
-                {review}
-              </Text>
-            )}
-          </Col>
-          <Text
+        <View>
+          <Row
             style={{
-              alignSelf: 'flex-end',
-              color: 'red',
-              fontFamily: 'PoppinsMedium',
-              fontSize: 10,
-              marginRight: 5,
-              marginTop: 10,
-              position: 'absolute',
-              right: 5,
-              top: -5
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginTop: 20
             }}
           >
-            {moment(date).fromNow()}
-          </Text>
-          <Row
-            style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
-          >
-            {this._renderStars(rating)}
+            {movieName !== '' && (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 18
+                }}
+              >
+                {movieName}
+              </Text>
+            )}
           </Row>
-        </Row>
+          <Row
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginTop: 10
+            }}
+          >
+            <Col
+              style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
+            >
+              <UserAvatar
+                userInitials={userInitials}
+                avatarColour={avatarColour}
+              />
+            </Col>
+            <Col style={{ backgroundColor: '#12152D' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 18,
+                  marginTop: 5
+                }}
+              >
+                {username}
+              </Text>
+              {review.length > 100 ? (
+                this.text(review.substr(0, 100) + '...')
+              ) : (
+                <Text
+                  style={{
+                    color: 'grey',
+                    fontFamily: 'PoppinsMedium',
+                    fontSize: 10
+                  }}
+                >
+                  {review}
+                </Text>
+              )}
+            </Col>
+            <Text
+              style={{
+                alignSelf: 'flex-end',
+                color: 'red',
+                fontFamily: 'PoppinsMedium',
+                fontSize: 10,
+                marginRight: 5,
+                marginTop: 10,
+                position: 'absolute',
+                right: 5,
+                top: -5
+              }}
+            >
+              {moment(date).fromNow()}
+            </Text>
+            <Row
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1
+              }}
+            >
+              {this._renderStars(rating)}
+            </Row>
+          </Row>
+        </View>
       )
     } else {
       return (

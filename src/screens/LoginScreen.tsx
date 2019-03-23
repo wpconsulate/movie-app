@@ -39,8 +39,8 @@ class LoginScreen extends Component<IProps, IState> {
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
-      email: null,
-      password: null,
+      email: '',
+      password: '',
       showPass: true,
       errorMsg: '',
     }
@@ -84,68 +84,67 @@ class LoginScreen extends Component<IProps, IState> {
           width={Dimensions.get('window').width}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
-            <Row
-              style={{ alignItems: 'center', justifyContent: 'space-between' }}
-            >
-              <Col size={3}>
-                <Text
-                  style={{
-                    fontFamily: 'PoppinsBold',
-                    fontSize: 24,
-                    color: '#12152D',
-                    marginTop: 50,
-                  }}
-                >
-                  Login
-                </Text>
-              </Col>
-              <Col size={4}>
-                <Text
-                  style={{
-                    fontFamily: 'PoppinsMedium',
-                    fontSize: 15,
-                    color: '#696969',
-                    fontWeight: 'bold',
-                    marginTop: 50,
-                  }}
-                >
-                  Sign in to your account
-                </Text>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: 30 }}>
-              <Col>
-                <Form>
-                  <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
-                    {this.state.errorMsg ? (
+        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
+          <Row
+            style={{ alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <Col size={3}>
+              <Text
+                style={{
+                  fontFamily: 'PoppinsBold',
+                  fontSize: 24,
+                  color: '#12152D',
+                }}
+              >
+                Login
+              </Text>
+            </Col>
+            <Col size={4}>
+              <Text
+                style={{
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 13,
+                  color: '#696969',
+                  fontWeight: 'bold',
+                  textAlign: 'right'
+                }}
+              >
+                Sign in to your account
+              </Text>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: 30 }}>
+            <Col>
+              <Form>
+                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                {this.state.errorMsg ? (
                       <Text style={{ color: 'red' }}>
                         {this.state.errorMsg}
                       </Text>
                     ) : (
                       <Text />
                     )}
-                    <Label
-                      style={{
-                        fontSize: 13,
-                        fontFamily: 'PoppinsMedium',
-                        color: '#696969',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      EMAIL
-                    </Label>
-                    <Input
-                      label="EMAIL"
-                      autoFocus
-                      keyboardType="email-address"
-                      autoCorrect
-                      value={email}
-                      onChangeText={text => {
-                        this.setState({ email: text })
-                      }}
-                    />
-                  </Item>
+                  <Label
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'PoppinsMedium',
+                      color: '#696969',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    EMAIL
+                  </Label>
+                  <Input
+                    label="EMAIL"
+                    autoFocus
+                    keyboardType="email-address"
+                    autoCorrect
+                    value={email}
+                    onChangeText={text => {
+                      this.setState({ email: text })
+                    }}
+                  />
+                </Item>
                   <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                     <Label
                       style={{

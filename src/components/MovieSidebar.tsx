@@ -10,10 +10,12 @@ import MovieStore from '../stores/MovieStore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // import Toast from 'react-native-simple-toast';
 import UserStore from '../stores/UserStore'
+import Likes, { ReviewType } from '../api/Collection/Likes';
 
 interface IProps {
   movie: Movie
   userid: string
+  likes : Likes
 }
 
 // function addToWatchlist(movie: Movie, watchlist: string) {
@@ -112,7 +114,7 @@ class MovieSidebar extends React.Component<IProps, any> {
             accessibilityRole="button"
             accessibilityHint="Double tap to like it."
             onPress={() => {
-              this.props.movie.setLike()
+              this.props.likes.create(this.props.movie.getId(), ReviewType.movie)
               Alert.alert("liked")
             }}
           >

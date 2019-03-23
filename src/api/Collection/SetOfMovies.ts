@@ -20,6 +20,24 @@ class SetOfMovies extends Array<Movie> {
     }
   }
 
+  public async getTitleById(id: number): Promise<any> {
+    console.log('id')
+    console.log(id)
+
+    const reviewURL =
+      Config.BASE_URL +
+      'movie/' +
+       id +
+      '?api_key=' +
+      Config.API_KEY +
+      '&language=en-US'
+    const content = await fetch(reviewURL)
+    const parsedContent = await content.json()
+    const Title = parsedContent.title
+    
+    return Title
+  }
+
   public async getUpcoming() {
     const upcomingResponse = await axios.get(
       `${Config.BASE_URL + Movie.ENTITY}/upcoming?api_key=${
@@ -55,24 +73,6 @@ class SetOfMovies extends Array<Movie> {
     return undefined
   }
 
-
-  public async getTileById(id: number) {
-    const url = `${Config.BASE_URL + Movie.ENTITY}/top_rated?api_key=${
-      Config.API_KEY
-    }&language=en-US&page=${pageNumber}`
-    try {
-      const response = await fetch(url)
-      const responseJson = await response.json()
-      // console.log(url);
-      responseJson.results.forEach((movie: Movie) => {
-        this.addMovie(movie)
-      })
-      return this
-    } catch (error) {
-      console.log(error)
-    }
-    return undefined
-  }
 
   public async getTrending() {
     const url = `${Config.BASE_URL}trending/movie/day?api_key=${Config.API_KEY}`

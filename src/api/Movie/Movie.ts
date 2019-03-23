@@ -344,19 +344,9 @@ class Movie extends Database implements IMovie {
 
     return reviewList
   }
-
-  public async setLike() {
-    let count = 0
-    await this.database.ref(`liked/${this.id}`).on('value', element => {
-      if (element) {
-        count = element.val().liked
-      }
-    })
-
-    count++
-
-    await this.database.ref(`liked/${this.id}`).set({ liked: count })
-  }
+  
 }
+
+
 
 export default Movie

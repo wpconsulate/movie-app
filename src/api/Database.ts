@@ -13,6 +13,8 @@ class Database {
     return this.database.ref(collection).set(data)
   }
 
+
+ 
   public read(collection: string) {
     const items: Array<database.DataSnapshot> = []
     this.database.ref(collection).on(

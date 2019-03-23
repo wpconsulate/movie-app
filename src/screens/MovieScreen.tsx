@@ -48,7 +48,7 @@ import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
-import { database } from 'firebase'
+import Likes from '../api/Collection/Likes';
 import Cast from '../api/Cast/Cast'
 import DropdownAlert from 'react-native-dropdownalert'
 interface IProps {
@@ -71,7 +71,7 @@ interface IState {
   isAccessible: boolean
   currentUid: string
   currentUsername: string
-  likes: number
+  likeCount: number
   messages: Array<Message>
 }
 interface IStyle {
@@ -107,6 +107,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
   private movies = new SetOfMovies()
+  likes : Likes
   private dropdown: any
   constructor(props: IProps) {
     super(props)
@@ -119,13 +120,14 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible: false,
       isLoaded: false,
       isReviewing: false,
-      likes: 0,
+      likeCount: 0,
       movie: new Movie({}),
       showMenu: false,
       userReviewList: [],
       wantsToRev: false,
       messages: []
     }
+    this.likes = new Likes()
   }
 
   onTrailerPlayPress = async () => {
@@ -136,23 +138,9 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
 
-  getLikesByMovieId(id: string) {
-    return new Promise((resolve, reject) => {
-      database()
-        .ref()
-        .child('liked')
-        .child(id)
-        .on('value', snap => {
-          if (!snap) {
-            return reject()
-          }
-          return resolve(snap.val())
-        })
-    })
-  }
-
   async componentWillMount() {
     const { navigation } = this.props
+    
     const id = await (navigation as any).getParam('movieId', 181808) // Star Wars: The Last Jedi
     // tslint:disable-next-line: radix
     const movie = (await this.movies.findMovieById(parseInt(id))) as Movie
@@ -162,6 +150,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     const errorMessages = MessageStore.errorMessages
     const successMessages = MessageStore.successMessages
     const castImages = new Array<IImage>()
+    let likeObj = await this.likes.getLikes(movie.getId())
     let Uid = 'test'
     let username = 'test'
 
@@ -178,6 +167,13 @@ export default class MovieScreen extends Component<IProps, IState> {
     casts.forEach(cast => {
       castImages.push({ url: cast.getImage() })
     })
+    let result;
+    if(likeObj == null)
+    {
+      result = 0;
+    } else {
+      result = likeObj.count
+    }
     this.setState({
       castImages,
       critiqueReviewList: critReview,
@@ -188,7 +184,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       isLoaded: true,
       isReviewing: false,
       movie,
-      userReviewList: userReview
+      userReviewList: userReview,
+      likeCount: result
     })
     if (MessageStore.message) {
       this.dropdown.alertWithType(
@@ -211,7 +208,8 @@ export default class MovieScreen extends Component<IProps, IState> {
       isAccessible,
       isReviewing,
       currentUid,
-      currentUsername
+      currentUsername,
+      likeCount
     } = this.state
     const navigation: any = this.props.navigation
     if (!isLoaded) {
@@ -305,7 +303,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             />
           </View>
         </TouchableOpacity>
-        <MovieSidebar movie={movie} userid={currentUid} />
+        <MovieSidebar movie={movie} userid={currentUid} likes={this.likes} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
@@ -315,6 +313,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             <ReleaseDateRuntime
               date={formatDate(movie.getReleaseDate())}
               time={isAccessible ? movie.getRuntime(true) : movie.getRuntime()}
+              likes={likeCount}
             />
             <Storyline content={movie.getOverview()} />
             <View
@@ -479,6 +478,7 @@ function ReleaseDateRuntime(props: any) {
     >
       <ReleaseDate date={props.date} />
       <Runtime time={props.time} />
+      <MovieLikes likes={props.likes} />
     </View>
   )
 }
@@ -532,6 +532,31 @@ function Runtime(props: any) {
         accessibilityLabel={`Total runtime is ${props.time}`}
       >
         {props.time}
+      </Text>
+    </View>
+  )
+}
+
+function MovieLikes(props: any) {
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginLeft: 10
+      }}
+    >
+      <View style={{ marginHorizontal: 5 }}>
+        <Icon type="EvilIcons" name="arrow-up" style={{ color: '#fff' }} />
+      </View>
+      <Text
+        style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`Total Likes are ${props.likes}`}
+      >
+       {props.likes} 
       </Text>
     </View>
   )
