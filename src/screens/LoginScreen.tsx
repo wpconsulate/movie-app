@@ -79,6 +79,7 @@ class LoginScreen extends Component<IProps, IState> {
             left: 0,
             right: 0,
             width: '100%',
+            height: '15%',
           }}
           width={Dimensions.get('window').width}
         />
@@ -93,6 +94,7 @@ class LoginScreen extends Component<IProps, IState> {
                     fontFamily: 'PoppinsBold',
                     fontSize: 24,
                     color: '#12152D',
+                    marginTop: 50,
                   }}
                 >
                   Login
@@ -102,9 +104,10 @@ class LoginScreen extends Component<IProps, IState> {
                 <Text
                   style={{
                     fontFamily: 'PoppinsMedium',
-                    fontSize: 13,
+                    fontSize: 15,
                     color: '#696969',
                     fontWeight: 'bold',
+                    marginTop: 50,
                   }}
                 >
                   Sign in to your account
@@ -124,13 +127,13 @@ class LoginScreen extends Component<IProps, IState> {
                     )}
                     <Label
                       style={{
-                        fontSize: 14,
+                        fontSize: 13,
                         fontFamily: 'PoppinsMedium',
                         color: '#696969',
                         fontWeight: 'bold',
                       }}
                     >
-                      EMAIL@
+                      EMAIL
                     </Label>
                     <Input
                       label="EMAIL"
@@ -146,12 +149,12 @@ class LoginScreen extends Component<IProps, IState> {
                   <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                     <Label
                       style={{
-                        fontSize: 14,
+                        fontSize: 13,
                         fontFamily: 'PoppinsMedium',
                         color: '#696969',
                       }}
                     >
-                      PASSWORD*
+                      PASSWORD
                     </Label>
                     <Row>
                       <Input
@@ -196,9 +199,9 @@ class LoginScreen extends Component<IProps, IState> {
                         primary
                         block
                         onPress={() => this.onLoginPress()}
-                        style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
+                        style={{ backgroundColor: '#E20F0F', minHeight: 50, marginTop: 30 }}
                       >
-                        <Text>LOGIN</Text>
+                        <Text>Login</Text>
                       </Button>
                     </Col>
                   </Row>
@@ -213,7 +216,12 @@ class LoginScreen extends Component<IProps, IState> {
               }}
             >
               <Col>
-                <Text style={{ fontFamily: 'PoppinsMedium' }}>
+                <Text style={{
+                fontFamily: 'PoppinsMedium',
+                color: '#696969',
+                fontSize:14,
+                alignItems: 'center',
+                marginLeft: 10, }}>
                   Don't have an account?
                 </Text>
               </Col>
@@ -224,8 +232,12 @@ class LoginScreen extends Component<IProps, IState> {
                     this.props.navigation.navigate('Register')
                   }}
                 >
-                  <Text style={{ fontFamily: 'PoppinsMedium' }}>
-                    Register Now
+                  <Text style={{
+                  fontFamily: 'PoppinsMedium',
+                  color:'black',
+                  fontSize:14,
+                  fontWeight:'bold' }}>
+                    Register now
                   </Text>
                 </Button>
               </Col>

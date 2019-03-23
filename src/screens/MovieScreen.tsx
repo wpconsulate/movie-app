@@ -364,7 +364,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                   width: '100%'
                 }}
               >
-                Reviews
+                Review(s)
               </Text>
               <TouchableOpacity
                 style={{
@@ -552,14 +552,14 @@ function Storyline(props: any) {
           width: '100%'
         }}
       >
-        Background
+        Storyline
       </Text>
       <Text
         style={{
           color: 'white',
           fontFamily: 'PoppinsLight',
-          fontSize: 20,
-          width: '100%'
+          fontSize: 15,
+          width: '100%',
         }}
       >
         {props.content}

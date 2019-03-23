@@ -123,7 +123,7 @@ class ProfileContent extends React.Component<IProps, IState> {
           <Text
             style={{
               alignSelf: 'center',
-              color: 'red',
+              color: 'white',
               fontSize: 30,
               fontWeight: 'bold'
             }}
@@ -164,9 +164,15 @@ class ProfileContent extends React.Component<IProps, IState> {
 class FriendsList extends React.Component {
   render() {
     return (
-      <View>
-        <Text>Settings</Text>
-        <ScrollView>
+      <ScrollView style={{ backgroundColor: '#12152D' }}>
+        <Text style={{
+          alignSelf: 'center',
+          color: 'white',
+          fontSize: 30,
+          fontWeight: 'bold'
+          }}>Settings</Text>
+
+
           <Review
             review="testing this review"
             username="shezan"
@@ -174,8 +180,8 @@ class FriendsList extends React.Component {
           />
           <Review review="testing this review" username="shezan" url="sdfs" />
           <Review review="testing this review" username="shezan" url="sdfs" />
-        </ScrollView>
-      </View>
+
+      </ScrollView>
     )
   }
 }
@@ -233,7 +239,7 @@ class ReviewsList extends React.Component<any, IState2> {
         <Text
           style={{
             alignSelf: 'center',
-            color: 'red',
+            color: 'white',
             fontSize: 30,
             fontWeight: 'bold'
           }}

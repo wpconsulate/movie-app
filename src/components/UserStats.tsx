@@ -184,17 +184,17 @@ class UserStats extends React.Component<IPropsUser, IState> {
         <Grid>
           <Row>
             <Col>
-              <Text style={style.text}>
+              <Text style={{color:'white',marginTop:5}}>
                 Total Entries:{this.state.totalEntries}
               </Text>
-              <Text style={style.text}>Review:0</Text>
+              <Text style={{color:'white',marginTop:5}}>Review:0</Text>
             </Col>
 
             <Col>
-              <Text style={style.text}>Days:{this.state.totalDays}</Text>
-              <Text style={style.text}>Hours:{this.state.totalHours}</Text>
-              <Text style={style.text}>Minutes: {this.state.totalRuntime}</Text>
-              <Text style={style.text}>
+              <Text style={{color:'white',marginTop:5}}>Days:{this.state.totalDays}</Text>
+              <Text style={{color:'white',marginTop:5}}>Hours:{this.state.totalHours}</Text>
+              <Text style={{color:'white',marginTop:5}}>Minutes: {this.state.totalRuntime}</Text>
+              <Text style={{color:'white',marginTop:5}}>
                 Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
               </Text>
             </Col>
