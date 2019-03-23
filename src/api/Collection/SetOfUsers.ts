@@ -20,28 +20,26 @@ class SetOfUsers extends Array<User> {
 
   public async getUserReviewsById(userId: string): Promise<any> {
     interface ReviewObject {
-      id: string
-      author: string
-      content: string
-      date: string
-      movieName: string
+      content: string,
+      date: string,
+      movieId: string,
+      rating: number
     }
     const reviewList = new Array<ReviewObject>()
     await this.database.database.ref('users/' + userId + '/reviews/').once(
       'value',
-      element => {
+      element => {''
         element.forEach((review: any) => {
           const reviewID = review.key
           const element = review.toJSON()
-          reviewList.push({
-            author: element.author,
-            content: element.content,
-            date: element.date,
-            id: reviewID,
-            movieName: element.movieName
-          })
+          reviewList.push({ 
+            content: element.content, 
+            date: element.date, 
+            movieId: reviewID, 
+            rating: element.rating
+           })    
         })
-      },
+    },
       (error: any) => {
         console.error(error)
       }

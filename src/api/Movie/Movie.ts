@@ -276,6 +276,8 @@ class Movie extends Database implements IMovie {
       author: string
       content: string
       date: string
+      rating: number
+      // userId: string
     }
     const reviewList = new Array<ReviewObject>()
     await this.database.ref('review/' + this.id).once(
@@ -284,11 +286,17 @@ class Movie extends Database implements IMovie {
         element.forEach((review: any) => {
           const reviewID = review.key
           const element = review.toJSON()
+          // console.log("element")
+          // console.log(review)
+          // console.log("element.rating")
+          // console.log(element.rating)
           reviewList.push({
             author: element.author,
             content: element.content,
             date: element.date,
-            id: reviewID
+            id: reviewID,
+            rating: element.rating
+            // userId: element.id
           })
         })
       },
