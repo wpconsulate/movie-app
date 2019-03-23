@@ -132,13 +132,8 @@ export default class MovieScreen extends Component<IProps, IState> {
   async componentWillMount() {
     const id = await this.props.navigation.getParam('movieId', 181808) // Star Wars: The Last Jedi
     const movie = await this.movies.findMovieById(parseInt(id))
-    const likes = await this.likes.getReview(movie.getId().toString())
+    const likes = await this.likes.getReview(movie.getId())
     console.log('likes', likes)
-    // database()
-    //   .ref(`liked/${id}`)
-    //   .on('value', element => {
-    //     if (element.val()) this.setState({ likes: element.val().liked })
-    //   })
     const images = await movie.getImages(5, { type: 'backdrops' })
     const casts = await movie.getCasts()
     const isAccessible = await AccessibilityInfo.fetch()
