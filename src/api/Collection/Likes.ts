@@ -21,7 +21,6 @@ class Likes extends Database implements Review {
       return new Promise((resolve, reject) => {
         this.database.ref(`liked/${id.toString()}`)
           .on('value', snap => {
-            console.log(snap);
             if (!snap) return reject()
               return resolve(snap.val())
           })
