@@ -3,7 +3,7 @@ import * as firebase from 'firebase'
 import { Root } from 'native-base'
 import React, { Component } from 'react'
 import { createAppContainer } from 'react-navigation'
-
+import UserStore from './src/stores/UserStore'
 import Config from './src/Config'
 import RootStack from './src/Navigation'
 
@@ -44,6 +44,10 @@ class App extends Component<PropsInterface, StateInterface> {
         PoppinsSemiBold: require('./assets/fonts/Poppins/SemiBold.ttf'),
         Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
       })
+      console.log('user', firebase.auth().currentUser)
+      if (firebase.auth().currentUser) {
+        UserStore.setIsLoggedIn(true)
+      }
       this.setState({ fontLoaded: true })
     } catch (error) {
       console.error(error)

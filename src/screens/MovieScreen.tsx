@@ -23,8 +23,9 @@ import {
   GenreContainer,
   Slider,
   MovieSidebar,
-  LeaveReview
+  LeaveReview,
 } from '../components'
+import LikeSlider from '../components/LikeSlider'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -355,7 +356,7 @@ export default class MovieScreen extends Component<IProps, IState> {
               >
                 Cast
               </Text>
-              <Slider
+              <LikeSlider
                 images={castImages}
                 borderRadius={37.5}
                 height={75}

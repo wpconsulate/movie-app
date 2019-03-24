@@ -44,6 +44,13 @@ const styles = StyleSheet.create({
 })
 @observer
 class MovieSidebar extends React.Component<IProps, any> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      disabled : false,
+    }
+  }
+ 
   render() {
     const { showMenu } = MovieStore
     if (showMenu) {
@@ -104,7 +111,7 @@ class MovieSidebar extends React.Component<IProps, any> {
               <MaterialIcons name="add" color="#12152D" size={52} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity disabled={this.state.disabled}
             style={{
               alignItems: 'center',
               justifyContent: 'center',
@@ -115,7 +122,8 @@ class MovieSidebar extends React.Component<IProps, any> {
             accessibilityHint="Double tap to like it."
             onPress={() => {
               this.props.likes.create(this.props.movie.getId(), ReviewType.movie)
-              Alert.alert("liked")
+              Alert.alert("You have liked this Movie!")
+              this.setState({disabled: true})
             }}
           >
             <View style={styles.circle}>
