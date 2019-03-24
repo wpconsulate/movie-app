@@ -9,7 +9,8 @@ import {
   ResultsScreen,
   ReviewScreen,
   SearchScreen,
-  SettingsScreen
+  SettingsScreen,
+  QrScreen
 } from './screens'
 
 const RootStack = createStackNavigator(
@@ -22,7 +23,8 @@ const RootStack = createStackNavigator(
     Results: ResultsScreen,
     Review: ReviewScreen,
     Search: SearchScreen,
-    Settings: SettingsScreen
+    Settings: SettingsScreen,
+    QrScreen: QrScreen
   },
   {
     initialRouteName: 'Search',

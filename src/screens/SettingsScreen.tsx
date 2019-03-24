@@ -15,7 +15,8 @@ import {
   View, 
   TouchableWithoutFeedback, 
   Keyboard, 
-  ActivityIndicator 
+  ActivityIndicator ,
+  TouchableOpacity
 } from 'react-native'
 import { Database } from '../api'
 import Authentication from '../api/Authentication'
@@ -258,11 +259,16 @@ class SettingsScreen extends Component<IProps, IState> {
                         fontFamily: 'PoppinsMedium',
                         fontSize: 14
                       }}
-                      label="Username"
-                      keyboardType="default"
-                      value={username}
-                      onChangeText={text => {
-                        this.setState({ username: text })
+                    >
+                      CURRENT PROFILE PICTURE
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: -10,
+                        alignSelf: 'flex-end',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     />
                   </Row>

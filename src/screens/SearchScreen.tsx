@@ -1,5 +1,6 @@
 import { Input, Spinner, Grid, Row, Col, Text } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import React, { Component } from 'react'
 import {
   AsyncStorage,
@@ -245,6 +246,13 @@ class SearchScreen extends Component<any, State> {
   }
 
   render() {
+    const {
+      searchInput,
+      showClearBtn,
+      isLoading,
+      results,
+      searchHistory
+    } = this.state
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
@@ -257,7 +265,7 @@ class SearchScreen extends Component<any, State> {
                 accessibilityLabel="Search"
                 accessibilityHint="Search for a movie, actor or a user. Press enter on your keypad to search."
                 placeholder="Search for a movie, actor or a user..."
-                value={this.state.searchInput}
+                value={searchInput}
                 onChangeText={this.onChange}
                 returnKeyType="search"
                 onSubmitEditing={() => this.onSubmit()}
@@ -281,7 +289,12 @@ class SearchScreen extends Component<any, State> {
                   renderItem={this._renderItem}
                 />
               </ScrollView>
-              <TouchableOpacity style={styles.qrButton}>
+              <TouchableOpacity
+                style={styles.qrButton}
+                onPress={() => {
+                  this.props.navigation.push('QrScreen')
+                }}
+              >
                 <FontAwesomeIcon name="qrcode" size={26} color="white" />
               </TouchableOpacity>
             </View>

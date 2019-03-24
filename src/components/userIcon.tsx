@@ -8,7 +8,7 @@ import {
   NavigationParams,
 } from 'react-navigation'
 interface IProps extends NavigationInjectedProps {
-  userId: number
+  userId: string
   username: string
   textColour?: string
 }
@@ -24,13 +24,12 @@ const shapes = StyleSheet.create({
 })
 
 function handleOnPress(
-  id: number,
+  id: string,
   navigation: NavigationScreenProp<
     NavigationRoute<NavigationParams>,
     NavigationParams
   >
 ) {
-  console.log(id)
   navigation.push('Profile', { userId: id })
 }
 const image =

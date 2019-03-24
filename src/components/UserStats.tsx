@@ -36,11 +36,11 @@ function StatsKey(props: IProps) {
       height: 15,
       borderRadius: 100 / 2,
       backgroundColor: props.colour,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
     },
     text: {
-      color: 'white'
-    }
+      color: 'white',
+    },
   })
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -50,7 +50,7 @@ function StatsKey(props: IProps) {
           marginLeft: 10,
           flex: 3,
           fontFamily: 'PoppinsMedium',
-          color: 'white'
+          color: 'white',
         }}
       >
         {props.text}{' '}
@@ -71,17 +71,21 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: 0,
       totalRuntime: 0,
       totalHours: 0,
-      totalDays: 0
+      totalDays: 0,
     }
   }
 
+  checkifExist(check: any) {
+    if (check) return Object.keys(check).length
+    else return 0
+  }
   async componentDidMount() {
     const { userData } = this.props
-    const countComplete = Object.keys(userData.watchlist.completed).length
-    const countWatching = Object.keys(userData.watchlist.watching).length
-    const countPlanned = Object.keys(userData.watchlist.planned).length
-    const countDropped = Object.keys(userData.watchlist.dropped).length
-    const calResult = await this.calculateResults()
+    let countComplete = this.checkifExist(userData.watchlist.completed)
+    let countWatching = this.checkifExist(userData.watchlist.watching)
+    let countPlanned = this.checkifExist(userData.watchlist.planned)
+    let countDropped = this.checkifExist(userData.watchlist.dropped)
+    let calResult = await this.calculateResults()
 
     this.setState({
       completeCount: countComplete,
@@ -91,7 +95,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: calResult.totalEntries,
       totalHours: calResult.totalHours,
       totalRuntime: calResult.totalMin,
-      totalDays: calResult.totalDays
+      totalDays: calResult.totalDays,
     })
   }
 
@@ -116,7 +120,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalDays: days,
       totalEntries: totalEntries,
       totalHours: totalHours,
-      totalMin: totalRuntime
+      totalMin: totalRuntime,
     }
     return userDetails
   }
@@ -125,19 +129,19 @@ class UserStats extends React.Component<IPropsUser, IState> {
     const style = StyleSheet.create({
       parent: {
         flex: 1,
-        marginLeft: 10
+        marginLeft: 10,
       },
       text: {
-        color: 'white'
-      }
+        color: 'white',
+      },
     })
     const data = [
       {
         Watching: this.state.watchingCount,
         Completed: this.state.completeCount,
         Dropped: this.state.droppedCount,
-        PlanToWatch: this.state.plannedCount
-      }
+        PlanToWatch: this.state.plannedCount,
+      },
     ]
 
     const colors = ['#2A59FF', '#56CCF2', '#FF0000', '#C4C4C4']
@@ -145,7 +149,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       'Watching',
       'Completed',
       'Dropped',
-      'PlanToWatch'
+      'PlanToWatch',
     ]
 
     return (
@@ -184,17 +188,23 @@ class UserStats extends React.Component<IPropsUser, IState> {
         <Grid>
           <Row>
             <Col>
-              <Text style={{color:'white',marginTop:5}}>
+              <Text style={{ color: 'white', marginTop: 5 }}>
                 Total Entries:{this.state.totalEntries}
               </Text>
-              <Text style={{color:'white',marginTop:5}}>Review:0</Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>Review:0</Text>
             </Col>
 
             <Col>
-              <Text style={{color:'white',marginTop:5}}>Days:{this.state.totalDays}</Text>
-              <Text style={{color:'white',marginTop:5}}>Hours:{this.state.totalHours}</Text>
-              <Text style={{color:'white',marginTop:5}}>Minutes: {this.state.totalRuntime}</Text>
-              <Text style={{color:'white',marginTop:5}}>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Days:{this.state.totalDays}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Hours:{this.state.totalHours}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Minutes: {this.state.totalRuntime}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
                 Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
               </Text>
             </Col>
