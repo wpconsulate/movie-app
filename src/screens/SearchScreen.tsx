@@ -1,5 +1,6 @@
 import { Input, Spinner, Grid, Row, Col, Text } from 'native-base'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import React, { Component } from 'react'
 import {
   AsyncStorage,
@@ -13,19 +14,18 @@ import {
   Keyboard,
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
-
 import Search from '../api/Search'
 import ResultItem from '../components/ResultItem'
 import { navigationOptions } from '../helpers/header'
 import { SearchScreenState as State } from '../state/SearchScreenState'
-
 import Pill from '../components/Pill'
+
 const styles = StyleSheet.create({
   headerView: {
     maxHeight: '20%',
     backgroundColor: '#E20F0F',
     width: '100%',
-    zIndex: 3,
+    zIndex: 3
   },
   searchContainer: {
     position: 'absolute',
@@ -99,9 +99,9 @@ class SearchScreen extends Component<any, State> {
     this.state = {
       searchInput: '',
       isLoading: false,
-      results: null,
-      tmpResults: null,
-      searchHistory: null,
+      results: undefined,
+      tmpResults: undefined,
+      searchHistory: undefined,
       showClearBtn: false
     }
 
@@ -129,18 +129,18 @@ class SearchScreen extends Component<any, State> {
 
     if (searchInput.trim().length <= 2) {
       this.setState({
-        results: null,
+        results: undefined
       })
     }
     if (searchInput.trim().length > 2) {
       this.setState({
-        isLoading: true,
+        isLoading: true
       })
       try {
         const results = await this.search.searchAutocomplete(searchInput)
         this.setState({
           results,
-          isLoading: false,
+          isLoading: false
         })
       } catch (err) {
         console.error(err)
@@ -155,7 +155,7 @@ class SearchScreen extends Component<any, State> {
   _storeData = async (userInput: string) => {
     try {
       await AsyncStorage.setItem(userInput, userInput);
-      let previousSearch = this.state.searchHistory
+      const previousSearch = this.state.searchHistory
       previousSearch.push(userInput)
       this.setState({ searchHistory: previousSearch })
     } catch (error) {
@@ -165,7 +165,7 @@ class SearchScreen extends Component<any, State> {
   _retrieveData = async (userInput: string) => {
     try {
       const value = await AsyncStorage.getItem(userInput);
-      if (value === null) {
+      if (value === undefined) {
         this._storeData(userInput)
       }
     } catch (error) {
@@ -211,7 +211,7 @@ class SearchScreen extends Component<any, State> {
 
   onClearPress = () => {
     this.setState({
-      results: null,
+      results: undefined,
       searchInput: '',
       showClearBtn: false
     })
@@ -219,6 +219,7 @@ class SearchScreen extends Component<any, State> {
   }
 
   render() {
+    const { searchInput, showClearBtn, isLoading, results, searchHistory } = this.state 
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
@@ -231,21 +232,21 @@ class SearchScreen extends Component<any, State> {
                 accessibilityLabel="Search"
                 accessibilityHint="Search for a movie, actor or a user. Press enter on your keypad to search."
                 placeholder="Search for a movie, actor or a user..."
-                value={this.state.searchInput}
+                value={searchInput}
                 onChangeText={this.onChange}
                 returnKeyType="search"
                 onSubmitEditing={() => this.onSubmit()}
                 placeholderTextColor="#B3B3B3"
                 style={styles.searchInput}
               />
-              {this.state.showClearBtn ?
+              {showClearBtn ?
                 <TouchableOpacity onPress={this.onClearPress} style={{ paddingRight: 15 }}>
                   <MaterialIcons name="close" color="#12152D" size={20} />
                 </TouchableOpacity>
                 :
-                null
+                undefined
               }
-              {this.state.isLoading && (
+              {isLoading && (
                 <Spinner style={{ width: 10, height: 10 }} />
               )}
             </View>
@@ -253,7 +254,7 @@ class SearchScreen extends Component<any, State> {
               <ScrollView style={{ maxHeight: 250, position: 'relative' }}>
                 <View>
                   <FlatList
-                    data={this.state.results}
+                    data={results}
                     keyExtractor={(item: any) => item.id.toString()}
                     renderItem={this._renderItem}
                   />
@@ -270,6 +271,21 @@ class SearchScreen extends Component<any, State> {
             <View style={styles.mainSection}>
               <Grid style={{ width: '100%', marginTop: 50 }}>
                 <View style={{ flex: 1, maxHeight: '50%' }}>
+                <Row
+                    style={{                      
+                      marginBottom: 15
+                    }}>
+                    <Col>
+                    <TouchableOpacity
+                    onPress={() => { 
+                      this.props.navigation.push('QrScreen')
+                    }}
+                    
+                    >
+                    <MaterialCommunityIcons name="qrcode-scan" color="white" size={50} />
+                    </TouchableOpacity>    
+                    </Col>
+                  </Row>
                   <Row
                     style={{
                       maxHeight: 50,
@@ -306,8 +322,8 @@ class SearchScreen extends Component<any, State> {
                   </Row>
                   <Row>
                     <ScrollView horizontal>
-                      {this.state.searchHistory
-                        ? this.state.searchHistory.map((e: any) => {
+                      {searchHistory
+                        ? searchHistory.map((e: any) => {
                           // console.log('searchHistory', e)
                           return (
                             <TouchableOpacity
@@ -322,7 +338,7 @@ class SearchScreen extends Component<any, State> {
                             </TouchableOpacity>
                           )
                         })
-                        : null}
+                        : undefined}
                     </ScrollView>
                   </Row>
                 </View>

@@ -15,21 +15,33 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import SettingsScreens from './SettingsScreen'
-import { Button, Spinner, Icon } from 'native-base'
+import { Button, Spinner, Icon, Header } from 'native-base'
 import UserStore from '../stores/UserStore'
+import FriendsScreen from './FriendsScreen'
+import UserReviewScreen from './UserReviewScreen'
+import UserAvatar from '../components/UserAvatar'
+import { navigationOptions } from '../helpers/header'
+import { NavigationScreenProps } from 'react-navigation'
+import AutoHeightImage from 'react-native-auto-height-image'
+
+
 
 interface IState {
   userID: string
   username: string
+  userAvatarColour: string
   userData: any
+  userInitials: string
   isLoading: boolean
   refreshing: boolean
 }
 
-interface IProps {
+interface IProps extends NavigationScreenProps {
   userID: string
 }
-class ProfileScreen extends React.Component<any, any> {
+export default class ProfileScreen extends React.Component<any, any> {
+  static navigationOptions = navigationOptions
+
   constructor(props: any) {
     super(props)
     this.state = {
@@ -45,6 +57,7 @@ class ProfileScreen extends React.Component<any, any> {
     } else {
       const currUser = new Authentication()
       const userID = (currUser.getCurrentUser() as firebase.User).uid
+      console.log(currUser.getCurrentUser())
       this.setState({ userID: userID, isLoading: false })
     }
   }
@@ -52,6 +65,16 @@ class ProfileScreen extends React.Component<any, any> {
     console.log('user states' + this.state.userID)
     return (
       <View>
+        <Header
+          transparent={true}
+          translucent={true}
+          iosBarStyle="light-content"
+          noShadow={true}
+          style={{
+            position: 'absolute',
+            zIndex: -2
+          }}
+        />
         {this.state.isLoading ? (
           <Spinner />
         ) : (
@@ -68,9 +91,11 @@ class ProfileContent extends React.Component<IProps, IState> {
     this.state = {
       isLoading: true,
       refreshing: false,
+      userAvatarColour: '',
       userData: undefined,
       userID: '',
-      username: ''
+      username: '',
+      userInitials: ''
     }
   }
   async componentWillMount() {
@@ -81,9 +106,12 @@ class ProfileContent extends React.Component<IProps, IState> {
     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({
       isLoading: false,
-      userData: CurrUSerDetails,
+      userData: CurrUSerDetails,      
+      userAvatarColour: CurrUSerDetails.userAvatarColour,
       userID: userID,
-      username: CurrUSerDetails.name
+      username: CurrUSerDetails.name,
+      userInitials: CurrUSerDetails.userInitials
+
     })
   }
   // logout = () => {
@@ -119,6 +147,16 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
+        <Header
+          transparent={true}
+          translucent={true}
+          iosBarStyle="light-content"
+          noShadow={true}
+          style={{
+            position: 'absolute',
+            zIndex: -2
+          }}
+        />
         <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 5 }}>
           <Text
             style={{
@@ -133,9 +171,11 @@ class ProfileContent extends React.Component<IProps, IState> {
           <View
             style={{ flexDirection: 'row', alignItems: 'center', padding: 6 }}
           >
-            {/* Not asignable to style so took out -> color: 'white'}}> */}
 
-            <ProfilePic username={this.state.username} />
+            <UserAvatar 
+            userInitials={this.state.userInitials} avatarColour={this.state.userAvatarColour} />
+
+            {/* <ProfilePic username={this.state.username} /> */}
             <UserStats userData={this.state.userData} />
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
@@ -161,156 +201,156 @@ class ProfileContent extends React.Component<IProps, IState> {
   }
 }
 
-class FriendsList extends React.Component {
-  render() {
-    return (
-      <ScrollView style={{ backgroundColor: '#12152D' }}>
-        <Text style={{
-          alignSelf: 'center',
-          color: 'white',
-          fontSize: 30,
-          fontWeight: 'bold'
-          }}>Settings</Text>
+// class FriendsList extends React.Component {
+//   render() {
+//     return (
+//       <ScrollView style={{ backgroundColor: '#12152D' }}>
+//         <Text style={{
+//           alignSelf: 'center',
+//           color: 'white',
+//           fontSize: 30,
+//           fontWeight: 'bold'
+//           }}>Settings</Text>
 
-          {/* <Review
-            review="testing this review"
-            username="shezan"
-            url="../../assets/profilePicture/p1.png"
-          />
-          <Review review="testing this review" username="shezan" url="sdfs" />
-          <Review review="testing this review" username="shezan" url="sdfs" /> */}
+//           {/* <Review
+//             review="testing this review"
+//             username="shezan"
+//             url="../../assets/profilePicture/p1.png"
+//           />
+//           <Review review="testing this review" username="shezan" url="sdfs" />
+//           <Review review="testing this review" username="shezan" url="sdfs" /> */}
 
-      </ScrollView>
-    )
-  }
-}
+//       </ScrollView>
+//     )
+//   }
+// }
 
-interface IState2 {
-  userID: string
-  username: string
-  userData: any
-  isLoading: boolean
-  reviewList: []
-}
+// interface IState2 {
+//   userID: string
+//   username: string
+//   userData: any
+//   isLoading: boolean
+//   reviewList: []
+// }
 
-class ReviewsList extends React.Component<any, IState2> {
-  private users = new SetOfUsers()
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      isLoading: true,
-      reviewList: [],
-      userData: undefined,
-      userID: '',
-      username: ''
-    }
-  }
-  async componentWillMount() {
-    const currUser = new Authentication()
-    const userID = currUser.getCurrentUser().uid
-    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    const CurrUSerDetails = await this.users.getById(userID)
-    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-    const userReviews = await this.users.getUserReviewsById(userID)
+// class ReviewsList extends React.Component<any, IState2> {
+//   private users = new SetOfUsers()
+//   constructor(props: any) {
+//     super(props)
+//     this.state = {
+//       isLoading: true,
+//       reviewList: [],
+//       userData: undefined,
+//       userID: '',
+//       username: ''
+//     }
+//   }
+//   async componentWillMount() {
+//     const currUser = new Authentication()
+//     const userID = currUser.getCurrentUser().uid
+//     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+//     const CurrUSerDetails = await this.users.getById(userID)
+//     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+//     const userReviews = await this.users.getUserReviewsById(userID)
 
-    this.setState({
-      isLoading: false,     
-      reviewList: userReviews,
-      userData: CurrUSerDetails,
-      userID: userID,
-      username: CurrUSerDetails.name
-    })
-  }
+//     this.setState({
+//       isLoading: false,     
+//       reviewList: userReviews,
+//       userData: CurrUSerDetails,
+//       userID: userID,
+//       username: CurrUSerDetails.name
+//     })
+//   }
 
-  render() {
-    const { isLoading } = this.state
+//   render() {
+//     const { isLoading } = this.state
 
-    if (isLoading) {
-      return (
-        <View>
-          <ActivityIndicator />
-        </View>
-      )
-    }
+//     if (isLoading) {
+//       return (
+//         <View>
+//           <ActivityIndicator />
+//         </View>
+//       )
+//     }
 
-    return (
-      <ScrollView style={{ backgroundColor: '#12152D' }}>
-        <Text
-          style={{
-            alignSelf: 'center',
-            color: 'red',
-            fontSize: 30,
-            fontWeight: 'bold'
-          }}
-        >
-          Your reviews
-        </Text>
+//     return (
+//       <ScrollView style={{ backgroundColor: '#12152D' }}>
+//         <Text
+//           style={{
+//             alignSelf: 'center',
+//             color: 'red',
+//             fontSize: 30,
+//             fontWeight: 'bold'
+//           }}
+//         >
+//           Your reviews
+//         </Text>
 
-         {/* {reviewList.map((element: any) => {
-          return (
-            <Review
-              key={element.id}
-              review={element.content}
-              movieId={element.movieId}
-              rating={element.rating}
-              userId={element.userId}
-            />
-          )
-        })} */}
-      </ScrollView>
-    )
-  }
-}
+//          {/* {reviewList.map((element: any) => {
+//           return (
+//             <Review
+//               key={element.id}
+//               review={element.content}
+//               movieId={element.movieId}
+//               rating={element.rating}
+//               userId={element.userId}
+//             />
+//           )
+//         })} */}
+//       </ScrollView>
+//     )
+//   }
+// }
 
-const TabNavigator = createBottomTabNavigator(
-  {
-    All: { screen: ProfileScreen },
-    Friends: { screen: FriendsList },
-    Review: { screen: ReviewsList },
-    Settings: { screen: SettingsScreens }
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused }) => {
-        const { routeName } = navigation.state
-        let type: any = 'Feather'
-        let name
-        const color = focused ? 'white' : '#686C86'
-        if (routeName === 'All') {
-          name = 'user'
-        } else if (routeName === 'Settings') {
-          name = 'settings'
-        } else if (routeName === 'Review') {
-          name = 'rate-review'
-          type = 'MaterialIcons'
-        } else if (routeName === 'Friends') {
-          name = 'users'
-        }
+// const TabNavigator = createBottomTabNavigator(
+//   {
+//     All: { screen: ProfileScreen },
+//     Friends: { screen: FriendsScreen },
+//     Review: { screen: UserReviewScreen },
+//     Settings: { screen: SettingsScreens }
+//   },
+//   {
+//     defaultNavigationOptions: ({ navigation }) => ({
+//       tabBarIcon: ({ focused }) => {
+//         const { routeName } = navigation.state
+//         let type: any = 'Feather'
+//         let name
+//         const color = focused ? 'white' : '#686C86'
+//         if (routeName === 'All') {
+//           name = 'user'
+//         } else if (routeName === 'Settings') {
+//           name = 'settings'
+//         } else if (routeName === 'Review') {
+//           name = 'rate-review'
+//           type = 'MaterialIcons'
+//         } else if (routeName === 'Friends') {
+//           name = 'users'
+//         }
 
-        // You can return any component that you like here! We usually use an
-        // icon component from react-native-vector-icons
-        return (
-          <Icon
-            type={type}
-            name={name as string}
-            style={{ color: color, fontSize: 30, paddingTop: 5 }}
-          />
-        )
-      }
-    }),
-    tabBarOptions: {
-      activeTintColor: 'white',
-      inactiveTintColor: '#686C86',
-      labelStyle: {
-        fontSize: 15,
-        fontWeight: '400'
-      },
-      style: {
-        backgroundColor: '#1d2249',
-        height: 60
-      }
-    }
-  }
-)
+//         // You can return any component that you like here! We usually use an
+//         // icon component from react-native-vector-icons
+//         return (
+//           <Icon
+//             type={type}
+//             name={name as string}
+//             style={{ color: color, fontSize: 30, paddingTop: 5 }}
+//           />
+//         )
+//       }
+//     }),
+//     tabBarOptions: {
+//       activeTintColor: 'white',
+//       inactiveTintColor: '#686C86',
+//       labelStyle: {
+//         fontSize: 15,
+//         fontWeight: '400'
+//       },
+//       style: {
+//         backgroundColor: '#1d2249',
+//         height: 60
+//       }
+//     }
+//   }
+// )
 
-export default createAppContainer(TabNavigator)
+// export default createAppContainer(TabNavigator)
