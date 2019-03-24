@@ -12,10 +12,11 @@ interface IState {
 class HomeScreen extends Component<NavigationScreenProps, IState> {
   static navigationOptions = navigationOptions
 
+
   constructor(props: NavigationScreenProps) {
     super(props)
   }
-
+  
   render() {
     return (
       <Container

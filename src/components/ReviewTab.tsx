@@ -1,35 +1,101 @@
 import React, { Component } from 'react'
 import { Text, Col, Row } from 'native-base'
-import { View, TouchableOpacity, Image } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import moment from 'moment'
+import UserAvatar from './UserAvatar'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import Authentication from '../api/Authentication'
+import SetOfUsers from '../api/Collection/SetOfUsers'
+import { SetOfMovies } from '../api'
+import Container from '../native-base-theme/components/Container'
+
 interface IProps {
-  review: String
+  review: string
   date?: number
-  username: String
-  url: string
-  movieName?: string
+  movieId: number
+  userId?: string
+  rating: number
+  likes: number
 }
 interface IState {
   show: boolean
+  isLoading: boolean
+  username: string
+  movieName: string
+  userInitials: string
+  avatarColour: string
 }
 
 export default class Review extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
+      avatarColour: '',
+      isLoading: true,
+      movieName: '',
       show: false,
+      userInitials: '',
+      username: ''
     }
   }
+  async componentWillMount() {
+    let userID = this.props.userId
+    const currMovieId = this.props.movieId
+    let movieTitle = ''
+    // console.log('currMovieId')
+    // console.log(currMovieId)
+    // console.log('userID')
+    // console.log(userID)
 
-  text(txt: String) {
+    if (userID === undefined) {
+      const currUser = new Authentication()
+      userID = currUser.getCurrentUser().uid
+    }
+
+    if (currMovieId !== undefined) {
+      movieTitle = await new SetOfMovies().getTitleById(currMovieId)
+    }
+
+    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    const CurrUSerDetails = await new SetOfUsers().getById(userID)
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+
+    this.setState({
+      avatarColour: CurrUSerDetails.userAvatarColour,
+      isLoading: false,
+      movieName: movieTitle,
+      userInitials: CurrUSerDetails.userInitials,
+      username: CurrUSerDetails.name
+    })
+  }
+
+  _renderStars = (stars: number) => {
+    const starsArray = []
+    // console.log('stars')
+    // console.log(stars)
+    for (let i = 0; i < 5; i++) {
+      if (stars <= i) {
+        starsArray.push(
+          <FontAwesomeIcon key={i} name="star-o" size={10} color="white" />
+        )
+      } else {
+        starsArray.push(
+          <FontAwesomeIcon key={i} name="star" size={10} color="white" />
+        )
+      }
+    }
+    return starsArray
+  }
+
+  text(txt: string) {
     return (
       <View>
         <Text
           style={{
-            marginTop: 9,
             color: 'grey',
             fontFamily: 'PoppinsMedium',
             fontSize: 10,
+            marginTop: 9
           }}
         >
           {txt}
@@ -40,12 +106,12 @@ export default class Review extends Component<IProps, IState> {
         >
           <Text
             style={{
-              color: 'red',
               alignSelf: 'flex-end',
-              marginRight: 5,
-              marginTop: 10,
+              color: 'red',
               fontFamily: 'PoppinsMedium',
               fontSize: 10,
+              marginRight: 5,
+              marginTop: 10
             }}
           >
             Read More
@@ -56,92 +122,133 @@ export default class Review extends Component<IProps, IState> {
   }
 
   render() {
-    const { review, date, username, url, movieName } = this.props
-    const { show } = this.state
+    const { review, date, rating } = this.props
+    const {
+      isLoading,
+      show,
+      username,
+      movieName,
+      userInitials,
+      avatarColour,
+      userId
+    } = this.state
+
+    if (isLoading) {
+      return (
+        <View>
+          <ActivityIndicator />
+        </View>
+      )
+    }
 
     if (!show) {
       return (
-        <Row
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            flexWrap: 'wrap',
-            marginTop: 40,
-          }}
-        >
-          <Col
-            style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
-          >
-            <Image
-              source={{ uri: url }}
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 37.5,
-                backgroundColor: 'blue',
-              }}
-            />
-          </Col>
-          <Col style={{ backgroundColor: '#12152D' }}>
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'PoppinsMedium',
-                fontSize: 18,
-                marginTop: 5,
-              }}
-            >
-              {username} {movieName}
-            </Text>
-            {review.length > 100 ? (
-              this.text(review.substr(0, 100) + '...')
-            ) : (
-              <Text
-                style={{
-                  color: 'grey',
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 10,
-                }}
-              >
-                {review}
-              </Text>
-            )}
-          </Col>
-          <Text
+        <View>
+          <Row
             style={{
-              marginTop: 9,
-              position: 'absolute',
-              right: 5,
-              color: 'grey',
-              fontFamily: 'PoppinsMedium',
-              fontSize: 10,
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginTop: 20
             }}
           >
-            {moment(date).fromNow()}
-          </Text>
-        </Row>
+            {movieName !== '' && (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 18
+                }}
+              >
+                {movieName}
+              </Text>
+            )}
+          </Row>
+          <Row
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              marginTop: 10
+            }}
+          >
+            <Col
+              style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
+            >
+              <UserAvatar
+                userInitials={userInitials}
+                avatarColour={avatarColour}
+              />
+            </Col>
+            <Col style={{ backgroundColor: '#12152D' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'PoppinsMedium',
+                  fontSize: 18,
+                  marginTop: 5
+                }}
+              >
+                {username}
+              </Text>
+              {review.length > 100 ? (
+                this.text(review.substr(0, 100) + '...')
+              ) : (
+                <Text
+                  style={{
+                    color: 'grey',
+                    fontFamily: 'PoppinsMedium',
+                    fontSize: 10
+                  }}
+                >
+                  {review}
+                </Text>
+              )}
+            </Col>
+            <Text
+              style={{
+                alignSelf: 'flex-end',
+                color: 'red',
+                fontFamily: 'PoppinsMedium',
+                fontSize: 10,
+                marginRight: 5,
+                marginTop: 10,
+                position: 'absolute',
+                right: 5,
+                top: -5
+              }}
+            >
+              {moment(date).fromNow()}
+            </Text>
+            <Row
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1
+              }}
+            >
+              {this._renderStars(rating)}
+            </Row>
+          </Row>
+        </View>
       )
     } else {
       return (
         <Row
           style={{
-            flexDirection: 'row',
             flex: 1,
+            flexDirection: 'row',
             flexWrap: 'wrap',
-            marginTop: 40,
+            marginTop: 40
           }}
         >
           <Col
             style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
           >
-            <Image
-              source={{ uri: url }}
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 37.5,
-                backgroundColor: 'red',
-              }}
+            <UserAvatar
+              userInitials={userInitials}
+              avatarColour={avatarColour}
             />
           </Col>
           <Col style={{ backgroundColor: '#12152D' }}>
@@ -149,19 +256,22 @@ export default class Review extends Component<IProps, IState> {
               style={{
                 color: 'white',
                 fontFamily: 'PoppinsMedium',
-                fontSize: 18,
+                fontSize: 18
               }}
             >
               {username} {movieName}
             </Text>
             <Text
               style={{
-                marginTop: 9,
-                position: 'absolute',
-                right: 5,
-                color: 'grey',
+                alignSelf: 'flex-end',
+                color: 'red',
                 fontFamily: 'PoppinsMedium',
                 fontSize: 10,
+                marginRight: 5,
+                marginTop: 10,
+                position: 'absolute',
+                right: 5,
+                top: -5
               }}
             >
               {moment(date).fromNow()}
@@ -169,10 +279,11 @@ export default class Review extends Component<IProps, IState> {
             <Text
               style={{
                 color: 'grey',
-                marginBottom: 5,
-                fontSize: 10,
-                marginTop: 10,
                 fontFamily: 'PoppinsMedium',
+                fontSize: 10,
+                marginBottom: 5,
+                marginTop: 10,
+                right: 5
               }}
             >
               {review}
@@ -183,11 +294,11 @@ export default class Review extends Component<IProps, IState> {
             >
               <Text
                 style={{
-                  color: 'red',
                   alignSelf: 'flex-end',
-                  marginTop: 10,
+                  color: 'red',
                   fontFamily: 'PoppinsMedium',
                   fontSize: 10,
+                  marginTop: 10
                 }}
               >
                 Read Less

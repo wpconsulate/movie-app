@@ -33,8 +33,8 @@ class ProfileScreen extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
     this.state = {
-      userID: '',
       isLoading: true,
+      userID: '',
     }
   }
   async componentWillMount() {
@@ -42,8 +42,8 @@ class ProfileScreen extends React.Component<any, any> {
     if (UId != null) {
       this.setState({ userID: UId, isLoading: false })
     } else {
-      let currUser = new Authentication()
-      let userID = currUser.getCurrentUser().uid
+      const currUser = new Authentication()
+      const userID = (currUser.getCurrentUser() as firebase.User).uid
       this.setState({ userID: userID, isLoading: false })
     }
   }
@@ -64,24 +64,24 @@ class ProfileContent extends React.Component<IProps, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      userID: '',
-      username: '',
-      userData: null,
       isLoading: true,
       refreshing: false,
+      userData: undefined,
+      userID: '',
+      username: '',
     }
   }
   async componentWillMount() {
-    //let currUser = new Authentication()
-    //let userID = currUser.getCurrentUser().uid
+    // let currUser = new Authentication()
+    // let userID = currUser.getCurrentUser().uid
     const userID = this.props.userID
     const CurrUSerDetails = await new SetOfUsers().getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({
+      isLoading: false,
+      userData: CurrUSerDetails,
       userID: userID,
       username: CurrUSerDetails.name,
-      userData: CurrUSerDetails,
-      isLoading: false,
     })
   }
   // logout = () => {
@@ -99,7 +99,7 @@ class ProfileContent extends React.Component<IProps, IState> {
     })
   }
   render() {
-    //show loading icon for profile page
+    // show loading icon for profile page
     if (this.state.isLoading) {
       return (
         <View style={{ flex: 1, padding: 20 }}>
@@ -121,8 +121,8 @@ class ProfileContent extends React.Component<IProps, IState> {
           <Text
             style={{
               alignSelf: 'center',
+              color: 'white',
               fontSize: 30,
-              color: 'red',
               fontWeight: 'bold',
             }}
           >
@@ -150,8 +150,8 @@ class ProfileContent extends React.Component<IProps, IState> {
         <Button
           onPress={() => {
             console.log('i logged out!')
-            let currUser = new Authentication()
-            currUser.auth.signOut().then(function() {
+            const currUser = new Authentication()
+            currUser.auth.signOut().then(() => {
               UserStore.setIsLoggedIn(false)
             }) /*this.props.navigation.navigate('home');*/
           }}
@@ -166,18 +166,26 @@ class ProfileContent extends React.Component<IProps, IState> {
 class FriendsList extends React.Component {
   render() {
     return (
-      <View>
-        <Text>Settings</Text>
-        <ScrollView>
-          <Review
+      <ScrollView style={{ backgroundColor: '#12152D' }}>
+        <Text
+          style={{
+            alignSelf: 'center',
+            color: 'white',
+            fontSize: 30,
+            fontWeight: 'bold',
+          }}
+        >
+          Settings
+        </Text>
+
+        {/* <Review
             review="testing this review"
             username="shezan"
             url="../../assets/profilePicture/p1.png"
           />
           <Review review="testing this review" username="shezan" url="sdfs" />
-          <Review review="testing this review" username="shezan" url="sdfs" />
-        </ScrollView>
-      </View>
+          <Review review="testing this review" username="shezan" url="sdfs" /> */}
+      </ScrollView>
     )
   }
 }
@@ -195,32 +203,32 @@ class ReviewsList extends React.Component<any, IState2> {
   constructor(props: any) {
     super(props)
     this.state = {
+      isLoading: true,
+      reviewList: [],
+      userData: undefined,
       userID: '',
       username: '',
-      userData: null,
-      isLoading: true,
-      reviewList: null,
     }
   }
   async componentWillMount() {
-    let currUser = new Authentication()
-    let userID = currUser.getCurrentUser().uid
-    //let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-    let CurrUSerDetails = await this.users.getById(userID)
-    //let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-    let userReviews = await this.users.getUserReviewsById(userID)
+    const currUser = new Authentication()
+    const userID = currUser.getCurrentUser().uid
+    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
+    const CurrUSerDetails = await this.users.getById(userID)
+    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
+    const userReviews = await this.users.getUserReviewsById(userID)
 
     this.setState({
-      userID: userID,
-      username: CurrUSerDetails.name,
-      userData: CurrUSerDetails,
       isLoading: false,
       reviewList: userReviews,
+      userData: CurrUSerDetails,
+      userID: userID,
+      username: CurrUSerDetails.name,
     })
   }
 
   render() {
-    const { reviewList, isLoading } = this.state
+    const { isLoading } = this.state
 
     if (isLoading) {
       return (
@@ -235,25 +243,25 @@ class ReviewsList extends React.Component<any, IState2> {
         <Text
           style={{
             alignSelf: 'center',
-            fontSize: 30,
             color: 'red',
+            fontSize: 30,
             fontWeight: 'bold',
           }}
         >
           Your reviews
         </Text>
 
-        {reviewList.map((element: any) => {
+        {/* {reviewList.map((element: any) => {
           return (
             <Review
               key={element.id}
-              url={'something image'}
               review={element.content}
-              username={element.author}
-              movieName={element.movieName}
+              movieId={element.movieId}
+              rating={element.rating}
+              userId={element.userId}
             />
           )
-        })}
+        })} */}
       </ScrollView>
     )
   }
@@ -270,17 +278,17 @@ const TabNavigator = createBottomTabNavigator(
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state
-        let type: any = 'Feather',
-          name
-        let color = focused ? 'white' : '#686C86'
+        let type: any = 'Feather'
+        let name
+        const color = focused ? 'white' : '#686C86'
         if (routeName === 'All') {
           name = 'user'
         } else if (routeName === 'Settings') {
           name = 'settings'
-        } else if (routeName == 'Review') {
+        } else if (routeName === 'Review') {
           name = 'rate-review'
           type = 'MaterialIcons'
-        } else if (routeName == 'Friends') {
+        } else if (routeName === 'Friends') {
           name = 'users'
         }
 
@@ -289,7 +297,7 @@ const TabNavigator = createBottomTabNavigator(
         return (
           <Icon
             type={type}
-            name={name}
+            name={name as string}
             style={{ color: color, fontSize: 30, paddingTop: 5 }}
           />
         )

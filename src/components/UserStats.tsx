@@ -6,9 +6,9 @@ import { Row, Col, Grid } from 'native-base'
 import { withNavigation } from 'react-navigation'
 import moment from 'moment'
 
-//given to StatsKey to provide circle colour, text next to circle and total watch in that section
+// given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
-  text: String
+  text: string
   colour: string
   total: string
 }
@@ -26,9 +26,9 @@ interface IState {
   totalDays: number
 }
 
-//colour wouldnt take props colour
+// colour wouldnt take props colour
 
-//return circle with text and total eg <O completed      500>
+// return circle with text and total eg <O completed      500>
 function StatsKey(props: IProps) {
   const styles = StyleSheet.create({
     view: {
@@ -101,24 +101,26 @@ class UserStats extends React.Component<IPropsUser, IState> {
 
   async calculateResults() {
     let totalEntries = 0
-    let list = this.props.userData.watchlist //containts all the watchlist as objects
+    const list = this.props.userData.watchlist // containts all the watchlist as objects
     let totalRuntime = 0
     let totalHours = 0
     let days = 0
 
-    for (let key in list) {
-      for (let k in list[key]) {
-        if (list[key][k].runtime) totalRuntime += list[key][k].runtime
+    for (const key in list) {
+      for (const k in list[key]) {
+        if (list[key][k].runtime) {
+          totalRuntime += list[key][k].runtime
+        }
         totalEntries += 1
       }
     }
     totalHours = Math.floor(totalRuntime / 60)
     days = Math.floor(totalHours / 24)
-    let userDetails = {
-      totalEntries: totalEntries,
-      totalMin: totalRuntime,
-      totalHours: totalHours,
+    const userDetails = {
       totalDays: days,
+      totalEntries: totalEntries,
+      totalHours: totalHours,
+      totalMin: totalRuntime,
     }
     return userDetails
   }
@@ -186,17 +188,23 @@ class UserStats extends React.Component<IPropsUser, IState> {
         <Grid>
           <Row>
             <Col>
-              <Text style={style.text}>
+              <Text style={{ color: 'white', marginTop: 5 }}>
                 Total Entries:{this.state.totalEntries}
               </Text>
-              <Text style={style.text}>Review:0</Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>Review:0</Text>
             </Col>
 
             <Col>
-              <Text style={style.text}>Days:{this.state.totalDays}</Text>
-              <Text style={style.text}>Hours:{this.state.totalHours}</Text>
-              <Text style={style.text}>Minutes: {this.state.totalRuntime}</Text>
-              <Text style={style.text}>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Days:{this.state.totalDays}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Hours:{this.state.totalHours}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Minutes: {this.state.totalRuntime}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
                 Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
               </Text>
             </Col>
@@ -206,4 +214,4 @@ class UserStats extends React.Component<IPropsUser, IState> {
     )
   }
 }
-export default withNavigation(UserStats)
+export default withNavigation(UserStats as any)

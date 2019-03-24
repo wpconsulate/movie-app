@@ -10,15 +10,17 @@ class Database {
   }
 
   public async write(collection: string, data: object) {
-    return await this.database.ref(collection).set(data)
+    return this.database.ref(collection).set(data)
   }
 
+
+ 
   public read(collection: string) {
-    let items: database.DataSnapshot[] = []
+    const items: Array<database.DataSnapshot> = []
     this.database.ref(collection).on(
       'value',
       snapshot => {
-        items.push(snapshot.val())
+        items.push((snapshot as database.DataSnapshot).val())
       },
       (error: any) => {
         console.error(error)
