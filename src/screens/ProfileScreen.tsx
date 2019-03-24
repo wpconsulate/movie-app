@@ -55,7 +55,6 @@ export default class ProfileScreen extends React.Component<any, any> {
     } else {
       const currUser = new Authentication()
       const userID = (currUser.getCurrentUser() as firebase.User).uid
-      console.log(currUser.getCurrentUser())
       this.setState({ userID: userID, isLoading: false })
     }
   }

@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
     maxHeight: '20%',
     backgroundColor: '#E20F0F',
     width: '100%',
-    zIndex: 3
+    zIndex: 3,
+    elevation: 3
   },
   searchContainer: {
     position: 'absolute',
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     borderRadius: 8,
     zIndex: 2,
+    elevation: 2,
     flexWrap: 'wrap'
   },
   topSection: {
@@ -54,7 +56,8 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 0.7,
-    zIndex: -1
+    zIndex: -1,
+    elevation: -1
   },
   mainSection: {
     flex: 1,
@@ -66,7 +69,8 @@ const styles = StyleSheet.create({
   },
   root: {
     backgroundColor: '#12152D', // Use this color
-    flex: 1
+    flex: 1,
+    elevation: 1
   },
   searchInput: {
     width: '100%',
@@ -92,7 +96,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     alignSelf: 'center',
     top: 50,
-    zIndex: 1
+    zIndex: 1,
+    elevation: 1
   },
   qrButton: {
     position: 'relative',

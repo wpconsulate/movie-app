@@ -30,7 +30,7 @@ class Slider extends Component<IProps, IState> {
   openModal(index: number) {
     this.setState({
       isModalOpened: true,
-      currentImageIndex: index,
+      currentImageIndex: index
     })
   }
 
@@ -51,7 +51,7 @@ class Slider extends Component<IProps, IState> {
       <View
         style={{
           flexDirection: 'row',
-          marginTop: 10,
+          marginTop: 10
         }}
       >
         <ScrollView horizontal={true}>
@@ -68,7 +68,7 @@ class Slider extends Component<IProps, IState> {
                         height: height ? height : 75,
                         width: width ? width : 100,
                         marginRight: 15,
-                        borderRadius: borderRadius ? borderRadius : 0,
+                        borderRadius: borderRadius ? borderRadius : 0
                       }}
                     />
                   </TouchableOpacity>
