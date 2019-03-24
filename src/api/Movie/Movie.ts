@@ -190,24 +190,31 @@ class Movie extends Database implements IMovie {
     limit = limit ? limit : 15
     const backdrops = await this.getBackdrops()
     const posters = await this.getPosters()
-
-    for (let i = 0; i < backdrops.length && limit; i++) {
-      const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
-      const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
-      switch ((params as any).type.toLowerCase()) {
-        case 'backdrops':
-          images.push({ url: backdropUrl })
-          break
-        case 'posters':
-          images.push({ url: posterUrl })
-          break
-        default:
-          images.push({ url: backdropUrl })
-          images.push({ url: posterUrl })
+    if ((params as IParams).type === 'backdrops') {
+      const backdropImages = new Array<IImage>()
+      for (let i = 0; i < backdrops.length && limit; i++) {
+        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
+        backdropImages.push({ url: backdropUrl })
       }
+      return backdropImages
+    } else if ((params as IParams).type === 'posters') {
+      const posterImages = new Array<IImage>()
+      for (let i = 0; i < posters.length && limit; i++) {
+        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
+        posterImages.push({ url: posterUrl })
+      }
+      return posterImages
+    } else {
+      for (let i = 0; i < backdrops.length && limit; i++) {
+        const backdropUrl = `${Config.IMAGE_URL}original${backdrops[i].url}`
+        images.push({ url: backdropUrl })
+      }
+      for (let i = 0; i < posters.length && limit; i++) {
+        const posterUrl = `${Config.IMAGE_URL}original${posters[i].url}`
+        images.push({ url: posterUrl })
+      }
+      return images
     }
-
-    return images
   }
 
   public async getCasts() {
@@ -261,9 +268,7 @@ class Movie extends Database implements IMovie {
   public getData(): any {
     // tslint:disable-next-line: no-this-assignment
     const { backdrop_path, title, popularity, poster_path, id, runtime } = this
-    //  console.log(this);
     return { backdrop_path, title, popularity, poster_path, id, runtime }
-    // return null
   }
 
   public async addReview(data: IAddToReview) {
@@ -281,6 +286,31 @@ class Movie extends Database implements IMovie {
     })
   }
 
+  public getMMDBRating(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.database
+        .ref('review')
+        .child(this.getId().toString())
+        .once('value', snapshot => {
+          const ratings: Array<number> = []
+          let total = 0
+          if (!snapshot) {
+            return reject('Snapshot undefined.')
+          }
+          if (!snapshot.exists()) {
+            return resolve(0)
+          }
+          snapshot.forEach(snap => {
+            const rating = parseInt(snap.val().rating, undefined)
+            total += rating
+            ratings.push(rating)
+          })
+          const average = total / ratings.length
+          return resolve(average)
+        })
+    })
+  }
+
   public async getMMDBReview(): Promise<any> {
     interface ReviewObject {
       id: string
@@ -288,26 +318,26 @@ class Movie extends Database implements IMovie {
       content: string
       date: string
       rating: number
+      likes: Array<any>
       // userId: string
     }
     const reviewList = new Array<ReviewObject>()
     await this.database.ref('review/' + this.id).once(
       'value',
       element => {
-        element.forEach((review: any) => {
+        element.forEach(review => {
           const reviewID = review.key
-          const element = review.toJSON()
-          // console.log("element")
-          // console.log(review)
-          // console.log("element.rating")
-          // console.log(element.rating)
+          const element = review.val()
+          const likes = Object.keys(element.likes).map(key => {
+            return element.likes[key]
+          })
           reviewList.push({
             author: element.author,
             content: element.content,
             date: element.date,
-            id: reviewID,
-            rating: element.rating
-            // userId: element.id
+            id: reviewID as string,
+            rating: element.rating,
+            likes
           })
         })
       },
@@ -344,9 +374,6 @@ class Movie extends Database implements IMovie {
 
     return reviewList
   }
-  
 }
-
-
 
 export default Movie

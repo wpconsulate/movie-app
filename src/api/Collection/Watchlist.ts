@@ -27,19 +27,15 @@ class Watchlist extends SetOfMovies {
     value = await this.database.database
       .ref('users/' + idForUser + '/watchlist/' + type)
       .once('value', snap => {
-        // change the above to users/movie to make it the folders under the correct location -- this will work
         return (value = snap.val())
-        // console.log(snap);
       })
     const jsonVar = JSON.stringify(value)
     const arrayOfMovies = JSON.parse(jsonVar)
 
     // tslint:disable-next-line: forin
     for (const key in arrayOfMovies) {
-      // console.log(arrayOfMovies[key]);
-      list.addMovie(arrayOfMovies[key]) // do not do this.setofMovie do a new instance of it and return that
+      list.addMovie(arrayOfMovies[key]) 
     }
-    // return null
     return list
   }
 

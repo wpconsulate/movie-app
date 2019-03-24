@@ -10,25 +10,20 @@ import MovieStore from '../stores/MovieStore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // import Toast from 'react-native-simple-toast';
 import UserStore from '../stores/UserStore'
-import Likes, { ReviewType } from '../api/Collection/Likes';
+import Likes, { ReviewType } from '../api/Collection/Likes'
 
 interface IProps {
   movie: Movie
   userid: string
-  likes : Likes
+  likes: Likes
 }
-
-// function addToWatchlist(movie: Movie, watchlist: string) {
-//   console.log('movie', movie)
-//   console.log('watchlist', watchlist)
-// }
 
 const OPTIONS = [
   capitlize(EWatchlists.WATCHING),
   capitlize(EWatchlists.PLANNED),
   capitlize(EWatchlists.DROPPED),
   capitlize(EWatchlists.COMPLETED),
-  'Cancel',
+  'Cancel'
 ]
 const CIRCLE_SIZE = 100
 
@@ -39,8 +34,8 @@ const styles = StyleSheet.create({
     borderRadius: CIRCLE_SIZE / 2,
     backgroundColor: 'white',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 })
 @observer
 class MovieSidebar extends React.Component<IProps, any> {
@@ -67,7 +62,7 @@ class MovieSidebar extends React.Component<IProps, any> {
             flex: 1,
             zIndex: 10,
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'center'
           }}
           tint="dark"
           intensity={70}
@@ -76,7 +71,7 @@ class MovieSidebar extends React.Component<IProps, any> {
             style={{
               marginBottom: 50,
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'center'
             }}
             accessible
             accessibilityLabel="Add to watchlist"
@@ -87,22 +82,19 @@ class MovieSidebar extends React.Component<IProps, any> {
                 {
                   options: OPTIONS,
                   cancelButtonIndex: 4,
-                  title: 'Add to watchlist',
+                  title: 'Add to watchlist'
                 },
                 buttonIndex => {
                   const option = OPTIONS[buttonIndex].toLowerCase()
-                  if(option !== "cancel")
-                  {
-                    if(UserStore.isLoggedIn === true)
-                    {
+                  if (option !== 'cancel') {
+                    if (UserStore.isLoggedIn === true) {
                       this.props.movie.AddToWatchlist(this.props.userid, option)
                       Alert.alert('Movie added to watchlist!')
-                    } else 
-                    {
+                    } else {
                       Alert.alert('Please Login to add to Watchlist')
                     }
-                      MovieStore.setShowMenu(false)
-                  }  
+                    MovieStore.setShowMenu(false)
+                  }
                 }
               )
             }
@@ -114,16 +106,18 @@ class MovieSidebar extends React.Component<IProps, any> {
           <TouchableOpacity disabled={this.state.disabled}
             style={{
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'center'
             }}
             accessible
             accessibilityLabel="Like"
             accessibilityRole="button"
             accessibilityHint="Double tap to like it."
             onPress={() => {
-              this.props.likes.create(this.props.movie.getId(), ReviewType.movie)
-              Alert.alert("You have liked this Movie!")
-              this.setState({disabled: true})
+              this.props.likes.create(
+                this.props.movie.getId(),
+                ReviewType.movie
+              )
+              Alert.alert('liked')
             }}
           >
             <View style={styles.circle}>

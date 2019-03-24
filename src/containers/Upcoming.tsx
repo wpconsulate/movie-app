@@ -16,7 +16,7 @@ class Upcoming extends Component<IProps, IState> {
     super(props)
     this.state = {
       isLoaded: false,
-      upcomingMovies: null,
+      upcomingMovies: null
     }
   }
 
@@ -24,7 +24,7 @@ class Upcoming extends Component<IProps, IState> {
     const upcomingMovies = await this.upcomingMovies.getUpcoming()
     this.setState({
       upcomingMovies: upcomingMovies,
-      isLoaded: true,
+      isLoaded: true
     })
   }
 
@@ -52,6 +52,7 @@ class Upcoming extends Component<IProps, IState> {
           flexDirection: 'row',
           flexWrap: 'wrap',
           flex: 1,
+          marginBottom: 30
         }}
       >
         <View style={{ width: '100%', paddingHorizontal: 15 }}>
@@ -59,8 +60,8 @@ class Upcoming extends Component<IProps, IState> {
             style={{
               fontFamily: 'PoppinsBold',
               color: 'white',
-              fontSize: 20,
-              marginBottom: 20,
+              fontSize: 24,
+              marginBottom: 30
             }}
           >
             Upcoming
@@ -69,7 +70,7 @@ class Upcoming extends Component<IProps, IState> {
         <View
           style={{
             width: '100%',
-            height: sliderHeight,
+            height: sliderHeight
           }}
         >
           <StackOfCards

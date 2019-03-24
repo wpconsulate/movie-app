@@ -9,24 +9,19 @@ class Database {
     return this.database.ref(collection)
   }
 
-  public async write(collection: string, data: object) {
+  public write(collection: string, data: object) {
     return this.database.ref(collection).set(data)
   }
 
-
- 
-  public read(collection: string) {
-    const items: Array<database.DataSnapshot> = []
-    this.database.ref(collection).on(
-      'value',
-      snapshot => {
-        items.push((snapshot as database.DataSnapshot).val())
-      },
-      (error: any) => {
-        console.error(error)
-      }
-    )
-    return items
+  public read(collection: string): Promise<database.DataSnapshot | null> {
+    return new Promise((resolve, reject) => {
+      this.database.ref(collection).on('value', snapshot => {
+        if (!snapshot) {
+          return reject('Snapshot is undefined.')
+        }
+        return resolve(snapshot)
+      })
+    })
   }
 }
 export default Database

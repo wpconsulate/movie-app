@@ -94,17 +94,69 @@ class User extends Model implements IUser {
   }
 
   public async addFollowToList(followId: number, followName: string) {
-    await this.database.ref(User.ENTITY + '/' + this.id).set({
-      followers: { followId: followId, followName: followName }
-    })
-    return this.database.ref(User.ENTITY + '/' + followId).set({
-      follows: { followId: this.id, followName: this.getName }
-    })
+    //logged in user adds passed in user ID as following
+    await this.database
+      .ref(User.ENTITY + '/' + this.id + '/following/')
+      .push({ followId: followId, followName: followName })
+
+    //add followers
+    await this.database
+      .ref(User.ENTITY + '/' + followId + '/followers/')
+      .push({ followId: this.id, followName: this.getName() })
+  }
+
+  public async unFollow(followingUserId: string) {
+    //UNFOLLOW passed in id from logged in user
+    let delFollowingKey
+    let thidUser: any = await this.database
+      .ref(User.ENTITY + '/' + this.id + '/following/')
+      .once('value', async function(snap) {
+        thidUser = snap.val()
+        for (let key in thidUser) {
+          for (let res in thidUser[key]) {
+            if (thidUser[key][res] == followingUserId) {
+              delFollowingKey = key
+              break
+            }
+          }
+        }
+      })
+    if (delFollowingKey) {
+      await this.database
+        .ref(User.ENTITY + '/' + this.id + '/following/' + delFollowingKey)
+        .remove()
+    }
+
+    //seach db for
+    let delFollowerKey
+    let loggedinUSer = this.id
+    let value: any = await this.database
+      .ref(User.ENTITY + '/' + followingUserId + '/followers/')
+      .once('value', async function(snap) {
+        value = snap.val()
+        console.log('unfollow values now now now')
+        for (let key in value) {
+          for (let res in value[key]) {
+            if (value[key][res] == loggedinUSer) {
+              delFollowerKey = key
+              break
+            }
+          }
+        }
+      })
+
+    if (delFollowerKey) {
+      await this.database
+        .ref(
+          User.ENTITY + '/' + followingUserId + '/followers/' + delFollowerKey
+        )
+        .remove()
+    }
   }
 
   public async addFavActor(actorID: number, actorPic: string) {
-    return this.database.ref(User.ENTITY).set({
-      actors: { actorID: actorID, actorPic: actorPic }
+    return await this.database.ref(User.ENTITY).set({
+      actors: { actorID: actorID, actorPic: actorPic },
     })
   }
 }

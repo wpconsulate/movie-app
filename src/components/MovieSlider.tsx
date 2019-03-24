@@ -7,7 +7,7 @@ import {
   withNavigation,
   NavigationScreenProp,
   NavigationRoute,
-  NavigationParams,
+  NavigationParams
 } from 'react-navigation'
 import { Row } from 'native-base'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
@@ -36,7 +36,7 @@ function _ViewAllOnPress(
   navigation.push('Results', { setOfMovie: data, query: title })
 }
 function renderStars(stars: number) {
-  let starsArray = []
+  const starsArray = []
 
   for (let i = 0; i < 5; i++) {
     if (stars <= i) {
@@ -54,19 +54,20 @@ function renderStars(stars: number) {
 function MovieSlider(props: IProps) {
   const topRated = props.data
   return (
-    <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
+    <View style={{ paddingHorizontal: 15, marginTop: 20, marginBottom: 40 }}>
       <View
         style={{
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
+          marginBottom: 20
         }}
       >
         <Text
           style={{
             color: 'white',
-            fontSize: 20,
-            fontFamily: 'PoppinsBold',
+            fontSize: 24,
+            fontFamily: 'PoppinsBold'
           }}
         >
           {props.title}
@@ -80,7 +81,7 @@ function MovieSlider(props: IProps) {
             style={{
               color: '#E20F0F',
               fontSize: 15,
-              fontFamily: 'PoppinsLight',
+              fontFamily: 'PoppinsLight'
             }}
           >
             {topRated.length > 0 ? 'View All' : null}
@@ -107,7 +108,7 @@ function MovieSlider(props: IProps) {
                 style={{
                   fontSize: 10,
                   color: '#ffffff',
-                  fontFamily: 'PoppinsMedium',
+                  fontFamily: 'PoppinsMedium'
                 }}
               >
                 {movie.getTitle(10)}
@@ -116,7 +117,7 @@ function MovieSlider(props: IProps) {
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flex: 1,
+                  flex: 1
                 }}
               >
                 {renderStars(movie.getRating())}
@@ -124,9 +125,11 @@ function MovieSlider(props: IProps) {
             </TouchableOpacity>
           )
         })}
-        {topRated.length == 0 ? (
+        {topRated.length === 0 ? (
           <Text style={{ color: 'white' }}>No Movies</Text>
-        ) : null}
+        ) : (
+          undefined
+        )}
       </ScrollView>
     </View>
   )
