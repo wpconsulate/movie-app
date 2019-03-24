@@ -1,7 +1,7 @@
 import IUser from './UserInterface'
 import Model from '../Model'
-import Watchlist from '../Collection/Watchlist';
-import { Movie } from '..';
+import Watchlist from '../Collection/Watchlist'
+import { Movie } from '..'
 
 interface UserProperties {
   email: string
@@ -14,7 +14,7 @@ class User extends Model implements IUser {
   private email: string
   private name: string
   private watchlist: Watchlist
-  private isOnline : Boolean
+  private isOnline: Boolean
 
   constructor(properties: any) {
     super()
@@ -27,7 +27,7 @@ class User extends Model implements IUser {
   }
 
   public async addMovieToList(data: Movie) {
-    return await this.database.ref(User.ENTITY).set(data);
+    return await this.database.ref(User.ENTITY).set(data)
   }
 
   public async update(data: UserProperties) {
@@ -52,8 +52,8 @@ class User extends Model implements IUser {
     return this.isOnline
   }
 
-  public async getDetails() : Promise<User> {
-    const value = await this.database.ref("users/" + this.id)
+  public async getDetails(): Promise<User> {
+    const value = await this.database.ref('users/' + this.id)
     let jsonVar = JSON.stringify(value)
     let User = JSON.parse(jsonVar)
 
@@ -90,21 +90,72 @@ class User extends Model implements IUser {
     return snapshot
   }
 
-  public async addFollowToList(followId: number, followName : string) {
-    await this.database.ref(User.ENTITY + "/" + this.id).set({
-      'followers' : {'followId' : followId,'followName' : followName}
-    });
-    return await this.database.ref(User.ENTITY + "/" + followId).set({
-      'follows' : {'followId' : this.id,'followName' : this.getName}
-    });
+  public async addFollowToList(followId: number, followName: string) {
+    //logged in user adds passed in user ID as following
+    await this.database
+      .ref(User.ENTITY + '/' + this.id + '/following/')
+      .push({ followId: followId, followName: followName })
+
+    //add followers
+    await this.database
+      .ref(User.ENTITY + '/' + followId + '/followers/')
+      .push({ followId: this.id, followName: this.getName() })
   }
 
-  public async addFavActor(actorID: number, actorPic : string) {
-    return await this.database.ref(User.ENTITY).set({
-      'actors' : {'actorID' : actorID, 'actorPic' : actorPic}
-    });
+  public async unFollow(followingUserId: string) {
+    //UNFOLLOW passed in id from logged in user
+    let delFollowingKey
+    let thidUser: any = await this.database
+      .ref(User.ENTITY + '/' + this.id + '/following/')
+      .once('value', async function(snap) {
+        thidUser = snap.val()
+        for (let key in thidUser) {
+          for (let res in thidUser[key]) {
+            if (thidUser[key][res] == followingUserId) {
+              delFollowingKey = key
+              break
+            }
+          }
+        }
+      })
+    if (delFollowingKey) {
+      await this.database
+        .ref(User.ENTITY + '/' + this.id + '/following/' + delFollowingKey)
+        .remove()
+    }
+
+    //seach db for
+    let delFollowerKey
+    let loggedinUSer = this.id
+    let value: any = await this.database
+      .ref(User.ENTITY + '/' + followingUserId + '/followers/')
+      .once('value', async function(snap) {
+        value = snap.val()
+        console.log('unfollow values now now now')
+        for (let key in value) {
+          for (let res in value[key]) {
+            if (value[key][res] == loggedinUSer) {
+              delFollowerKey = key
+              break
+            }
+          }
+        }
+      })
+
+    if (delFollowerKey) {
+      await this.database
+        .ref(
+          User.ENTITY + '/' + followingUserId + '/followers/' + delFollowerKey
+        )
+        .remove()
+    }
   }
-  
+
+  public async addFavActor(actorID: number, actorPic: string) {
+    return await this.database.ref(User.ENTITY).set({
+      actors: { actorID: actorID, actorPic: actorPic },
+    })
+  }
 }
 
 export default User

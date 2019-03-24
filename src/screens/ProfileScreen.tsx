@@ -40,7 +40,6 @@ class ProfileScreen extends React.Component<any, any> {
   async componentWillMount() {
     let UId = this.props.navigation.getParam('userId')
     if (UId != null) {
-      console.log('userID: ' + UId)
       this.setState({ userID: UId, isLoading: false })
     } else {
       let currUser = new Authentication()
@@ -49,7 +48,6 @@ class ProfileScreen extends React.Component<any, any> {
     }
   }
   render() {
-    console.log('user states' + this.state.userID)
     return (
       <View>
         {this.state.isLoading ? (
@@ -135,7 +133,11 @@ class ProfileContent extends React.Component<IProps, IState> {
           >
             {/* Not asignable to style so took out -> color: 'white'}}> */}
 
-            <ProfilePic username={this.state.username} />
+            <ProfilePic
+              username={this.state.username}
+              userID={this.state.userID}
+            />
+
             <UserStats userData={this.state.userData} />
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>

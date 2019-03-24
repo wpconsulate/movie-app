@@ -75,12 +75,16 @@ class UserStats extends React.Component<IPropsUser, IState> {
     }
   }
 
+  checkifExist(check: any) {
+    if (check) return Object.keys(check).length
+    else return 0
+  }
   async componentDidMount() {
     const { userData } = this.props
-    let countComplete = Object.keys(userData.watchlist.completed).length
-    let countWatching = Object.keys(userData.watchlist.watching).length
-    let countPlanned = Object.keys(userData.watchlist.planned).length
-    let countDropped = Object.keys(userData.watchlist.dropped).length
+    let countComplete = this.checkifExist(userData.watchlist.completed)
+    let countWatching = this.checkifExist(userData.watchlist.watching)
+    let countPlanned = this.checkifExist(userData.watchlist.planned)
+    let countDropped = this.checkifExist(userData.watchlist.dropped)
     let calResult = await this.calculateResults()
 
     this.setState({
