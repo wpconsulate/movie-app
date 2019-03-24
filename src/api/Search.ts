@@ -26,7 +26,6 @@ class Search {
         value: query
       }
     ])
-
     const response = await axios.get(url)
     const data = response.data.results
     const results: any = []

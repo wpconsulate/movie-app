@@ -12,9 +12,10 @@ import Algolia from './../api/Algolia'
 import UserIcon from '../components/userIcon'
 
 const navigationOptions: any = () => ({
-  header: undefined as any,
+  header: null,
   headerMode: 'none',
-  headerTransparent: true
+  headerTransparent: true,
+  headerBack: null
 })
 
 class ResultsScreen extends Component<any, IState> {
