@@ -20,13 +20,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import {
-  PlayButton,
-  GenreContainer,
-  Slider,
-  MovieSidebar,
-  LeaveReview
-} from '../components'
+import { PlayButton, GenreContainer, Slider, MovieSidebar } from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -60,6 +54,7 @@ import cinemaHeaders from '../helpers/cinemasHeader'
 import Config from '../Config'
 import CinemasSlider from '../components/CinemasSlider'
 import moment from 'moment'
+import _ from 'underscore'
 interface IProps {
   navigation?: NavigationScreenProp<
     NavigationRoute<NavigationParams>,
@@ -235,7 +230,7 @@ export default class MovieScreen extends Component<IProps, IState> {
         }
       } catch (err) {
         console.log(
-          "Error with cinemas API: MovieScreen (242). You've likely exceeded your API usage."
+          `Error with cinemas API: MovieScreen (242). You've likely exceeded your API usage.`
         )
       }
       this.setState({
@@ -277,7 +272,7 @@ export default class MovieScreen extends Component<IProps, IState> {
               })
             })
             this.setState({
-              userReviewList: reviews
+              userReviewList: _.sortBy(reviews, 'createdAt').reverse()
             })
           }
         })
@@ -317,7 +312,6 @@ export default class MovieScreen extends Component<IProps, IState> {
         </Container>
       )
     }
-    console.log('nearbyCinemas', nearbyCinemas)
     return (
       <Container
         style={{
