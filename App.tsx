@@ -10,6 +10,16 @@ import RootStack from './src/Navigation'
 
 import UserStore from './src/stores/UserStore'
 import { AppState } from 'react-native'
+import { YellowBox } from 'react-native'
+import _ from 'lodash'
+
+YellowBox.ignoreWarnings(['Setting a timer', 'Require cycle:'])
+const _console = _.clone(console)
+console.warn = (message: any) => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message)
+  }
+}
 
 const config = {
   apiKey: Config.FIREBASE_API_KEY,
@@ -96,9 +106,9 @@ class App extends Component<PropsInterface, StateInterface> {
     if (!this.state.fontLoaded) {
       return (
         <Expo.AppLoading
-          startAsync={this._cacheResourcesAsync}
-          onFinish={() => this.setState({ isReady: true })}
-          onError={console.warn}
+        // startAsync={this._cacheResourcesAsync}
+        // onFinish={() => this.setState({ isReady: true })}
+        // onError={console.warn}
         />
       )
     }

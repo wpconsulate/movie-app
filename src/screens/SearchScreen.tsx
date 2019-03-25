@@ -69,8 +69,7 @@ const styles = StyleSheet.create({
   },
   root: {
     backgroundColor: '#12152D', // Use this color
-    flex: 1,
-    elevation: 1
+    flex: 1
   },
   searchInput: {
     width: '100%',
@@ -277,7 +276,7 @@ class SearchScreen extends Component<any, State> {
                 placeholderTextColor="#B3B3B3"
                 style={styles.searchInput}
               />
-              {this.state.showClearBtn && (
+              {showClearBtn && (
                 <TouchableOpacity
                   onPress={this.onClearPress}
                   style={{ paddingRight: 15 }}
@@ -289,7 +288,7 @@ class SearchScreen extends Component<any, State> {
             <View style={styles.scrollContainer}>
               <ScrollView style={{ maxHeight: 250 }}>
                 <FlatList
-                  data={this.state.results}
+                  data={results}
                   keyExtractor={(item: any) => item.id.toString()}
                   renderItem={this._renderItem}
                 />
@@ -349,8 +348,8 @@ class SearchScreen extends Component<any, State> {
                   </Row>
                   <Row>
                     <ScrollView horizontal>
-                      {this.state.searchHistory
-                        ? this.state.searchHistory.map((e: any) => {
+                      {searchHistory
+                        ? searchHistory.map((e: any) => {
                             return (
                               <TouchableOpacity
                                 key={e}

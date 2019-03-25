@@ -6,7 +6,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native'
 import UserStats from '../components/UserStats'
 import Friends from '../components/FriendsSlider'
@@ -39,7 +40,7 @@ interface IProps extends NavigationScreenProps {
   userID: string
 }
 export default class ProfileScreen extends React.Component<any, any> {
-  static navigationOptions = navigationOptions
+  // static navigationOptions = navigationOptions
 
   constructor(props: any) {
     super(props)
@@ -63,12 +64,8 @@ export default class ProfileScreen extends React.Component<any, any> {
     const maxWidth = width / 3.5
     const maxHeight = height / 4.5
     return (
-      <View style={{ backgroundColor: '#12152D' }} >
-          <Header
-          transparent
-          translucent={true}
-          noShadow={true}
-          iosBarStyle="light-content" />      
+      <View style={{ backgroundColor: '#12152D' }}>
+        <StatusBar barStyle="light-content" />
 
         {this.state.isLoading ? (
           <Spinner />
@@ -141,17 +138,7 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
-        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 50 }}>
-          <Text
-            style={{
-              alignSelf: 'center',
-              color: 'white',
-              fontSize: 30,
-              fontWeight: 'bold'
-            }}
-          >
-            Profile Page
-          </Text>
+        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 30 }}>
           <View
             style={{ flexDirection: 'row', alignItems: 'center', padding: 6 }}
           >
