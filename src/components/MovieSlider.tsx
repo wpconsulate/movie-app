@@ -96,7 +96,7 @@ function MovieSlider(props: IProps) {
               accessibilityRole="button"
               accessibilityLabel={movie.getTitle()}
               accessibilityHint={`Double tap to go to the movie screen.`}
-              style={{ alignItems: 'center', maxWidth: 100, margin: 10 }}
+              style={{ alignItems: 'center', maxWidth: 100, margin: 5 }}
               key={movie.getId()}
               onPress={() => handleOnPress(props.navigation, movie)}
             >

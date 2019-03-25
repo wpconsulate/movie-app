@@ -17,13 +17,12 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { Button, Spinner, Icon, Header } from 'native-base'
-import UserStore from '../stores/UserStore'
 import UserAvatar from '../components/UserAvatar'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
-import { User } from '../api';
-import { IImage } from '../api/Movie/Interfaces';
+import { User } from '../api'
+import { IImage } from '../api/Movie/Interfaces'
 import ProfileSlider, { IDataParams } from '../components/ProfileSlider'
 
 import SettingsScreens from './SettingsScreen'
@@ -47,7 +46,7 @@ interface IState {
 interface IProps extends NavigationScreenProps {
   userID: string
 }
-export default class ProfileScreen extends React.Component<any, any> {
+export default class ProfileScreen extends React.Component<IProps, any> {
   // static navigationOptions = navigationOptions
 
   constructor(props: any) {
@@ -86,7 +85,7 @@ export default class ProfileScreen extends React.Component<any, any> {
   }
 }
 
-class ProfileContent extends React.Component<IProps, IState> {
+class ProfileContent extends React.Component<any, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -108,7 +107,7 @@ class ProfileContent extends React.Component<IProps, IState> {
     const userID = this.props.userID
     const CurrUSerDetails = await new SetOfUsers().getById(userID)
     const user = new User(userID)
-    const casts = (await user.getActors(userID)) as Array<IImage>;
+    const casts = (await user.getActors(userID)) as Array<IImage>
     // casts.forEach(cast => {
     //   actorImages.push({ url: cast} )
     // })
@@ -141,15 +140,6 @@ class ProfileContent extends React.Component<IProps, IState> {
     }
     return <Friends following={dataformat} />
   }
-
-  // logout = () => {
-  //   console.log("this");
-  //   // let currUser = new Authentication()
-  //   // currUser.auth.signOut().then(function() {
-  //   //   this.props.navigation.navigate('Home');
-  //   // });
-  //   console.log("ICECREAM");
-  // }
   _onRefresh = () => {
     this.setState({ refreshing: true })
     this.componentWillMount().then(() => {
@@ -157,9 +147,7 @@ class ProfileContent extends React.Component<IProps, IState> {
     })
   }
   render() {
-    const {
-      casts
-    } = this.state
+    const { casts } = this.state
     // show loading icon for profile page
     if (this.state.isLoading) {
       return (
@@ -178,12 +166,17 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
-        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 30 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#12152D',
+            padding: 10
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center',
-              marginLeft: 5
+              alignItems: 'center'
             }}
           >
             <ProfilePic
@@ -207,17 +200,6 @@ class ProfileContent extends React.Component<IProps, IState> {
             <ProfileSlider images={casts} borderRadius={30} />
           </View>
         </View>
-        <Button
-          onPress={() => {
-            // console.log('i logged out!')
-            const currUser = new Authentication()
-            currUser.auth.signOut().then(() => {
-              UserStore.setIsLoggedIn(false)
-            }) /*this.props.navigation.navigate('home');*/
-          }}
-        >
-          <Text>Logout</Text>
-        </Button>
       </ScrollView>
     )
   }

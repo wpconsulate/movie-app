@@ -26,6 +26,7 @@ import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import { Avatar } from 'react-native-elements'
 import { database } from 'firebase'
+import UserStore from '../stores/UserStore'
 
 interface IState {
   email: string
@@ -65,6 +66,14 @@ class SettingsScreen extends Component<IProps, IState> {
     }
     this.database = new Database()
   }
+  // logout = () => {
+  //   console.log("this");
+  //   // let currUser = new Authentication()
+  //   // currUser.auth.signOut().then(function() {
+  //   //   this.props.navigation.navigate('Home');
+  //   // });
+  //   console.log("ICECREAM");
+  // }
   async componentWillMount() {
     const currUser = new Authentication()
     const userID = currUser.getCurrentUser().uid
@@ -320,6 +329,31 @@ class SettingsScreen extends Component<IProps, IState> {
                     </Col>
                   </Row>
                   }
+                  <Row
+                    style={{
+                      alignContent: 'center',
+                      justifyContent: 'center',
+                      marginTop: 10
+                    }}
+                  >
+                    <Col style={{ maxWidth: 250, marginBottom: 20 }}>
+                      <Button
+                        style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
+                        rounded={true}
+                        primary={true}
+                        block={true}
+                        onPress={() => {
+                          console.log('i logged out!')
+                          const currUser = new Authentication()
+                          currUser.auth.signOut().then(() => {
+                            UserStore.setIsLoggedIn(false)
+                          }) /*this.props.navigation.navigate('home');*/
+                        }}
+                      >
+                        <Text>Logout</Text>
+                      </Button>
+                    </Col>
+                  </Row>
                 </Form>
               </Col>
             </Row>
