@@ -16,7 +16,7 @@ export default class Config {
   static ALGOLIA_USERS_INDEX_NAME = 'users'
   static EXPO_PUSH_SERVER = 'https://exp.host/--/api/v2/push/send'
   static CINEMAS_API_BASE_URL = 'https://api-gate2.movieglu.com/'
-  static CINEMAS_API_USERNAME = 'SHEF'
-  static CINEMAS_API_X_KEY = '5cDtwKRic8aibIS8R22N86TxrBojNKmDaiFxMnmY'
-  static CINEMAS_API_AUTH = 'Basic U0hFRjpEQVBpUU9aNGJaam0='
+  static CINEMAS_API_USERNAME = 'FALL'
+  static CINEMAS_API_X_KEY = 'E7OpVs6qL64rsaUiMeRqZ6CuM4Xr8tWg84mMou3Z'
+  static CINEMAS_API_AUTH = 'Basic RkFMTDp2MUFsV045R1h5SGM='
 }
