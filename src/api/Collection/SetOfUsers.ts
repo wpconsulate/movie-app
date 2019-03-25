@@ -26,7 +26,8 @@ class SetOfUsers extends Array<User> {
       content: string,
       date: string,
       movieId: string,
-      rating: number
+      rating: number,
+      likes: Array<any>
     }
     const reviewList = new Array<ReviewObject>()
     await this.database.database.ref('users/' + userId + '/reviews/').once(
@@ -35,11 +36,16 @@ class SetOfUsers extends Array<User> {
         element.forEach((review: any) => {
           const reviewID = review.key
           const element = review.toJSON()
+          console.log(element)
+          // element.likes.forEach(element => {
+          //   console.log(element)
+          // });
           reviewList.push({ 
             content: element.content, 
             date: element.date, 
             movieId: reviewID, 
-            rating: element.rating
+            rating: element.rating,
+            likes: []
            })    
         })
     },

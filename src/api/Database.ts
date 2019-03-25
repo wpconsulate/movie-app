@@ -13,6 +13,10 @@ class Database {
     return this.database.ref(collection).set(data)
   }
 
+  public writePush(collection: string, data: object) {
+    return this.database.ref(collection).push(data)
+  }
+
   public read(collection: string): Promise<database.DataSnapshot | null> {
     return new Promise((resolve, reject) => {
       this.database.ref(collection).on('value', snapshot => {

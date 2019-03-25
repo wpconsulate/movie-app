@@ -19,6 +19,10 @@ import UserAvatar from '../components/UserAvatar'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
+import { User } from '../api'
+import { IImage } from '../api/Movie/Interfaces'
+import ProfileSlider, { IDataParams } from '../components/ProfileSlider'
+
 import SettingsScreens from './SettingsScreen'
 import Review from '../components/ReviewTab'
 import UserReviewScreen from './UserReviewScreen'
@@ -33,6 +37,7 @@ interface IState {
   userInitials: string
   isLoading: boolean
   refreshing: boolean
+  casts: Array<IImage>
   following: any
 }
 
@@ -88,14 +93,22 @@ class ProfileContent extends React.Component<any, IState> {
       userID: '',
       username: '',
       userInitials: '',
+      casts: [],
       following: ''
     }
   }
   async componentWillMount() {
+    const actorImages = new Array<IImage>()
     // let currUser = new Authentication()
     // let userID = currUser.getCurrentUser().uid
     const userID = this.props.userID
     const CurrUSerDetails = await new SetOfUsers().getById(userID)
+    const user = new User(userID)
+    const casts = (await user.getActors(userID)) as Array<IImage>
+    // casts.forEach(cast => {
+    //   actorImages.push({ url: cast} )
+    // })
+
     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
     this.setState({
       isLoading: false,
@@ -104,6 +117,7 @@ class ProfileContent extends React.Component<any, IState> {
       userID: userID,
       username: CurrUSerDetails.name,
       userInitials: CurrUSerDetails.userInitials,
+      casts,
       following: CurrUSerDetails.following
     })
   }
@@ -130,6 +144,7 @@ class ProfileContent extends React.Component<any, IState> {
     })
   }
   render() {
+    const { casts } = this.state
     // show loading icon for profile page
     if (this.state.isLoading) {
       return (
@@ -177,6 +192,9 @@ class ProfileContent extends React.Component<any, IState> {
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
             <ProfileWatchlist userid={this.state.userID} />
+          </View>
+          <View style={{ marginTop: 10, flexDirection: 'row' }}>
+            <ProfileSlider images={casts} borderRadius={30} />
           </View>
         </View>
       </ScrollView>

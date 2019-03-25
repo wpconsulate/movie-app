@@ -2,6 +2,8 @@ import IUser from './UserInterface'
 import Model from '../Model'
 import Watchlist from '../Collection/Watchlist'
 import { Movie } from '..'
+import Cast from '../Cast/Cast';
+import { IImage } from '../Movie/Interfaces';
 
 interface UserProperties {
   email: string
@@ -188,11 +190,26 @@ class User extends Model implements IUser {
     })
   }
 
-  public async addFavActor(actorID: number, actorPic: string) {
-    return await this.database.ref(User.ENTITY).set({
-      actors: { actorID: actorID, actorPic: actorPic }
+  public async addFavActor(actorPic: string, uid: string) {
+    await this.writePush(`users/${uid}/actors/`, {
+      actorPic
     })
   }
+
+  public async getActors(uid: string) {
+    const setOfCasts = new Array<IImage>()
+    
+    const snap = await this.read(`users/${uid}/actors`);
+    if(snap !== null)
+    {
+      snap.forEach((cast: any) => {
+        setOfCasts.push({url : cast.val().actorPic})
+      })
+    }
+    return setOfCasts;
+  }
+
+  
 }
 
 export default User

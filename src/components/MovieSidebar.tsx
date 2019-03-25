@@ -39,6 +39,13 @@ const styles = StyleSheet.create({
 })
 @observer
 class MovieSidebar extends React.Component<IProps, any> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      disabled : false,
+    }
+  }
+ 
   render() {
     const { showMenu } = MovieStore
     if (showMenu) {
@@ -96,7 +103,7 @@ class MovieSidebar extends React.Component<IProps, any> {
               <MaterialIcons name="add" color="#12152D" size={52} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity disabled={this.state.disabled}
             style={{
               alignItems: 'center',
               justifyContent: 'center'

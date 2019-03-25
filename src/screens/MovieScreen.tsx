@@ -32,6 +32,8 @@ import {
   Linking,
   AccessibilityInfo
 } from 'react-native'
+import LikeSlider from '../components/LikeSlider'
+
 import { LinearGradient, Location } from 'expo'
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
@@ -477,8 +479,9 @@ export default class MovieScreen extends Component<IProps, IState> {
               >
                 Cast
               </Text>
-              <Slider
+              <LikeSlider
                 images={castImages}
+                userid={currentUid}
                 borderRadius={37.5}
                 height={75}
                 width={75}
