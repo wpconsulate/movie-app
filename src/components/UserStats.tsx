@@ -5,6 +5,7 @@ import { StyleSheet } from 'react-native'
 import { Row, Col, Grid } from 'native-base'
 import { withNavigation } from 'react-navigation'
 import moment from 'moment'
+import User from '../api/User/User'
 
 // given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
@@ -14,6 +15,7 @@ interface IProps {
 }
 interface IPropsUser {
   userData: any
+  userId: any
 }
 interface IState {
   completeCount: number
@@ -24,6 +26,7 @@ interface IState {
   totalRuntime: number
   totalHours: number
   totalDays: number
+  followerCount: number
 }
 
 // colour wouldnt take props colour
@@ -36,11 +39,11 @@ function StatsKey(props: IProps) {
       height: 15,
       borderRadius: 100 / 2,
       backgroundColor: props.colour,
-      fontWeight: 'bold',
+      fontWeight: 'bold'
     },
     text: {
-      color: 'white',
-    },
+      color: 'white'
+    }
   })
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -50,7 +53,7 @@ function StatsKey(props: IProps) {
           marginLeft: 10,
           flex: 3,
           fontFamily: 'PoppinsMedium',
-          color: 'white',
+          color: 'white'
         }}
       >
         {props.text}{' '}
@@ -72,19 +75,28 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalRuntime: 0,
       totalHours: 0,
       totalDays: 0,
+      followerCount: 0
     }
   }
 
   checkifExist(check: any) {
-    if (check) return Object.keys(check).length
-    else return 0
+    if (check) {
+      return Object.keys(check).length
+    }
+    return 0
   }
   async componentDidMount() {
+    const curUser = new User({ id: this.props.userId })
+    const count = await curUser.getFollowersCount()
+    this.setState({ followerCount: Object.keys(count).length })
+  }
+  async componentWillMount() {
     const { userData } = this.props
     let countComplete = this.checkifExist(userData.watchlist.completed)
     let countWatching = this.checkifExist(userData.watchlist.watching)
     let countPlanned = this.checkifExist(userData.watchlist.planned)
     let countDropped = this.checkifExist(userData.watchlist.dropped)
+
     let calResult = await this.calculateResults()
 
     this.setState({
@@ -95,7 +107,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalEntries: calResult.totalEntries,
       totalHours: calResult.totalHours,
       totalRuntime: calResult.totalMin,
-      totalDays: calResult.totalDays,
+      totalDays: calResult.totalDays
     })
   }
 
@@ -120,7 +132,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       totalDays: days,
       totalEntries: totalEntries,
       totalHours: totalHours,
-      totalMin: totalRuntime,
+      totalMin: totalRuntime
     }
     return userDetails
   }
@@ -129,19 +141,19 @@ class UserStats extends React.Component<IPropsUser, IState> {
     const style = StyleSheet.create({
       parent: {
         flex: 1,
-        marginLeft: 10,
+        marginLeft: 10
       },
       text: {
-        color: 'white',
-      },
+        color: 'white'
+      }
     })
     const data = [
       {
         Watching: this.state.watchingCount,
         Completed: this.state.completeCount,
         Dropped: this.state.droppedCount,
-        PlanToWatch: this.state.plannedCount,
-      },
+        PlanToWatch: this.state.plannedCount
+      }
     ]
 
     const colors = ['#2A59FF', '#56CCF2', '#FF0000', '#C4C4C4']
@@ -149,7 +161,7 @@ class UserStats extends React.Component<IPropsUser, IState> {
       'Watching',
       'Completed',
       'Dropped',
-      'PlanToWatch',
+      'PlanToWatch'
     ]
 
     return (
@@ -192,6 +204,9 @@ class UserStats extends React.Component<IPropsUser, IState> {
                 Total Entries:{this.state.totalEntries}
               </Text>
               <Text style={{ color: 'white', marginTop: 5 }}>Review:0</Text>
+              <Text style={{ color: 'green', marginTop: 5, fontSize: 20 }}>
+                followers: {this.state.followerCount}
+              </Text>
             </Col>
 
             <Col>

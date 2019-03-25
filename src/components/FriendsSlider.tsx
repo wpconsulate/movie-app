@@ -1,44 +1,45 @@
 import React from 'react'
-import { Image, StyleSheet, ScrollView } from 'react-native'
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity
+} from 'react-native'
+import UserAvatar from './UserAvatar'
+import { NavigationInjectedProps, withNavigation } from 'react-navigation'
+interface Iprops extends NavigationInjectedProps {
+  following: any
+}
 
-export default function FriendsSlider() {
+function FriendsSlider(props: Iprops) {
   const style = StyleSheet.create({
     imageStyle: {
-      height: 66, // borderRadius:100
-      margin: 5,
-      width: 66
+      margin: 5
     }
   })
+  function handlePress(id: any, navigate: any) {
+    navigate.push('Profile', { userId: id })
+  }
   return (
     <ScrollView horizontal={true}>
-      <Image
-        source={require('../../assets/profilePicture/p1.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p2.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p3.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p4.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p5.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p6.png')}
-        style={style.imageStyle}
-      />
-      <Image
-        source={require('../../assets/profilePicture/p7.png')}
-        style={style.imageStyle}
-      />
+      {props.following.map((ele: any) => {
+        return (
+          <TouchableOpacity
+            key={ele.key}
+            style={style.imageStyle}
+            onPress={() => handlePress(ele.key, props.navigation)}
+          >
+            <UserAvatar
+              userInitials={ele.initial}
+              avatarColour={ele.avatarColor}
+            />
+            <Text style={{ color: 'white' }}>{ele.name}</Text>
+          </TouchableOpacity>
+        )
+      })}
     </ScrollView>
   )
 }
+
+export default withNavigation(FriendsSlider)

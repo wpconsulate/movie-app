@@ -93,13 +93,21 @@ class User extends Model implements IUser {
     })
   }
 
-  public async addFollowToList(followId: number, followName: string) {
-    //logged in user adds passed in user ID as following
-    await this.database
-      .ref(User.ENTITY + '/' + this.id + '/following/')
-      .push({ followId: followId, followName: followName })
+  public async addFollowToList(
+    followId: number,
+    followName: string,
+    initial: string,
+    avatarColour: string
+  ) {
+    // logged in user adds passed in user ID as following
+    await this.database.ref(User.ENTITY + '/' + this.id + '/following/').push({
+      followId: followId,
+      followName: followName,
+      userInitials: initial,
+      userAvatarColour: avatarColour
+    })
 
-    //add followers
+    // add followers
     await this.database
       .ref(User.ENTITY + '/' + followId + '/followers/')
       .push({ followId: this.id, followName: this.getName() })
@@ -154,9 +162,35 @@ class User extends Model implements IUser {
     }
   }
 
+  public getFollowersCount() {
+    return new Promise((resolve, reject) => {
+      this.database
+        .ref(User.ENTITY)
+        .child(this.id.toString())
+        .child('followers')
+        .on('value', snapshot => {
+          if (snapshot) {
+            if (snapshot.exists()) {
+              const followers: Array<any> = []
+              snapshot.forEach(snap => {
+                followers.push({
+                  id: snap.key,
+                  followId: snap.val().followId,
+                  followName: snap.val().followName
+                })
+              })
+              return resolve(followers)
+            }
+            return reject(`Snapshot doesn't exist.`)
+          }
+          return reject(`Snapshot undefined`)
+        })
+    })
+  }
+
   public async addFavActor(actorID: number, actorPic: string) {
     return await this.database.ref(User.ENTITY).set({
-      actors: { actorID: actorID, actorPic: actorPic },
+      actors: { actorID: actorID, actorPic: actorPic }
     })
   }
 }

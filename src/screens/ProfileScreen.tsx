@@ -25,7 +25,7 @@ import Review from '../components/ReviewTab'
 import UserReviewScreen from './UserReviewScreen'
 import FriendsScreen from './FriendsScreen'
 import SvgUri from 'react-native-svg-uri'
-
+import ProfilePic from '../components/ProfilePic'
 interface IState {
   userID: string
   username: string
@@ -34,6 +34,7 @@ interface IState {
   userInitials: string
   isLoading: boolean
   refreshing: boolean
+  following: any
 }
 
 interface IProps extends NavigationScreenProps {
@@ -87,7 +88,8 @@ class ProfileContent extends React.Component<IProps, IState> {
       userData: undefined,
       userID: '',
       username: '',
-      userInitials: ''
+      userInitials: '',
+      following: ''
     }
   }
   async componentWillMount() {
@@ -102,9 +104,27 @@ class ProfileContent extends React.Component<IProps, IState> {
       userAvatarColour: CurrUSerDetails.userAvatarColour,
       userID: userID,
       username: CurrUSerDetails.name,
-      userInitials: CurrUSerDetails.userInitials
+      userInitials: CurrUSerDetails.userInitials,
+      following: CurrUSerDetails.following
     })
   }
+
+  returnFriendsSlider() {
+    const fol = this.state.following
+    let dataformat: Array<any> = []
+    for (const val in fol) {
+      {
+        dataformat.push({
+          key: fol[val].followId,
+          initial: fol[val].userInitials,
+          avatarColor: fol[val].userAvatarColour,
+          name: fol[val].followName
+        })
+      }
+    }
+    return <Friends following={dataformat} />
+  }
+
   // logout = () => {
   //   console.log("this");
   //   // let currUser = new Authentication()
@@ -140,18 +160,25 @@ class ProfileContent extends React.Component<IProps, IState> {
       >
         <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 30 }}>
           <View
-            style={{ flexDirection: 'row', alignItems: 'center', padding: 6 }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 5
+            }}
           >
-            <UserAvatar
-              userInitials={this.state.userInitials}
-              avatarColour={this.state.userAvatarColour}
+            <ProfilePic
+              userIconColour={this.state.userAvatarColour}
+              userInitial={this.state.userInitials}
+              userID={this.props.userID}
+              username={this.state.username}
             />
-
-            {/* <ProfilePic username={this.state.username} /> */}
-            <UserStats userData={this.state.userData} />
+            <UserStats
+              userData={this.state.userData}
+              userId={this.state.userID}
+            />
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
-            <Friends />
+            {this.returnFriendsSlider()}
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
             <ProfileWatchlist userid={this.state.userID} />
@@ -232,7 +259,7 @@ class ProfileContent extends React.Component<IProps, IState> {
 //       userID: userID,
 //       username: CurrUSerDetails.name
 //     })
-//   }
+//   }e
 
 //   render() {
 //     const { isLoading } = this.state
