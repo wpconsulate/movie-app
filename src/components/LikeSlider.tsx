@@ -74,7 +74,7 @@ class LikeSlider extends Component<IProps, IState> {
                 return (
                   <TouchableOpacity
                     onPress={() => this.onPress(index)}
-                    onLongPress={() =>
+                    onLongPress={() => 
                       ActionSheet.show(
                         {
                           options: OPTIONS,

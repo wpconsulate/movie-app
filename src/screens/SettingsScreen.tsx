@@ -16,14 +16,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native'
-import { Database } from '../api'
+import { Database, User } from '../api'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import { Avatar } from 'react-native-elements'
+import { database } from 'firebase'
 
 interface IState {
   email: string
@@ -36,6 +38,7 @@ interface IState {
   userID: string
   userInitials: string
   username: string
+  isEdited: boolean
 }
 interface IProps extends NavigationScreenProps {}
 
@@ -57,7 +60,8 @@ class SettingsScreen extends Component<IProps, IState> {
       userData: undefined,
       userID: '',
       userInitials: 'MT',
-      username: ''
+      username: '',
+      isEdited: false
     }
     this.database = new Database()
   }
@@ -80,34 +84,22 @@ class SettingsScreen extends Component<IProps, IState> {
     })
   }
 
-  // onRegisterPress() {
-  //   const { email, newPassword, oldPassword, name, username, userInitials, userAvatarColour } = this.state
-  //   if (email !== null && name !== null && username !== null )
-  //   {
-  //   this.setState({ isLoading: true })
-  //   this.auth
-  //     .register(email, password, {
-  //       email,
-  //       name,
-  //       username,
-  //       userInitials,
-  //       userAvatarColour
+  async onRegisterPress() {
+    const { isEdited, email, name, username, userInitials, userAvatarColour, userID } = this.state
+    const user = 
+    console.log(username)
 
-  //     })
-  //     .then(() => {
-  //       this.setState({ isLoading: false })
-  //       Alert.alert('Successfully registered!')
-  //       this.props.navigation.navigate('Home');
-  //     })
-  //     .catch(error => {
-  //       Alert.alert(error.message)
-  //       this.props.navigation.navigate('Login');
-  //     })
-  //   }
-  //   else {
-  //     Alert.alert('Please Input all the data before Registering!')
-  //   }
-  // }
+    if (isEdited && name !== '' && username !== '' && userInitials !== '' && userAvatarColour !== '')
+    {
+      await database()
+        .ref('users')
+        .child(userID)
+        .update({ name, username, userInitials, userAvatarColour })
+    }
+    else {
+      Alert.alert('Please Input all the data before Registering!')
+    }
+  }
 
   setUserAvatar(name: string) {
     name = name || ''
@@ -134,7 +126,8 @@ class SettingsScreen extends Component<IProps, IState> {
       '#d35400',
       '#c0392b',
       '#bdc3c7',
-      '#7f8c8d'
+      '#7f8c8d',
+      '#ff00d8'
     ]
     let initials = ''
     const nameSplit = String(name)
@@ -237,10 +230,7 @@ class SettingsScreen extends Component<IProps, IState> {
                       autoFocus={false}
                       keyboardType="email-address"
                       autoCorrect={true}
-                      value={email}
-                      onChangeText={text => {
-                        this.setState({ email: text })
-                      }}
+                      disabled
                     />
                   </Item>
                   <Item
@@ -267,7 +257,7 @@ class SettingsScreen extends Component<IProps, IState> {
                         keyboardType="default"
                         value={name}
                         onChangeText={text => {
-                          this.setState({ name: text })
+                          this.setState({ name: text, isEdited: true })
                           this.setUserAvatar(text)
                         }}
                       />
@@ -293,6 +283,8 @@ class SettingsScreen extends Component<IProps, IState> {
                           fontFamily: 'PoppinsMedium',
                           fontSize: 14
                         }}
+                        value={username}
+                        onChangeText={(text) => this.setState({ username: text, isEdited: true })}
                       />
                       <Text>CURRENT PROFILE PICTURE</Text>
                       <TouchableOpacity
@@ -306,70 +298,8 @@ class SettingsScreen extends Component<IProps, IState> {
                       />
                     </Row>
                   </Item>
-                  <Item
-                    stackedLabel={true}
-                    style={{ marginLeft: 0, marginTop: 20 }}
-                  >
-                    <Label
-                      style={{
-                        color: '#FFF',
-                        fontFamily: 'PoppinsMedium',
-                        fontSize: 16
-                      }}
-                    >
-                      NEW PASSWORD
-                    </Label>
-                    <Row>
-                      <Input
-                        style={{
-                          color: '#FFF',
-                          fontFamily: 'PoppinsMedium',
-                          fontSize: 14
-                        }}
-                        label="Password"
-                        keyboardType="visible-password"
-                        secureTextEntry={true}
-                        value={newPassword}
-                        onChangeText={text => {
-                          this.setState({ newPassword: text })
-                        }}
-                      />
-                    </Row>
-                  </Item>
-
-                  {newPassword.length > 0 && (
-                    <Item
-                      stackedLabel={true}
-                      style={{ marginLeft: 0, marginTop: 20 }}
-                    >
-                      <Label
-                        style={{
-                          color: '#FFF',
-                          fontFamily: 'PoppinsMedium',
-                          fontSize: 16
-                        }}
-                      >
-                        PLEASE ENTER OLD PASSWORD
-                      </Label>
-                      <Row>
-                        <Input
-                          style={{
-                            color: '#FFF',
-                            fontFamily: 'PoppinsMedium',
-                            fontSize: 14
-                          }}
-                          label="Password"
-                          keyboardType="visible-password"
-                          secureTextEntry={true}
-                          value={oldPassword}
-                          onChangeText={text => {
-                            this.setState({ oldPassword: text })
-                          }}
-                        />
-                      </Row>
-                    </Item>
-                  )}
-
+                  {
+                    this.state.isEdited &&
                   <Row
                     style={{
                       alignContent: 'center',
@@ -382,13 +312,14 @@ class SettingsScreen extends Component<IProps, IState> {
                         rounded={true}
                         primary={true}
                         block={true}
-                        // onPress={() => this.onRegisterPress()}
+                        onPress={() => this.onRegisterPress()}
                         style={{ backgroundColor: '#E20F0F', minHeight: 50 }}
                       >
                         <Text>Update Account</Text>
                       </Button>
                     </Col>
                   </Row>
+                  }
                 </Form>
               </Col>
             </Row>

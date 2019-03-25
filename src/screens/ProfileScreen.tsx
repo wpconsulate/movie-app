@@ -7,7 +7,9 @@ import {
   RefreshControl,
   TouchableOpacity,
   Dimensions,
-  StatusBar
+  StatusBar,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native'
 import UserStats from '../components/UserStats'
 import Friends from '../components/FriendsSlider'
@@ -64,6 +66,7 @@ export default class ProfileScreen extends React.Component<any, any> {
       const userID = (currUser.getCurrentUser() as firebase.User).uid
       this.setState({ userID: userID, isLoading: false })
     }
+    Keyboard.dismiss
   }
   render() {
     const { width, height } = Dimensions.get('window')

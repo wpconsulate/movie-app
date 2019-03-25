@@ -191,9 +191,22 @@ class User extends Model implements IUser {
   }
 
   public async addFavActor(actorPic: string, uid: string) {
-    await this.writePush(`users/${uid}/actors/`, {
-      actorPic
-    })
+    let found = false;
+    const snap = await this.getActors(uid);
+    snap.forEach((item)  => { 
+      if(item.url === actorPic)
+      {
+        found = true;
+      }
+    }
+    )
+    if(found === false) {
+      await this.writePush(`users/${uid}/actors/`, {
+        actorPic
+      })
+      return true
+    }
+    return false
   }
 
   public async getActors(uid: string) {

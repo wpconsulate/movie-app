@@ -75,7 +75,7 @@ interface IState {
   critiqueReviewList: []
   userReviewList: Array<any>
   isAccessible: boolean
-  currentUid: string
+  currentUid: string | undefined
   currentUsername: string
   likeCount: number
   messages: Array<Message>
@@ -177,7 +177,7 @@ export default class MovieScreen extends Component<IProps, IState> {
         // No likes for the movie
       }
 
-      let Uid = 'test'
+      let Uid = undefined
       let username = 'test'
       if (this.auth.isLoggedIn()) {
         Uid = (this.auth.getCurrentUser() as firebase.User).uid
@@ -398,7 +398,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             />
           </View>
         </TouchableOpacity>
-        <MovieSidebar movie={movie} userid={currentUid} likes={this.likes} />
+        <MovieSidebar movie={movie} userid={currentUid as string} likes={this.likes} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
           <Backdrop uri={movie.getBackdrop()} />
           <View style={{ flex: 1, paddingHorizontal: 15, marginTop: 30 }}>
@@ -480,7 +480,7 @@ export default class MovieScreen extends Component<IProps, IState> {
               </Text>
               <LikeSlider
                 images={castImages}
-                userid={currentUid}
+                userid={currentUid as string}
                 borderRadius={37.5}
                 height={75}
                 width={75}
@@ -504,6 +504,7 @@ export default class MovieScreen extends Component<IProps, IState> {
               >
                 Review(s)
               </Text>
+              {this.auth.getCurrentUser() &&
               <TouchableOpacity
                 style={{
                   alignItems: 'center',
@@ -532,6 +533,7 @@ export default class MovieScreen extends Component<IProps, IState> {
                   <MaterialIcons name="add" color="#12152D" size={38} />
                 </View>
               </TouchableOpacity>
+              }
             </View>
             <View style={{ marginBottom: 40 }}>
               {userReviewList.map((element: any) => {

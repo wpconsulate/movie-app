@@ -117,6 +117,7 @@ class MovieSidebar extends React.Component<IProps, any> {
                 this.props.movie.getId(),
                 ReviewType.movie
               )
+              this.setState({disabled: !this.state.disabled})
               Alert.alert('liked')
             }}
           >
