@@ -185,7 +185,7 @@ export default class MovieScreen extends Component<IProps, IState> {
     const imdbRating = movie.getRating()
     const critReview = await movie.getReview()
     casts.forEach(cast => {
-      castImages.push({ url: cast.getImage() })
+      castImages.push({ url: cast.getImage()} )
     })
     this.setState({
       castImages,
@@ -405,6 +405,7 @@ export default class MovieScreen extends Component<IProps, IState> {
               </Text>
               <LikeSlider
                 images={castImages}
+                userid={currentUid}
                 borderRadius={37.5}
                 height={75}
                 width={75}

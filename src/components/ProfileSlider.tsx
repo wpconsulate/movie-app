@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { Modal, ScrollView, View, Image, TouchableOpacity, Alert } from 'react-native'
+import { Modal, ScrollView, View, Image, TouchableOpacity, Text } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
-import { ActionSheet } from 'native-base';
-import { User } from '../api';
 
-interface IDataParams {
+export interface IDataParams {
   url: string
   width?: number
   height?: number
@@ -12,7 +10,6 @@ interface IDataParams {
 
 interface IProps {
   images: Array<IDataParams>
-  userid : string
   borderRadius?: number
   width?: number | string
   height?: number | string
@@ -22,20 +19,14 @@ interface IState {
   currentImageIndex: number
 }
 
-const OPTIONS = [
-  "Like",
-  'Cancel',
-]
-class LikeSlider extends Component<IProps, IState> {
+class ProfileSlider extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
       currentImageIndex: 0,
       isModalOpened: false
     }
-    this.user = new User(this.props.userid)
   }
-  user : User
 
   openModal(index: number) {
     this.setState({
@@ -55,50 +46,36 @@ class LikeSlider extends Component<IProps, IState> {
     this.openModal(index)
   }
 
-  async componentWillMount() {
-    
-  }
-
   render() {
     const { borderRadius, images, height, width } = this.props
     return (
       <View
         style={{
-          flexDirection: 'row',
-          marginTop: 10,
-        }}
-      >
-        <ScrollView horizontal={true}>
+            flex: 1,
+            // flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 20
+          }}
+      ><Text style={{
+        color: 'white',
+        fontSize: 20,
+        marginLeft: 10,
+        fontFamily: 'PoppinsBold',
+        marginBottom:30,
+      }}>
+      Actor's Liked</Text>
+      
+        <ScrollView style={{}} horizontal={true}>
           {images
             ? images.map((item: IDataParams, index: number) => {
-                return (
+                let ice = JSON.stringify(item.url);
+                if (ice.charAt(0) === '"' && ice.charAt(ice.length -1) === '"')
+                {
+                    item.url = ice.substr(1,ice.length -2);
+                }
+              return (
                   <TouchableOpacity
                     onPress={() => this.onPress(index)}
-                    onLongPress={() =>
-                      ActionSheet.show(
-                        {
-                          options: OPTIONS,
-                          cancelButtonIndex: 4,
-                          title: 'Like Menu Options',
-                        },
-                        buttonIndex => {
-                          const option = OPTIONS[buttonIndex].toLowerCase()
-                          if(option !== "Cancel")
-                          {
-                            if(this.props.userid == null)
-                          {
-                            Alert.alert("Please Login First!")
-                          } else{
-                            const stringed = JSON.stringify(item.url);
-                            let removeSpeech = stringed.substring(1, stringed.length-1);
-                            removeSpeech = removeSpeech.substring(0, removeSpeech.indexOf('?'));
-                            this.user.addFavActor(removeSpeech, this.props.userid)
-                          }
-                          }  
-                          
-                        }
-                      )
-                    }
                     key={index}
                   >
                     <Image
@@ -132,4 +109,4 @@ class LikeSlider extends Component<IProps, IState> {
     )
   }
 }
-export default LikeSlider
+export default ProfileSlider

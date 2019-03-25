@@ -7,8 +7,6 @@ import UserStore from './src/stores/UserStore'
 import Config from './src/Config'
 import RootStack from './src/Navigation'
 
-import UserStore from './src/stores/UserStore'
-
 const config = {
   apiKey: Config.FIREBASE_API_KEY,
   authDomain: Config.FIREBASE_AUTH_DOMAIN,
