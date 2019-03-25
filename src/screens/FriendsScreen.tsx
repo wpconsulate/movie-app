@@ -1,29 +1,19 @@
 import * as React from 'react'
-import {
-  Text,
-  ScrollView
-} from 'react-native'
-
+import { Container, Grid, Row, Col, Text, Content } from 'native-base'
 export default class FriendsList extends React.Component {
   render() {
     return (
-      <ScrollView style={{ backgroundColor: '#12152D' }}>
-        <Text style={{
-          alignSelf: 'center',
-          color: 'white',
-          fontSize: 30,
-          fontWeight: 'bold'
-          }}>Settings</Text>
-
-          {/* <Review
-            review="testing this review"
-            username="shezan"
-            url="../../assets/profilePicture/p1.png"
-          />
-          <Review review="testing this review" username="shezan" url="sdfs" />
-          <Review review="testing this review" username="shezan" url="sdfs" /> */}
-
-      </ScrollView>
+      <Container>
+        <Content>
+          <Grid>
+            <Row>
+              <Col>
+                <Text>Show me the money</Text>
+              </Col>
+            </Row>
+          </Grid>
+        </Content>
+      </Container>
     )
   }
 }

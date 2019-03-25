@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
     maxHeight: '20%',
     backgroundColor: '#E20F0F',
     width: '100%',
-    zIndex: 3
+    zIndex: 3,
+    elevation: 3
   },
   searchContainer: {
     position: 'absolute',
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     borderRadius: 8,
     zIndex: 2,
+    elevation: 2,
     flexWrap: 'wrap'
   },
   topSection: {
@@ -54,7 +56,8 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 0.7,
-    zIndex: -1
+    zIndex: -1,
+    elevation: -1
   },
   mainSection: {
     flex: 1,
@@ -92,7 +95,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     alignSelf: 'center',
     top: 50,
-    zIndex: 1
+    zIndex: 1,
+    elevation: 1
   },
   qrButton: {
     position: 'relative',
@@ -272,7 +276,7 @@ class SearchScreen extends Component<any, State> {
                 placeholderTextColor="#B3B3B3"
                 style={styles.searchInput}
               />
-              {this.state.showClearBtn && (
+              {showClearBtn && (
                 <TouchableOpacity
                   onPress={this.onClearPress}
                   style={{ paddingRight: 15 }}
@@ -284,7 +288,7 @@ class SearchScreen extends Component<any, State> {
             <View style={styles.scrollContainer}>
               <ScrollView style={{ maxHeight: 250 }}>
                 <FlatList
-                  data={this.state.results}
+                  data={results}
                   keyExtractor={(item: any) => item.id.toString()}
                   renderItem={this._renderItem}
                 />
@@ -344,8 +348,8 @@ class SearchScreen extends Component<any, State> {
                   </Row>
                   <Row>
                     <ScrollView horizontal>
-                      {this.state.searchHistory
-                        ? this.state.searchHistory.map((e: any) => {
+                      {searchHistory
+                        ? searchHistory.map((e: any) => {
                             return (
                               <TouchableOpacity
                                 key={e}

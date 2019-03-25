@@ -5,21 +5,17 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions,
+  StatusBar
 } from 'react-native'
-import ProfilePic from '../components/ProfilePic'
 import UserStats from '../components/UserStats'
 import Friends from '../components/FriendsSlider'
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
-import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-import SettingsScreens from './SettingsScreen'
 import { Button, Spinner, Icon, Header } from 'native-base'
 import UserStore from '../stores/UserStore'
-import FriendsScreen from './FriendsScreen'
-import UserReviewScreen from './UserReviewScreen'
 import UserAvatar from '../components/UserAvatar'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
@@ -28,6 +24,12 @@ import { User } from '../api';
 import { IImage } from '../api/Movie/Interfaces';
 import ProfileSlider, { IDataParams } from '../components/ProfileSlider'
 
+import SettingsScreens from './SettingsScreen'
+import Review from '../components/ReviewTab'
+import UserReviewScreen from './UserReviewScreen'
+import FriendsScreen from './FriendsScreen'
+import SvgUri from 'react-native-svg-uri'
+import ProfilePic from '../components/ProfilePic'
 interface IState {
   userID: string
   username: string
@@ -37,13 +39,14 @@ interface IState {
   isLoading: boolean
   refreshing: boolean
   casts: Array<IImage>
+  following: any
 }
 
 interface IProps extends NavigationScreenProps {
   userID: string
 }
 export default class ProfileScreen extends React.Component<any, any> {
-  static navigationOptions = navigationOptions
+  // static navigationOptions = navigationOptions
 
   constructor(props: any) {
     super(props)
@@ -59,23 +62,17 @@ export default class ProfileScreen extends React.Component<any, any> {
     } else {
       const currUser = new Authentication()
       const userID = (currUser.getCurrentUser() as firebase.User).uid
-      // console.log(currUser.getCurrentUser())
       this.setState({ userID: userID, isLoading: false })
     }
   }
   render() {
+    const { width, height } = Dimensions.get('window')
+    const maxWidth = width / 3.5
+    const maxHeight = height / 4.5
     return (
-      <View>
-        <Header
-          transparent={true}
-          translucent={true}
-          iosBarStyle="light-content"
-          noShadow={true}
-          style={{
-            position: 'absolute',
-            zIndex: -2
-          }}
-        />
+      <View style={{ backgroundColor: '#12152D' }}>
+        <StatusBar barStyle="light-content" />
+
         {this.state.isLoading ? (
           <Spinner />
         ) : (
@@ -98,6 +95,7 @@ class ProfileContent extends React.Component<IProps, IState> {
       username: '',
       userInitials: '',
       casts: [],
+      following: ''
     }
   }
   async componentWillMount() {
@@ -121,8 +119,26 @@ class ProfileContent extends React.Component<IProps, IState> {
       username: CurrUSerDetails.name,
       userInitials: CurrUSerDetails.userInitials,
       casts,
+      following: CurrUSerDetails.following
     })
   }
+
+  returnFriendsSlider() {
+    const fol = this.state.following
+    let dataformat: Array<any> = []
+    for (const val in fol) {
+      {
+        dataformat.push({
+          key: fol[val].followId,
+          initial: fol[val].userInitials,
+          avatarColor: fol[val].userAvatarColour,
+          name: fol[val].followName
+        })
+      }
+    }
+    return <Friends following={dataformat} />
+  }
+
   // logout = () => {
   //   console.log("this");
   //   // let currUser = new Authentication()
@@ -159,40 +175,27 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
-        <Header
-          transparent={true}
-          translucent={true}
-          iosBarStyle="light-content"
-          noShadow={true}
-          style={{
-            position: 'absolute',
-            zIndex: -2
-          }}
-        />
-        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 5 }}>
-          <Text
+        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 30 }}>
+          <View
             style={{
-              alignSelf: 'center',
-              color: 'white',
-              fontSize: 30,
-              fontWeight: 'bold'
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 5
             }}
           >
-            Profile Page
-          </Text>
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center', padding: 6 }}
-          >
-            <UserAvatar
-              userInitials={this.state.userInitials}
-              avatarColour={this.state.userAvatarColour}
+            <ProfilePic
+              userIconColour={this.state.userAvatarColour}
+              userInitial={this.state.userInitials}
+              userID={this.props.userID}
+              username={this.state.username}
             />
-
-            {/* <ProfilePic username={this.state.username} /> */}
-            {/* <UserStats userData={this.state.userData} /> */}
+            <UserStats
+              userData={this.state.userData}
+              userId={this.state.userID}
+            />
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
-            <Friends />
+            {this.returnFriendsSlider()}
           </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
             <ProfileWatchlist userid={this.state.userID} />
@@ -276,7 +279,7 @@ class ProfileContent extends React.Component<IProps, IState> {
 //       userID: userID,
 //       username: CurrUSerDetails.name
 //     })
-//   }
+//   }e
 
 //   render() {
 //     const { isLoading } = this.state

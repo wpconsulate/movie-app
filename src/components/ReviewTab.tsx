@@ -9,7 +9,7 @@ import SetOfUsers from '../api/Collection/SetOfUsers'
 import { SetOfMovies } from '../api'
 import { database } from 'firebase'
 import Likes from '../api/Collection/Likes'
-
+import sendPushNotification from '../helpers/sendPushNotification'
 interface IProps {
   review: string
   date?: number
@@ -50,13 +50,33 @@ export default class Review extends Component<IProps, IState> {
   }
 
   likeReview = async () => {
-    if (this.props.userId) {
-      await database()
-        .ref('review')
-        .child(this.props.movieId.toString())
-        .child(this.props.userId)
-        .child('likes')
-        .push({ userId: this.auth.getCurrentUser().uid })
+    try {
+      if (this.props.userId) {
+        await database()
+          .ref('users')
+          .child(this.props.userId)
+          .once('value', snap => {
+            console.log('snap', snap.val())
+            if (snap.exists()) {
+              if (snap.val().expoPushToken) {
+                console.log('attempting to send notification')
+                sendPushNotification(
+                  snap.val().expoPushToken,
+                  'Mmdb: Review Liked!',
+                  `${this.state.username} liked your review.`
+                )
+              }
+            }
+          })
+        await database()
+          .ref('review')
+          .child(this.props.movieId.toString())
+          .child(this.props.userId)
+          .child('likes')
+          .push({ userId: this.auth.getCurrentUser().uid })
+      }
+    } catch (err) {
+      console.error(err)
     }
   }
 

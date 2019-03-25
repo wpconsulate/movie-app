@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import {
   Container,
   Header,
-  Row
+  Row,
+  Content
 } from 'native-base'
 import {
   Dimensions,
@@ -37,6 +38,7 @@ class QrScreen extends Component<IProps, IState> {
   componentDidMount() {
     this.setState({ isLoading: false })
   }
+
   render() {
     const { isLoading, show } = this.state
 
@@ -63,36 +65,11 @@ class QrScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <TouchableOpacity
-          style={{
-            alignItems: 'center',
-            alignSelf: 'flex-end',
-            justifyContent: 'center',
-            position: 'absolute',
-            top: 150
-          }}
-          onPress={() => this.setState({ show: !show })}
-
-          >
-          
-          <View
-            style={{
-              alignItems: 'center',
-              backgroundColor: '#E10F0F',
-              borderRadius: 40 / 2,
-              height: 40,
-              justifyContent: 'center',
-              width: 40
-            }}
-          >
-            <MaterialIcons name="add" color="#12152D" size={38} />
-          </View>
-        </TouchableOpacity>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <Row>
-            <QrReader show={show} />
+        <Content style={{ backgroundColor: '#12152D' }}  >
+          <Row style={{  }} >
+            <QrReader />
           </Row>
-        </TouchableWithoutFeedback>
+        </Content>
       </Container>
     )
   }

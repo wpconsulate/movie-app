@@ -41,6 +41,7 @@ interface IProps extends NavigationScreenProps {}
 
 class SettingsScreen extends Component<IProps, IState> {
   static navigationOptions = navigationOptions
+
   auth: Authentication
   database: Database
   private users = new SetOfUsers()
@@ -182,18 +183,6 @@ class SettingsScreen extends Component<IProps, IState> {
           <Content style={{ paddingHorizontal: 30 }}>
             <Row style={{ marginTop: 30 }}>
               <Col>
-                <Text
-                  style={{
-                    alignSelf: 'center',
-                    color: 'red',
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    marginBottom: 20
-                  }}
-                >
-                  Settings
-                </Text>
-
                 <Form>
                   <Item
                     stackedLabel={true}
@@ -298,13 +287,13 @@ class SettingsScreen extends Component<IProps, IState> {
                       USERNAME
                     </Label>
                     <Row>
-                      {/* <Input
-                      style={{                       
-                        color: '#FFF',
-                        fontFamily: 'PoppinsMedium',
-                        fontSize: 14
-                      }}
-                    > */}
+                      <Input
+                        style={{
+                          color: '#FFF',
+                          fontFamily: 'PoppinsMedium',
+                          fontSize: 14
+                        }}
+                      />
                       <Text>CURRENT PROFILE PICTURE</Text>
                       <TouchableOpacity
                         style={{

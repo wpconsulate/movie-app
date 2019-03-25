@@ -3,9 +3,23 @@ import * as firebase from 'firebase'
 import { Root } from 'native-base'
 import React, { Component } from 'react'
 import { createAppContainer } from 'react-navigation'
-import UserStore from './src/stores/UserStore'
+import registerPushNotifications from './src/helpers/registerPushNotification'
+import getLocation from './src/helpers/getLocation'
 import Config from './src/Config'
 import RootStack from './src/Navigation'
+
+import UserStore from './src/stores/UserStore'
+import { AppState } from 'react-native'
+import { YellowBox } from 'react-native'
+import _ from 'lodash'
+
+YellowBox.ignoreWarnings(['Setting a timer', 'Require cycle:'])
+const _console = _.clone(console)
+console.warn = (message: any) => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message)
+  }
+}
 
 const config = {
   apiKey: Config.FIREBASE_API_KEY,
@@ -21,6 +35,8 @@ const AppContainer = createAppContainer(RootStack)
 
 interface StateInterface {
   fontLoaded: boolean
+  isReady: boolean
+  appState: any
 }
 // tslint:disable-next-line: no-empty-interface
 interface PropsInterface {}
@@ -29,8 +45,40 @@ class App extends Component<PropsInterface, StateInterface> {
   constructor(props: PropsInterface) {
     super(props)
     this.state = {
-      fontLoaded: false
+      fontLoaded: false,
+      isReady: false,
+      appState: AppState.currentState
     }
+  }
+
+  async _cacheResourcesAsync(): Promise<any> {
+    const images = [
+      require('./assets/header.png'),
+      require('./assets/red-blob.svg')
+    ]
+
+    const cacheImages = images.map(image => {
+      return Expo.Asset.fromModule(image).downloadAsync()
+    })
+    return Promise.all(cacheImages)
+  }
+
+  componentDidMount() {
+    registerPushNotifications()
+  }
+
+  handleAppStateChange = (nextAppState: any) => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      getLocation()
+    }
+    this.setState({ appState: nextAppState })
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
   }
 
   async componentWillMount() {
@@ -48,6 +96,7 @@ class App extends Component<PropsInterface, StateInterface> {
           UserStore.setIsLoggedIn(true)
         }
       })
+      AppState.addEventListener('change', this.handleAppStateChange)
       this.setState({ fontLoaded: true })
     } catch (error) {
       console.error(error)
@@ -55,7 +104,13 @@ class App extends Component<PropsInterface, StateInterface> {
   }
   render() {
     if (!this.state.fontLoaded) {
-      return <Expo.AppLoading />
+      return (
+        <Expo.AppLoading
+        // startAsync={this._cacheResourcesAsync}
+        // onFinish={() => this.setState({ isReady: true })}
+        // onError={console.warn}
+        />
+      )
     }
     return (
       <Root>
