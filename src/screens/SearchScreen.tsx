@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     flex: 0.25,
     backgroundColor: '#E20F0F',
     position: 'relative',
+    minHeight: 160,
     maxHeight: redboxHeight
   },
   bottomSection: {

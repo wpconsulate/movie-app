@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import {
-  createSwitchNavigator,
-  createAppContainer,
-  createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator
 } from 'react-navigation'
@@ -40,7 +37,23 @@ const ProfileTabNavigator = createBottomTabNavigator(
     navigationOptions: ({ navigation }: any) => {
       const { routeName } = navigation.state.routes[navigation.state.index]
       return {
-        headerTitle: routeName
+        headerTitle: (
+          <StyleProvider style={getTheme(mmdb)}>
+            <Button onPress={() => navigation.navigate('Home')} transparent
+              accessible={true}
+              accessibilityLabel={routeName}
+              accessibilityHint={"Navigate to the " + routeName + " screen"}
+              accessibilityRole="button"
+              accessibilityTraits="button"
+            >
+              <Text
+                style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
+              >
+                {routeName}
+            </Text>
+            </Button>
+          </StyleProvider>
+        ),
       }
     },
     defaultNavigationOptions: ({ navigation }) => ({
