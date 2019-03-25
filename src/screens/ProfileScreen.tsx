@@ -15,7 +15,6 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { Button, Spinner, Icon, Header } from 'native-base'
-import UserStore from '../stores/UserStore'
 import UserAvatar from '../components/UserAvatar'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
@@ -40,7 +39,7 @@ interface IState {
 interface IProps extends NavigationScreenProps {
   userID: string
 }
-export default class ProfileScreen extends React.Component<any, any> {
+export default class ProfileScreen extends React.Component<IProps, any> {
   // static navigationOptions = navigationOptions
 
   constructor(props: any) {
@@ -78,7 +77,7 @@ export default class ProfileScreen extends React.Component<any, any> {
   }
 }
 
-class ProfileContent extends React.Component<IProps, IState> {
+class ProfileContent extends React.Component<any, IState> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -124,15 +123,6 @@ class ProfileContent extends React.Component<IProps, IState> {
     }
     return <Friends following={dataformat} />
   }
-
-  // logout = () => {
-  //   console.log("this");
-  //   // let currUser = new Authentication()
-  //   // currUser.auth.signOut().then(function() {
-  //   //   this.props.navigation.navigate('Home');
-  //   // });
-  //   console.log("ICECREAM");
-  // }
   _onRefresh = () => {
     this.setState({ refreshing: true })
     this.componentWillMount().then(() => {
@@ -158,12 +148,17 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
-        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 30 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#12152D',
+            padding: 10
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center',
-              marginLeft: 5
+              alignItems: 'center'
             }}
           >
             <ProfilePic
@@ -184,17 +179,6 @@ class ProfileContent extends React.Component<IProps, IState> {
             <ProfileWatchlist userid={this.state.userID} />
           </View>
         </View>
-        <Button
-          onPress={() => {
-            console.log('i logged out!')
-            const currUser = new Authentication()
-            currUser.auth.signOut().then(() => {
-              UserStore.setIsLoggedIn(false)
-            }) /*this.props.navigation.navigate('home');*/
-          }}
-        >
-          <Text>Logout</Text>
-        </Button>
       </ScrollView>
     )
   }

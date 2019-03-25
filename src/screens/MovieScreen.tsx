@@ -54,7 +54,7 @@ import cinemaHeaders from '../helpers/cinemasHeader'
 import Config from '../Config'
 import CinemasSlider from '../components/CinemasSlider'
 import moment from 'moment'
-import _ from 'underscore'
+import _ from 'lodash'
 interface IProps {
   navigation?: NavigationScreenProp<
     NavigationRoute<NavigationParams>,
@@ -188,51 +188,52 @@ export default class MovieScreen extends Component<IProps, IState> {
       casts.forEach(cast => {
         castImages.push({ url: cast.getImage() })
       })
-      // const location = (await getLocation()) as Location.LocationData
-      // try {
-      //   const cinemasResponse = await axios.get(
-      //     `${Config.CINEMAS_API_BASE_URL}cinemasNearby/?n=10`,
-      //     {
-      //       headers: {
-      //         ...cinemaHeaders(
-      //           location.coords.latitude.toPrecision(8),
-      //           location.coords.longitude.toPrecision(8)
-      //         )
-      //       }
-      //     }
-      //   )
-      //   if (cinemasResponse.data.cinemas && cinemasResponse.data.cinemas[0]) {
-      //     const cinemaShowTimes = await axios.get(
-      //       `${Config.CINEMAS_API_BASE_URL}cinemaShowTimes/?cinema_id=${
-      //         cinemasResponse.data.cinemas[0].cinema_id
-      //       }&date=${moment().format('YYYY-MM-DD')}`,
-      //       {
-      //         headers: {
-      //           ...cinemaHeaders(
-      //             location.coords.latitude.toPrecision(8),
-      //             location.coords.longitude.toPrecision(8)
-      //           )
-      //         }
-      //       }
-      //     )
-      //     if (cinemaShowTimes.data.films) {
-      //       const filmExists = cinemaShowTimes.data.films.filter(
-      //         (film: any) => film.film_name === movie.getTitle()
-      //       )
-      //       if (filmExists && filmExists.length > 0) {
-      //         this.setState({
-      //           nearbyCinemas: cinemasResponse.data.cinemas
-      //         })
-      //       } else {
-      //         this.setState({ nearbyCinemas: undefined })
-      //       }
-      //     }
-      //   }
-      // } catch (err) {
-      //   console.log(
-      //     `Error with cinemas API: MovieScreen (242). You've likely exceeded your API usage.`
-      //   )
-      // }
+      const location = (await getLocation()) as Location.LocationData
+      console.log(location)
+      try {
+        const cinemasResponse = await axios.get(
+          `${Config.CINEMAS_API_BASE_URL}cinemasNearby/?n=10`,
+          {
+            headers: {
+              ...cinemaHeaders(
+                location.coords.latitude.toPrecision(8),
+                location.coords.longitude.toPrecision(8)
+              )
+            }
+          }
+        )
+        if (cinemasResponse.data.cinemas && cinemasResponse.data.cinemas[0]) {
+          const cinemaShowTimes = await axios.get(
+            `${Config.CINEMAS_API_BASE_URL}cinemaShowTimes/?cinema_id=${
+              cinemasResponse.data.cinemas[0].cinema_id
+            }&date=${moment().format('YYYY-MM-DD')}`,
+            {
+              headers: {
+                ...cinemaHeaders(
+                  location.coords.latitude.toPrecision(8),
+                  location.coords.longitude.toPrecision(8)
+                )
+              }
+            }
+          )
+          if (cinemaShowTimes.data.films) {
+            const filmExists = cinemaShowTimes.data.films.filter(
+              (film: any) => film.film_name === movie.getTitle()
+            )
+            if (filmExists && filmExists.length > 0) {
+              this.setState({
+                nearbyCinemas: cinemasResponse.data.cinemas
+              })
+            } else {
+              this.setState({ nearbyCinemas: undefined })
+            }
+          }
+        }
+      } catch (err) {
+        console.log(
+          `Error with cinemas API: MovieScreen (242). You've likely exceeded your API usage.`
+        )
+      }
       this.setState({
         castImages,
         critiqueReviewList: critReview,

@@ -77,6 +77,30 @@ export default class ProfilePic extends React.Component<IProps, any> {
         text: 'Unfollow',
         isFollowing: !this.state.isFollowing
       })
+
+      //add pushnotification
+      // await database()
+      //           .ref('users')
+      //           .child(this.props.userId)
+      //           .once('value', snap => {
+      //             console.log('snap', snap.val())
+      //             if (snap.exists()) {
+      //               if (snap.val().expoPushToken) {
+      //                 console.log('attempting to send notification')
+      //                 sendPushNotification(
+      //                   snap.val().expoPushToken,
+      //                   'Mmdb: Review Liked!',
+      //                   `${this.state.username} liked your review.`
+      //                 )
+      //               }
+      //             }
+      //           })
+      //         await database()
+      //           .ref('review')
+      //           .child(this.props.movieId.toString())
+      //           .child(this.props.userId)
+      //           .child('likes')
+      //           .push({ userId: this.auth.getCurrentUser().uid })
     }
   }
   render() {

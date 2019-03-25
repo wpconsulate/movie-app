@@ -12,7 +12,8 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     borderRadius: 8,
     zIndex: 2,
-    elevation: 2,
+    elevation: 5,
     flexWrap: 'wrap'
   },
   topSection: {
@@ -83,7 +84,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 5,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    elevation: 5
   },
   scrollContainer: {
     backgroundColor: 'white',
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     alignSelf: 'center',
-    top: 50,
+    top: Platform.OS === 'ios' ? 50 : 0,
     zIndex: 1,
     elevation: 1
   },
@@ -285,23 +287,28 @@ class SearchScreen extends Component<any, State> {
                 </TouchableOpacity>
               )}
             </View>
-            <View style={styles.scrollContainer}>
-              <ScrollView style={{ maxHeight: 250 }}>
-                <FlatList
-                  data={results}
-                  keyExtractor={(item: any) => item.id.toString()}
-                  renderItem={this._renderItem}
-                />
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.qrButton}
-                onPress={() => {
-                  this.props.navigation.push('QrScreen')
-                }}
-              >
-                <FontAwesomeIcon name="qrcode" size={26} color="white" />
-              </TouchableOpacity>
-            </View>
+            {Platform.OS === 'ios' ? (
+              <View style={styles.scrollContainer}>
+                <ScrollView style={{ maxHeight: 250, elevation: 2 }}>
+                  <FlatList
+                    data={results}
+                    keyExtractor={(item: any) => item.id.toString()}
+                    renderItem={this._renderItem}
+                    style={{ elevation: 2 }}
+                  />
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.qrButton}
+                  onPress={() => {
+                    this.props.navigation.push('QrScreen')
+                  }}
+                >
+                  <FontAwesomeIcon name="qrcode" size={26} color="white" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              undefined
+            )}
           </View>
         </View>
         <TouchableWithoutFeedback
@@ -309,6 +316,28 @@ class SearchScreen extends Component<any, State> {
           accessible={false}
         >
           <View style={styles.bottomSection}>
+            {Platform.OS === 'android' ? (
+              <View style={styles.scrollContainer}>
+                <ScrollView style={{ maxHeight: 250, elevation: 2 }}>
+                  <FlatList
+                    data={results}
+                    keyExtractor={(item: any) => item.id.toString()}
+                    renderItem={this._renderItem}
+                    style={{ elevation: 2 }}
+                  />
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.qrButton}
+                  onPress={() => {
+                    this.props.navigation.push('QrScreen')
+                  }}
+                >
+                  <FontAwesomeIcon name="qrcode" size={26} color="white" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              undefined
+            )}
             <View style={styles.mainSection}>
               <Grid style={{ width: '100%', marginTop: 50 }}>
                 <View style={{ flex: 1 }}>
