@@ -3,19 +3,17 @@ import { StyleProvider, Button, Icon } from 'native-base'
 import getTheme from '../../../native-base-theme/components'
 import mmdb from '../../../native-base-theme/variables/mmdb'
 import UserStore from '../../../stores/UserStore'
+import { observer } from 'mobx-react'
 
+@observer
 class Profile extends Component<any, any> {
-  _handleClick() {
-    if (UserStore.isLoggedIn) return this.props.navigation.navigate('Profile')
-    return this.props.navigation.navigate('Login')
-  }
   render() {
     const isLoggedIn = UserStore.isLoggedIn
     return (
       <StyleProvider style={getTheme(mmdb)}>
         {isLoggedIn ? (
           <Button
-            onPress={() => this._handleClick()}
+            onPress={() => this.props.navigation.navigate('Profile')}
             transparent
             accessible={true}
             accessibilityLabel="Profile"
@@ -27,7 +25,7 @@ class Profile extends Component<any, any> {
           </Button>
         ) : (
           <Button
-            onPress={() => this._handleClick()}
+            onPress={() => this.props.navigation.navigate('Login')}
             transparent
             accessible={true}
             accessibilityLabel="Login"

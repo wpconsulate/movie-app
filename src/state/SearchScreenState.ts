@@ -5,4 +5,5 @@ export interface SearchScreenState {
   tmpResults: any
   searchHistory: any
   showClearBtn: boolean
+  suggestions: any
 }

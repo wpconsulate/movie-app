@@ -131,20 +131,15 @@ class RegisterScreen extends Component<IProps, IState> {
       "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
     ]
 
-    //Collects initals of persons NAME (First and second first character)
     if (nameSplit.length == 1) {
-      // console.log("Length = 1")
       initials = nameSplit[0] ? nameSplit[0].charAt(0):'?';
     } else {
-      // console.log("length > 1")
         initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
     }
     charIndex     = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64;
     colourIndex   = charIndex % 20;
 
     colourChosen = colours[colourIndex]
-    console.log(initials)
-    console.log(colourChosen)
     this.setState({ userInitials: initials, userAvatarColour: colourChosen })
   }
 

@@ -8,6 +8,8 @@ import ResultsScreen from './ResultsScreen'
 import SettingsScreen from './SettingsScreen'
 import ReviewScreen from './ReviewScreen'
 import QrScreen from './QrScreen'
+import UserReviewScreen from './UserReviewScreen'
+import FriendsScreen from './FriendsScreen'
 
 export {
   HomeScreen,
@@ -19,5 +21,7 @@ export {
   ResultsScreen,
   SettingsScreen,
   ReviewScreen,
-  QrScreen
+  QrScreen,
+  UserReviewScreen,
+  FriendsScreen
 }

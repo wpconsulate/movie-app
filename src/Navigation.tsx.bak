@@ -136,7 +136,7 @@ const RootStack = createStackNavigator(
     QrScreen: QrScreen
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Search',
     navigationOptions: {
       headerStyle: {
         marginTop: Constants.statusBarHeight

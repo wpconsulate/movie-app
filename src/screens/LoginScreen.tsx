@@ -10,13 +10,13 @@ import {
   Input,
   Form,
   Item,
-  Label,
+  Label
 } from 'native-base'
 import {
   Dimensions,
   Alert,
   TouchableWithoutFeedback,
-  Keyboard,
+  Keyboard
 } from 'react-native'
 import { Authentication } from '../api'
 import UserStore from '../stores/UserStore'
@@ -42,7 +42,7 @@ class LoginScreen extends Component<IProps, IState> {
       email: '',
       password: '',
       showPass: true,
-      errorMsg: '',
+      errorMsg: ''
     }
     this.auth = new Authentication()
   }
@@ -52,15 +52,15 @@ class LoginScreen extends Component<IProps, IState> {
     this.auth
       .login(email, password)
       .then(() => {
-        Keyboard.dismiss
+        Keyboard.dismiss()
         Alert.alert('Successfully logged in!')
         this.props.navigation.navigate('Profile', {
-          userId: this.auth.getCurrentUser().uid,
+          userId: this.auth.getCurrentUser().uid
         })
         UserStore.setIsLoggedIn(true)
       })
       .catch((error: any) => {
-        console.log(error)
+        console.error(error)
         this.setState({ errorMsg: 'please check login details' })
         this.props.navigation.navigate('Login')
       })
@@ -79,78 +79,78 @@ class LoginScreen extends Component<IProps, IState> {
             left: 0,
             right: 0,
             width: '100%',
-            height: '15%',
+            height: '15%'
           }}
           width={Dimensions.get('window').width}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
-          <Row
-            style={{ alignItems: 'center', justifyContent: 'space-between' }}
-          >
-            <Col size={3}>
-              <Text
-                style={{
-                  fontFamily: 'PoppinsBold',
-                  fontSize: 24,
-                  color: '#12152D',
-                }}
-              >
-                Login
-              </Text>
-            </Col>
-            <Col size={4}>
-              <Text
-                style={{
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 13,
-                  color: '#696969',
-                  fontWeight: 'bold',
-                  textAlign: 'right'
-                }}
-              >
-                Sign in to your account
-              </Text>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: 30 }}>
-            <Col>
-              <Form>
-                <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
-                {this.state.errorMsg ? (
+          <Content style={{ marginTop: 60, paddingHorizontal: 30 }}>
+            <Row
+              style={{ alignItems: 'center', justifyContent: 'space-between' }}
+            >
+              <Col size={3}>
+                <Text
+                  style={{
+                    fontFamily: 'PoppinsBold',
+                    fontSize: 24,
+                    color: '#12152D'
+                  }}
+                >
+                  Login
+                </Text>
+              </Col>
+              <Col size={4}>
+                <Text
+                  style={{
+                    fontFamily: 'PoppinsMedium',
+                    fontSize: 13,
+                    color: '#696969',
+                    fontWeight: 'bold',
+                    textAlign: 'right'
+                  }}
+                >
+                  Sign in to your account
+                </Text>
+              </Col>
+            </Row>
+            <Row style={{ marginTop: 30 }}>
+              <Col>
+                <Form>
+                  <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
+                    {this.state.errorMsg ? (
                       <Text style={{ color: 'red' }}>
                         {this.state.errorMsg}
                       </Text>
                     ) : (
                       <Text />
                     )}
-                  <Label
-                    style={{
-                      fontSize: 14,
-                      fontFamily: 'PoppinsMedium',
-                      color: '#696969',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    EMAIL
-                  </Label>
-                  <Input
-                    label="EMAIL"
-                    autoFocus
-                    keyboardType="email-address"
-                    autoCorrect
-                    value={email}
-                    onChangeText={text => {
-                      this.setState({ email: text })
-                    }}
-                  />
-                </Item>
+                    <Label
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'PoppinsMedium',
+                        color: '#696969',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      EMAIL
+                    </Label>
+                    <Input
+                      label="EMAIL"
+                      autoFocus
+                      keyboardType="email-address"
+                      autoCorrect
+                      value={email}
+                      onChangeText={text => {
+                        this.setState({ email: text })
+                      }}
+                    />
+                  </Item>
                   <Item stackedLabel style={{ marginLeft: 0, marginTop: 20 }}>
                     <Label
                       style={{
                         fontSize: 13,
                         fontFamily: 'PoppinsMedium',
-                        color: '#696969',
+                        color: '#696969'
                       }}
                     >
                       PASSWORD
@@ -176,7 +176,7 @@ class LoginScreen extends Component<IProps, IState> {
                             color: '#E20F0F',
                             fontFamily: 'PoppinsMedium',
                             fontSize: 12,
-                            fontWeight: 'bold',
+                            fontWeight: 'bold'
                           }}
                         >
                           Show
@@ -189,7 +189,7 @@ class LoginScreen extends Component<IProps, IState> {
                     style={{
                       marginTop: 40,
                       alignContent: 'center',
-                      justifyContent: 'center',
+                      justifyContent: 'center'
                     }}
                   >
                     <Col style={{ maxWidth: 250 }}>
@@ -198,7 +198,11 @@ class LoginScreen extends Component<IProps, IState> {
                         primary
                         block
                         onPress={() => this.onLoginPress()}
-                        style={{ backgroundColor: '#E20F0F', minHeight: 50, marginTop: 30 }}
+                        style={{
+                          backgroundColor: '#E20F0F',
+                          minHeight: 50,
+                          marginTop: 30
+                        }}
                       >
                         <Text>Login</Text>
                       </Button>
@@ -211,16 +215,19 @@ class LoginScreen extends Component<IProps, IState> {
               style={{
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginTop: 20,
+                marginTop: 20
               }}
             >
               <Col>
-                <Text style={{
-                fontFamily: 'PoppinsMedium',
-                color: '#696969',
-                fontSize:14,
-                alignItems: 'center',
-                marginLeft: 10, }}>
+                <Text
+                  style={{
+                    fontFamily: 'PoppinsMedium',
+                    color: '#696969',
+                    fontSize: 14,
+                    alignItems: 'center',
+                    marginLeft: 10
+                  }}
+                >
                   Don't have an account?
                 </Text>
               </Col>
@@ -231,11 +238,14 @@ class LoginScreen extends Component<IProps, IState> {
                     this.props.navigation.navigate('Register')
                   }}
                 >
-                  <Text style={{
-                  fontFamily: 'PoppinsMedium',
-                  color:'black',
-                  fontSize:14,
-                  fontWeight:'bold' }}>
+                  <Text
+                    style={{
+                      fontFamily: 'PoppinsMedium',
+                      color: 'black',
+                      fontSize: 14,
+                      fontWeight: 'bold'
+                    }}
+                  >
                     Register now
                   </Text>
                 </Button>

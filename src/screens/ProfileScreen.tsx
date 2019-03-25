@@ -4,26 +4,27 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
-import ProfilePic from '../components/ProfilePic'
 import UserStats from '../components/UserStats'
 import Friends from '../components/FriendsSlider'
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
-import Review from '../components/ReviewTab'
 import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
-import SettingsScreens from './SettingsScreen'
 import { Button, Spinner, Icon, Header } from 'native-base'
 import UserStore from '../stores/UserStore'
-import FriendsScreen from './FriendsScreen'
-import UserReviewScreen from './UserReviewScreen'
 import UserAvatar from '../components/UserAvatar'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
-
+import SettingsScreens from './SettingsScreen'
+import Review from '../components/ReviewTab'
+import UserReviewScreen from './UserReviewScreen'
+import FriendsScreen from './FriendsScreen'
+import SvgUri from 'react-native-svg-uri'
+import ProfilePic from '../components/ProfilePic'
 interface IState {
   userID: string
   username: string
@@ -49,29 +50,28 @@ export default class ProfileScreen extends React.Component<any, any> {
     }
   }
   async componentWillMount() {
-    let UId = this.props.navigation.getParam('userId')
+    const UId = this.props.navigation.getParam('userId')
     if (UId != null) {
       this.setState({ userID: UId, isLoading: false })
     } else {
       const currUser = new Authentication()
       const userID = (currUser.getCurrentUser() as firebase.User).uid
-      console.log(currUser.getCurrentUser())
       this.setState({ userID: userID, isLoading: false })
     }
   }
   render() {
+    const { width, height } = Dimensions.get('window')
+    const maxWidth = width / 3.5
+    const maxHeight = height / 4.5
     return (
-      <View>
+      <View style={{ backgroundColor: '#12152D' }}>
         <Header
-          transparent={true}
+          transparent
           translucent={true}
-          iosBarStyle="light-content"
           noShadow={true}
-          style={{
-            position: 'absolute',
-            zIndex: -2
-          }}
+          iosBarStyle="light-content"
         />
+
         {this.state.isLoading ? (
           <Spinner />
         ) : (
@@ -162,17 +162,7 @@ class ProfileContent extends React.Component<IProps, IState> {
           />
         }
       >
-        <Header
-          transparent={true}
-          translucent={true}
-          iosBarStyle="light-content"
-          noShadow={true}
-          style={{
-            position: 'absolute',
-            zIndex: -2
-          }}
-        />
-        <View style={{ flex: 1, backgroundColor: '#12152D' }}>
+        <View style={{ flex: 1, backgroundColor: '#12152D', paddingTop: 50 }}>
           <Text
             style={{
               alignSelf: 'center',
@@ -283,7 +273,7 @@ class ProfileContent extends React.Component<IProps, IState> {
 //       userID: userID,
 //       username: CurrUSerDetails.name
 //     })
-//   }
+//   }e
 
 //   render() {
 //     const { isLoading } = this.state

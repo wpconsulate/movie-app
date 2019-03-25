@@ -2,23 +2,27 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
 interface IProps {
-  colour: string
-  textColour: string
+  colour?: string
+  textColour?: string
   text: string
   size?: number
 }
 
 class Pill extends Component<IProps> {
   static defaultProps = {
-    backgroundColor: '#26293E',
-    textColor: '#4F547E',
-    size: 32,
+    colour: '#26293E',
+    textColour: '#4F547E',
+    size: 32
   }
   render() {
     const originalSize = 32
     const paddingCalc = Math.floor((100 / originalSize) * 12).toPrecision(3)
     const padding = parseInt(
-      ((parseFloat(paddingCalc) / 100) * this.props.size).toString()
+      (
+        (parseFloat(paddingCalc) / 100) *
+        (this.props.size as number)
+      ).toString(),
+      undefined
     )
     const shapes = StyleSheet.create({
       pill: {
@@ -29,8 +33,8 @@ class Pill extends Component<IProps> {
         paddingRight: padding,
         minHeight: this.props.size,
         marginLeft: 5,
-        marginRight: 5,
-      },
+        marginRight: 5
+      }
     })
 
     return (

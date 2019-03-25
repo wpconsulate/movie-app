@@ -47,7 +47,6 @@ class Authentication {
   }
 
   public isLoggedIn() {
-    // console.log('user', this.getCurrentUser())
     if (this.getCurrentUser()) {
       return true
     }

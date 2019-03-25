@@ -12,7 +12,7 @@
     "member-ordering": [false],
     "no-bitwise": false,
     "no-duplicate-imports": false,
-    "no-null-keyword": true,
+    "no-null-keyword": false,
     "no-submodule-imports": false,
     "no-console": false,
     "member-access": false,

@@ -41,6 +41,7 @@ interface IProps extends NavigationScreenProps {}
 
 class SettingsScreen extends Component<IProps, IState> {
   static navigationOptions = navigationOptions
+
   auth: Authentication
   database: Database
   private users = new SetOfUsers()

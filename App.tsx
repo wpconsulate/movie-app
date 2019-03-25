@@ -3,9 +3,13 @@ import * as firebase from 'firebase'
 import { Root } from 'native-base'
 import React, { Component } from 'react'
 import { createAppContainer } from 'react-navigation'
-
+import registerPushNotifications from './src/helpers/registerPushNotification'
+import getLocation from './src/helpers/getLocation'
 import Config from './src/Config'
 import RootStack from './src/Navigation'
+
+import UserStore from './src/stores/UserStore'
+import { AppState } from 'react-native'
 
 const config = {
   apiKey: Config.FIREBASE_API_KEY,
@@ -13,7 +17,6 @@ const config = {
   databaseURL: Config.FIREBASE_DATABASE_URL,
   projectId: Config.FIREBASE_PROJECT_ID,
   storageBucket: Config.FIREBASE_STORAGE_BUCKET,
-  // tslint:disable-next-line: object-literal-sort-keys
   messagingSenderId: Config.FIREBASE_MESSAGE_SENDER_ID
 }
 firebase.initializeApp(config)
@@ -22,6 +25,8 @@ const AppContainer = createAppContainer(RootStack)
 
 interface StateInterface {
   fontLoaded: boolean
+  isReady: boolean
+  appState: any
 }
 // tslint:disable-next-line: no-empty-interface
 interface PropsInterface {}
@@ -30,8 +35,40 @@ class App extends Component<PropsInterface, StateInterface> {
   constructor(props: PropsInterface) {
     super(props)
     this.state = {
-      fontLoaded: false
+      fontLoaded: false,
+      isReady: false,
+      appState: AppState.currentState
     }
+  }
+
+  async _cacheResourcesAsync(): Promise<any> {
+    const images = [
+      require('./assets/header.png'),
+      require('./assets/red-blob.svg')
+    ]
+
+    const cacheImages = images.map(image => {
+      return Expo.Asset.fromModule(image).downloadAsync()
+    })
+    return Promise.all(cacheImages)
+  }
+
+  componentDidMount() {
+    registerPushNotifications()
+  }
+
+  handleAppStateChange = (nextAppState: any) => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      getLocation()
+    }
+    this.setState({ appState: nextAppState })
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange)
   }
 
   async componentWillMount() {
@@ -44,6 +81,12 @@ class App extends Component<PropsInterface, StateInterface> {
         PoppinsSemiBold: require('./assets/fonts/Poppins/SemiBold.ttf'),
         Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
       })
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          UserStore.setIsLoggedIn(true)
+        }
+      })
+      AppState.addEventListener('change', this.handleAppStateChange)
       this.setState({ fontLoaded: true })
     } catch (error) {
       console.error(error)
@@ -51,7 +94,13 @@ class App extends Component<PropsInterface, StateInterface> {
   }
   render() {
     if (!this.state.fontLoaded) {
-      return <Expo.AppLoading />
+      return (
+        <Expo.AppLoading
+          startAsync={this._cacheResourcesAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      )
     }
     return (
       <Root>

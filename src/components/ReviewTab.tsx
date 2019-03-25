@@ -7,15 +7,17 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { SetOfMovies } from '../api'
-import Container from '../native-base-theme/components/Container'
-
+import { database } from 'firebase'
+import Likes from '../api/Collection/Likes'
+import sendPushNotification from '../helpers/sendPushNotification'
 interface IProps {
   review: string
   date?: number
   movieId: number
   userId?: string
   rating: number
-  likes: number
+  likes: [{ userId: string }]
+  hideMovieTitle?: boolean
 }
 interface IState {
   show: boolean
@@ -24,9 +26,12 @@ interface IState {
   movieName: string
   userInitials: string
   avatarColour: string
+  currentUserLiked?: any
 }
 
 export default class Review extends Component<IProps, IState> {
+  private likes = new Likes()
+  private auth = new Authentication()
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -35,30 +40,55 @@ export default class Review extends Component<IProps, IState> {
       movieName: '',
       show: false,
       userInitials: '',
-      username: ''
+      username: '',
+      currentUserLiked: undefined
     }
   }
+
+  getCurrentReviewLikes = () => {
+    return this.likes.getLikes(this.props.movieId)
+  }
+
+  likeReview = async () => {
+    try {
+      if (this.props.userId) {
+        await database()
+          .ref('users')
+          .child(this.props.userId)
+          .once('value', snap => {
+            console.log('snap', snap.val())
+            if (snap.exists()) {
+              if (snap.val().expoPushToken) {
+                console.log('attempting to send notification')
+                sendPushNotification(
+                  snap.val().expoPushToken,
+                  'Mmdb: Review Liked!',
+                  `${this.state.username} liked your review.`
+                )
+              }
+            }
+          })
+        await database()
+          .ref('review')
+          .child(this.props.movieId.toString())
+          .child(this.props.userId)
+          .child('likes')
+          .push({ userId: this.auth.getCurrentUser().uid })
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   async componentWillMount() {
-    let userID = this.props.userId
+    const userID = this.props.userId as string
     const currMovieId = this.props.movieId
     let movieTitle = ''
-    // console.log('currMovieId')
-    // console.log(currMovieId)
-    // console.log('userID')
-    // console.log(userID)
-
-    if (userID === undefined) {
-      const currUser = new Authentication()
-      userID = currUser.getCurrentUser().uid
-    }
 
     if (currMovieId !== undefined) {
       movieTitle = await new SetOfMovies().getTitleById(currMovieId)
     }
-
-    // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
     const CurrUSerDetails = await new SetOfUsers().getById(userID)
-    // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
 
     this.setState({
       avatarColour: CurrUSerDetails.userAvatarColour,
@@ -71,8 +101,6 @@ export default class Review extends Component<IProps, IState> {
 
   _renderStars = (stars: number) => {
     const starsArray = []
-    // console.log('stars')
-    // console.log(stars)
     for (let i = 0; i < 5; i++) {
       if (stars <= i) {
         starsArray.push(
@@ -87,50 +115,15 @@ export default class Review extends Component<IProps, IState> {
     return starsArray
   }
 
-  text(txt: string) {
-    return (
-      <View>
-        <Text
-          style={{
-            color: 'grey',
-            fontFamily: 'PoppinsMedium',
-            fontSize: 10,
-            marginTop: 9
-          }}
-        >
-          {txt}
-        </Text>
-        <TouchableOpacity
-          style={{ justifyContent: 'flex-end' }}
-          onPress={() => this.setState({ show: true })}
-        >
-          <Text
-            style={{
-              alignSelf: 'flex-end',
-              color: 'red',
-              fontFamily: 'PoppinsMedium',
-              fontSize: 10,
-              marginRight: 5,
-              marginTop: 10
-            }}
-          >
-            Read More
-          </Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
   render() {
-    const { review, date, rating } = this.props
+    const { review, date, hideMovieTitle, likes } = this.props
     const {
       isLoading,
       show,
       username,
       movieName,
       userInitials,
-      avatarColour,
-      userId
+      avatarColour
     } = this.state
 
     if (isLoading) {
@@ -140,10 +133,9 @@ export default class Review extends Component<IProps, IState> {
         </View>
       )
     }
-
-    if (!show) {
-      return (
-        <View>
+    return (
+      <View>
+        {!hideMovieTitle && movieName !== '' && (
           <Row
             style={{
               flex: 1,
@@ -152,161 +144,160 @@ export default class Review extends Component<IProps, IState> {
               marginTop: 20
             }}
           >
-            {movieName !== '' && (
-              <Text
-                style={{
-                  alignSelf: 'center',
-                  color: 'white',
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 18
-                }}
-              >
-                {movieName}
-              </Text>
-            )}
-          </Row>
-          <Row
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              marginTop: 10
-            }}
-          >
-            <Col
-              style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
-            >
-              <UserAvatar
-                userInitials={userInitials}
-                avatarColour={avatarColour}
-              />
-            </Col>
-            <Col style={{ backgroundColor: '#12152D' }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 18,
-                  marginTop: 5
-                }}
-              >
-                {username}
-              </Text>
-              {review.length > 100 ? (
-                this.text(review.substr(0, 100) + '...')
-              ) : (
-                <Text
-                  style={{
-                    color: 'grey',
-                    fontFamily: 'PoppinsMedium',
-                    fontSize: 10
-                  }}
-                >
-                  {review}
-                </Text>
-              )}
-            </Col>
             <Text
               style={{
-                alignSelf: 'flex-end',
-                color: 'red',
-                fontFamily: 'PoppinsMedium',
-                fontSize: 10,
-                marginRight: 5,
-                marginTop: 10,
-                position: 'absolute',
-                right: 5,
-                top: -5
-              }}
-            >
-              {moment(date).fromNow()}
-            </Text>
-            <Row
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                flex: 1
-              }}
-            >
-              {this._renderStars(rating)}
-            </Row>
-          </Row>
-        </View>
-      )
-    } else {
-      return (
-        <Row
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            marginTop: 40
-          }}
-        >
-          <Col
-            style={{ backgroundColor: '#12152D', width: 40, marginRight: 15 }}
-          >
-            <UserAvatar
-              userInitials={userInitials}
-              avatarColour={avatarColour}
-            />
-          </Col>
-          <Col style={{ backgroundColor: '#12152D' }}>
-            <Text
-              style={{
+                alignSelf: 'center',
                 color: 'white',
                 fontFamily: 'PoppinsMedium',
                 fontSize: 18
               }}
             >
-              {username} {movieName}
+              {movieName}
             </Text>
-            <Text
+          </Row>
+        )}
+        <Row
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            marginTop: 20,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Col size={2} style={{ backgroundColor: '#12152D', marginRight: 15 }}>
+            <UserAvatar
+              userInitials={userInitials}
+              avatarColour={avatarColour}
+            />
+          </Col>
+          <Col style={{ backgroundColor: '#12152D' }} size={10}>
+            <Row
               style={{
-                alignSelf: 'flex-end',
-                color: 'red',
-                fontFamily: 'PoppinsMedium',
-                fontSize: 10,
-                marginRight: 5,
-                marginTop: 10,
-                position: 'absolute',
-                right: 5,
-                top: -5
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
             >
-              {moment(date).fromNow()}
-            </Text>
-            <Text
+              <Col>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'PoppinsMedium',
+                    fontSize: 16,
+                    marginTop: 5,
+                    textTransform: 'capitalize'
+                  }}
+                >
+                  {username}
+                </Text>
+              </Col>
+              <Col>
+                <Text
+                  style={{
+                    color: '#686C86',
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    textAlign: 'right'
+                  }}
+                >
+                  {moment(date ? new Date(date) : new Date()).fromNow()}
+                </Text>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Text
+                  style={{
+                    color: '#686C86',
+                    fontFamily: 'PoppinsMedium',
+                    fontSize: 14
+                  }}
+                >
+                  {review.length > 100 && !show
+                    ? review.substr(0, 100) + '...'
+                    : review}
+                </Text>
+              </Col>
+            </Row>
+            <Row
               style={{
-                color: 'grey',
-                fontFamily: 'PoppinsMedium',
-                fontSize: 10,
-                marginBottom: 5,
-                marginTop: 10,
-                right: 5
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 10
               }}
             >
-              {review}
-            </Text>
-            <TouchableOpacity
-              style={{ justifyContent: 'flex-end' }}
-              onPress={() => this.setState({ show: false })}
-            >
-              <Text
-                style={{
-                  alignSelf: 'flex-end',
-                  color: 'red',
-                  fontFamily: 'PoppinsMedium',
-                  fontSize: 10,
-                  marginTop: 10
-                }}
-              >
-                Read Less
-              </Text>
-            </TouchableOpacity>
+              <Col style={{ alignItems: 'flex-start' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text
+                    style={{
+                      color: '#686C86',
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      paddingRight: 10
+                    }}
+                  >
+                    {likes ? likes.length : 0} Likes
+                  </Text>
+                  <Like
+                    onPress={this.likeReview}
+                    likes={likes}
+                    currentUserId={
+                      this.auth.getCurrentUser()
+                        ? this.auth.getCurrentUser().uid
+                        : undefined
+                    }
+                  />
+                </View>
+              </Col>
+              {review.length > 100 ? (
+                <Col style={{ alignItems: 'flex-end' }}>
+                  <TouchableOpacity
+                    onPress={() => this.setState({ show: !show })}
+                  >
+                    <Text
+                      style={{
+                        color: '#E10F0F',
+                        fontFamily: 'Poppins',
+                        fontSize: 12
+                      }}
+                    >
+                      Read {show ? `less` : `more`}
+                    </Text>
+                  </TouchableOpacity>
+                </Col>
+              ) : (
+                undefined
+              )}
+            </Row>
           </Col>
         </Row>
-      )
-    }
+      </View>
+    )
+  }
+}
+
+export const Like = (props: any) => {
+  if (!props.currentUserId) {
+    return (
+      <TouchableOpacity disabled>
+        <FontAwesomeIcon name="thumbs-o-up" size={20} color="#686C86" />
+      </TouchableOpacity>
+    )
+  }
+  const likes: Array<any> = props.likes
+  const userFound = likes.find(like => like.userId === props.currentUserId)
+  if (userFound) {
+    return (
+      <TouchableOpacity disabled>
+        <FontAwesomeIcon name="thumbs-up" size={20} color="#E10F0F" />
+      </TouchableOpacity>
+    )
+  } else {
+    return (
+      <TouchableOpacity onPress={props.onPress}>
+        <FontAwesomeIcon name="thumbs-o-up" size={20} color="#686C86" />
+      </TouchableOpacity>
+    )
   }
 }

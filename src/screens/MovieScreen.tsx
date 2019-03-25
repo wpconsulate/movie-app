@@ -7,7 +7,9 @@ import {
   Content,
   H1,
   Text,
-  Header
+  Header,
+  Row,
+  Col
 } from 'native-base'
 import {
   NavigationScreenProp,
@@ -18,13 +20,7 @@ import getTheme from '../native-base-theme/components'
 import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { SetOfMovies, Movie } from '../api'
-import {
-  PlayButton,
-  GenreContainer,
-  Slider,
-  MovieSidebar,
-  LeaveReview
-} from '../components'
+import { PlayButton, GenreContainer, Slider, MovieSidebar } from '../components'
 import {
   ActivityIndicator,
   ImageBackground,
@@ -36,7 +32,7 @@ import {
   Linking,
   AccessibilityInfo
 } from 'react-native'
-import { LinearGradient } from 'expo'
+import { LinearGradient, Location } from 'expo'
 import { formatDate } from '../lib'
 import { IImage } from '../api/Movie/Interfaces'
 import Review from '../components/ReviewTab'
@@ -48,9 +44,17 @@ import { Authentication } from '../api'
 import { SetOfUsers } from '../api/Collection'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome'
-import Likes from '../api/Collection/Likes';
+import Likes from '../api/Collection/Likes'
 import Cast from '../api/Cast/Cast'
 import DropdownAlert from 'react-native-dropdownalert'
+import { database } from 'firebase'
+import getLocation from '../helpers/getLocation'
+import axios from 'axios'
+import cinemaHeaders from '../helpers/cinemasHeader'
+import Config from '../Config'
+import CinemasSlider from '../components/CinemasSlider'
+import moment from 'moment'
+import _ from 'underscore'
 interface IProps {
   navigation?: NavigationScreenProp<
     NavigationRoute<NavigationParams>,
@@ -67,12 +71,16 @@ interface IState {
   showMenu: boolean
   isReviewing: boolean
   critiqueReviewList: []
-  userReviewList: []
+  userReviewList: Array<any>
   isAccessible: boolean
   currentUid: string
   currentUsername: string
   likeCount: number
   messages: Array<Message>
+  mmdbRating: number
+  imdbRating: number
+  showStoryline: boolean
+  nearbyCinemas: Array<any> | undefined
 }
 interface IStyle {
   playButtonView: ViewStyle
@@ -107,7 +115,8 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
   private movies = new SetOfMovies()
-  likes : Likes
+  private auth = new Authentication()
+  likes: Likes
   private dropdown: any
   constructor(props: IProps) {
     super(props)
@@ -125,7 +134,11 @@ export default class MovieScreen extends Component<IProps, IState> {
       showMenu: false,
       userReviewList: [],
       wantsToRev: false,
-      messages: []
+      messages: [],
+      mmdbRating: 0,
+      imdbRating: 0,
+      showStoryline: false,
+      nearbyCinemas: undefined
     }
     this.likes = new Likes()
   }
@@ -138,61 +151,140 @@ export default class MovieScreen extends Component<IProps, IState> {
     }
   }
 
+  onStorylinePress = () => {
+    this.setState({
+      showStoryline: !this.state.showStoryline
+    })
+  }
+
   async componentWillMount() {
     const { navigation } = this.props
-    
-    const id = await (navigation as any).getParam('movieId', 181808) // Star Wars: The Last Jedi
-    // tslint:disable-next-line: radix
-    const movie = (await this.movies.findMovieById(parseInt(id))) as Movie
-    const images = await movie.getImages(5, { type: 'backdrops' })
-    const casts = (await movie.getCasts()) as Array<Cast>
-    const isAccessible = await AccessibilityInfo.fetch()
-    const errorMessages = MessageStore.errorMessages
-    const successMessages = MessageStore.successMessages
-    const castImages = new Array<IImage>()
-    let likeObj = await this.likes.getLikes(movie.getId())
-    let Uid = 'test'
-    let username = 'test'
+    try {
+      let likeCount = 0
+      const id = await (navigation as any).getParam('movieId', 181808) // Star Wars: The Last Jedi
+      // tslint:disable-next-line: radix
+      const movie = (await this.movies.findMovieById(parseInt(id))) as Movie
+      const images = await movie.getImages(5, { type: 'backdrops' })
+      const casts = (await movie.getCasts()) as Array<Cast>
+      const isAccessible = await AccessibilityInfo.fetch()
+      const castImages = new Array<IImage>()
+      try {
+        const likes = await this.likes.getLikes(movie.getId())
+        likeCount = likes.count
+      } catch (err) {
+        // No likes for the movie
+      }
 
-    const currUser = new Authentication()
-    if (currUser.isLoggedIn()) {
-      Uid = (currUser.getCurrentUser() as firebase.User).uid
-      const CurrUSerDetails = await new SetOfUsers().getById(Uid)
-      username = CurrUSerDetails.name
-    }
+      let Uid = 'test'
+      let username = 'test'
+      if (this.auth.isLoggedIn()) {
+        Uid = (this.auth.getCurrentUser() as firebase.User).uid
+        const CurrUSerDetails = await new SetOfUsers().getById(Uid)
+        username = CurrUSerDetails.name
+      }
+      const mmdbRating = await movie.getMMDBRating()
+      const imdbRating = movie.getRating()
+      const critReview = await movie.getReview()
+      casts.forEach(cast => {
+        castImages.push({ url: cast.getImage() })
+      })
+      const location = (await getLocation()) as Location.LocationData
+      try {
+        const cinemasResponse = await axios.get(
+          `${Config.CINEMAS_API_BASE_URL}cinemasNearby/?n=10`,
+          {
+            headers: {
+              ...cinemaHeaders(
+                location.coords.latitude.toPrecision(8),
+                location.coords.longitude.toPrecision(8)
+              )
+            }
+          }
+        )
+        if (cinemasResponse.data.cinemas && cinemasResponse.data.cinemas[0]) {
+          const cinemaShowTimes = await axios.get(
+            `${Config.CINEMAS_API_BASE_URL}cinemaShowTimes/?cinema_id=${
+              cinemasResponse.data.cinemas[0].cinema_id
+            }&date=${moment().format('YYYY-MM-DD')}`,
+            {
+              headers: {
+                ...cinemaHeaders(
+                  location.coords.latitude.toPrecision(8),
+                  location.coords.longitude.toPrecision(8)
+                )
+              }
+            }
+          )
+          if (cinemaShowTimes.data.films) {
+            const filmExists = cinemaShowTimes.data.films.filter(
+              (film: any) => film.film_name === movie.getTitle()
+            )
+            if (filmExists && filmExists.length > 0) {
+              this.setState({
+                nearbyCinemas: cinemasResponse.data.cinemas
+              })
+            } else {
+              this.setState({ nearbyCinemas: undefined })
+            }
+          }
+        }
+      } catch (err) {
+        console.log(
+          `Error with cinemas API: MovieScreen (242). You've likely exceeded your API usage.`
+        )
+      }
+      this.setState({
+        castImages,
+        critiqueReviewList: critReview,
+        currentUid: Uid,
+        currentUsername: username,
+        images,
+        isAccessible,
+        isLoaded: true,
+        isReviewing: false,
+        movie,
+        likeCount,
+        imdbRating,
+        mmdbRating
+      })
+      database()
+        .ref(`review/${id}`)
+        .on('value', snapshot => {
+          if (snapshot) {
+            const reviews: Array<any> = []
+            snapshot.forEach(snap => {
+              const reviewID = snap.key
+              const element = snap.val()
+              let likes = []
+              if (element.likes) {
+                likes = Object.keys(element.likes).map(key => {
+                  return element.likes[key]
+                })
+              }
 
-    const critReview = await movie.getReview()
-    const userReview = await movie.getMMDBReview()
-
-    casts.forEach(cast => {
-      castImages.push({ url: cast.getImage() })
-    })
-    let result;
-    if(likeObj == null)
-    {
-      result = 0;
-    } else {
-      result = likeObj.count
-    }
-    this.setState({
-      castImages,
-      critiqueReviewList: critReview,
-      currentUid: Uid,
-      currentUsername: username,
-      images,
-      isAccessible,
-      isLoaded: true,
-      isReviewing: false,
-      movie,
-      userReviewList: userReview,
-      likeCount: result
-    })
-    if (MessageStore.message) {
-      this.dropdown.alertWithType(
-        MessageStore.message.type,
-        MessageStore.message.type.toUpperCase(),
-        MessageStore.message.message
-      )
+              reviews.push({
+                author: element.author,
+                content: element.content,
+                createdAt: element.createdAt,
+                id: reviewID as string,
+                rating: element.rating,
+                likes
+              })
+            })
+            this.setState({
+              userReviewList: _.sortBy(reviews, 'createdAt').reverse()
+            })
+          }
+        })
+      if (MessageStore.message) {
+        this.dropdown.alertWithType(
+          MessageStore.message.type,
+          MessageStore.message.type.toUpperCase(),
+          MessageStore.message.message
+        )
+      }
+    } catch (err) {
+      console.log('MovieScreen: 291', err)
     }
   }
 
@@ -204,12 +296,13 @@ export default class MovieScreen extends Component<IProps, IState> {
       images,
       castImages,
       userReviewList,
-      // critiqueReviewList,
       isAccessible,
-      isReviewing,
       currentUid,
-      currentUsername,
-      likeCount
+      likeCount,
+      mmdbRating,
+      imdbRating,
+      showStoryline,
+      nearbyCinemas
     } = this.state
     const navigation: any = this.props.navigation
     if (!isLoaded) {
@@ -229,8 +322,8 @@ export default class MovieScreen extends Component<IProps, IState> {
         <Header
           transparent={true}
           translucent={true}
-          iosBarStyle="light-content"
           noShadow={true}
+          iosBarStyle="light-content"
           style={{
             position: 'absolute',
             zIndex: -2
@@ -315,7 +408,35 @@ export default class MovieScreen extends Component<IProps, IState> {
               time={isAccessible ? movie.getRuntime(true) : movie.getRuntime()}
               likes={likeCount}
             />
-            <Storyline content={movie.getOverview()} />
+            <Ratings mmdb={mmdbRating} imdb={imdbRating} />
+            <Storyline
+              content={movie.getOverview()}
+              onPress={this.onStorylinePress}
+              show={showStoryline}
+            />
+            {nearbyCinemas && (
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginTop: 40
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'PoppinsMedium',
+                    marginBottom: 10,
+                    width: '100%'
+                  }}
+                >
+                  Nearby Cinemas
+                </Text>
+
+                <CinemasSlider data={nearbyCinemas} />
+              </View>
+            )}
             <View
               style={{
                 flex: 1,
@@ -389,10 +510,9 @@ export default class MovieScreen extends Component<IProps, IState> {
                   top: -10
                 }}
                 onPress={() => {
-                  // this.setState({ isReviewing: !isReviewing })
                   navigation.push('Review', {
                     movie: movie,
-                    userId: 'uRl0sszVPNfy5oQGznGuSzunhhB2'
+                    userId: this.auth.getCurrentUserUid()
                   })
                 }}
               >
@@ -419,8 +539,9 @@ export default class MovieScreen extends Component<IProps, IState> {
                     date={element.createdAt}
                     rating={element.rating}
                     userId={element.id}
+                    hideMovieTitle
                     movieId={movie.getId()}
-                    likes={element.likes ? element.likes : 0}
+                    likes={element.likes ? element.likes : undefined}
                   />
                 )
               })}
@@ -493,14 +614,10 @@ function ReleaseDate(props: any) {
       }}
     >
       <View style={{ marginHorizontal: 5 }}>
-        <Icon
-          type="SimpleLineIcons"
-          name="calendar"
-          style={{ color: '#fff' }}
-        />
+        <Icon type="EvilIcons" name="calendar" style={{ color: '#fff' }} />
       </View>
       <Text
-        style={{ color: '#fff', marginHorizontal: 5, fontSize: 14 }}
+        style={{ color: '#fff', marginHorizontal: 5, fontSize: 12 }}
         accessible={true}
         accessibilityHint={`The release date of this movie was the ${
           props.data
@@ -556,7 +673,7 @@ function MovieLikes(props: any) {
         accessibilityRole="text"
         accessibilityLabel={`Total Likes are ${props.likes}`}
       >
-       {props.likes} 
+        {props.likes}
       </Text>
     </View>
   )
@@ -585,8 +702,25 @@ function Storyline(props: any) {
           width: '100%'
         }}
       >
-        {props.content}
+        {props.content.length > 150 && !props.show
+          ? props.content.substr(0, 150) + '...'
+          : props.content}
       </Text>
+      {props.content.length > 150 ? (
+        <TouchableOpacity onPress={props.onPress} style={{ marginTop: 10 }}>
+          <Text
+            style={{
+              color: '#E10F0F',
+              fontFamily: 'Poppins',
+              fontSize: 15
+            }}
+          >
+            Read {props.show ? `less` : `more`}
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        undefined
+      )}
     </View>
   )
 }
@@ -596,6 +730,67 @@ function PlayContainer(props: any) {
     <View style={styles.playButtonView}>
       <PlayButton onPress={props.onPress} />
     </View>
+  )
+}
+function renderStars(stars: number, size: number, color: string, style?: any) {
+  const starsArray = []
+  for (let i = 0; i < 5; i++) {
+    if (stars <= i) {
+      starsArray.push(
+        <FontAwesomeIcons
+          key={i}
+          name="star-o"
+          size={size}
+          color={color}
+          style={style}
+        />
+      )
+    } else {
+      starsArray.push(
+        <FontAwesomeIcons
+          key={i}
+          name="star"
+          size={size}
+          color={color}
+          style={style}
+        />
+      )
+    }
+  }
+  return starsArray
+}
+export function Ratings(props: any) {
+  return (
+    <Row style={{ justifyContent: 'space-between', marginTop: 20 }}>
+      <Col>
+        <Row style={{ marginBottom: 2 }}>
+          {renderStars(props.mmdb, 28, '#E10F0F', { marginRight: 5 })}
+        </Row>
+        <Row>
+          <Text
+            style={{
+              fontFamily: 'PoppinsBold',
+              fontSize: 20,
+              color: '#E10F0F'
+            }}
+          >
+            mmdb
+          </Text>
+        </Row>
+      </Col>
+      <Col>
+        <Row style={{ justifyContent: 'flex-end', marginBottom: 2 }}>
+          {renderStars(props.imdb, 18, 'white', { marginLeft: 5 })}
+        </Row>
+        <Row style={{ justifyContent: 'flex-end' }}>
+          <Text
+            style={{ fontFamily: 'PoppinsBold', fontSize: 14, color: 'white' }}
+          >
+            IMDb
+          </Text>
+        </Row>
+      </Col>
+    </Row>
   )
 }
 
@@ -621,13 +816,13 @@ const styles = StyleSheet.create<IStyle>({
     flex: 1,
     flexWrap: 'wrap',
     fontFamily: 'PoppinsSemiBold',
-    fontSize: 40,
+    fontSize: 38,
     lineHeight: 50,
     padding: 5
   },
   titleView: {
     flexDirection: 'row',
     marginTop: 45,
-    maxWidth: 250
+    maxWidth: 300
   }
 })
