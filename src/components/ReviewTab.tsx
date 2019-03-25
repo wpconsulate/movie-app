@@ -16,7 +16,7 @@ interface IProps {
   movieId: number
   userId?: string
   rating: number
-  likes: [{ userId: string }]
+  likes?: [{ userId: string }]
   hideMovieTitle?: boolean
 }
 interface IState {
@@ -68,6 +68,15 @@ export default class Review extends Component<IProps, IState> {
               }
             }
           })
+
+      await database()
+        .ref('users')
+        .child(this.props.userId)
+        .child('reviews')
+        .child(this.props.movieId.toString())
+        .child('likes')
+        .push({ userId: this.auth.getCurrentUser().uid })
+          
         await database()
           .ref('review')
           .child(this.props.movieId.toString())
@@ -228,7 +237,7 @@ export default class Review extends Component<IProps, IState> {
               }}
             >
               <Col style={{ alignItems: 'flex-start' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                { likes !== undefined && <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text
                     style={{
                       color: '#686C86',
@@ -248,7 +257,7 @@ export default class Review extends Component<IProps, IState> {
                         : undefined
                     }
                   />
-                </View>
+                </View>}
               </Col>
               {review.length > 100 ? (
                 <Col style={{ alignItems: 'flex-end' }}>

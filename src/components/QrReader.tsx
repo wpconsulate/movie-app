@@ -14,6 +14,7 @@ interface IState {
     isLoading: boolean
     findFilm: boolean
     filmURL: string
+    filmFound: boolean
 }
 
 class QrReader extends Component <IProps, IState> {
@@ -25,7 +26,8 @@ class QrReader extends Component <IProps, IState> {
             movieId: 0,
             isLoading: true,
             findFilm: true,
-            filmURL: ''
+            filmURL: '',
+            filmFound: false
         }    
     }
 
@@ -45,10 +47,7 @@ class QrReader extends Component <IProps, IState> {
   }
 
    _handleBarCodeRead  =  async qrCode => {
-    Alert.alert(
-      'Scan successful!',
-      JSON.stringify(qrCode)
-    )
+    this.setState({ findFilm: false })
     let movieTitle = ''
     let test
     let poster = ''
@@ -64,19 +63,23 @@ class QrReader extends Component <IProps, IState> {
       test2 = test.title
       poster = test.poster_path
     }
+
+    Alert.alert(
+      'Scan successful!',
+      JSON.stringify(movieTitle)
+    )
     console.log(poster)
     console.log(test2)
     this.setState({ 
       isLoading: false, 
       movieId: film, 
       filmName: movieTitle, 
-      findFilm: false,
       filmURL: poster 
     })
   }
 
   render() {
-    const { filmName, movieId, hasCameraPermission, isLoading, findFilm, filmURL  } = this.state
+    const { filmName, movieId, filmFound, hasCameraPermission, isLoading, findFilm, filmURL  } = this.state
 
     if (isLoading) {
       return (
@@ -89,8 +92,7 @@ class QrReader extends Component <IProps, IState> {
         <Row style={{ alignItems: 'center', justifyContent: 'center' }} >
         {console.log(findFilm)}
 
-        { !findFilm
-        ? <View><Image 
+        { !findFilm ? <View><Image 
         style={{width: 150, height: 300}}
         source={{ uri: 'http://image.tmdb.org/t/p/w185/' + filmURL }} />
         </View>
@@ -108,7 +110,7 @@ class QrReader extends Component <IProps, IState> {
         </Row> 
         <Row style={{ flex: 1, flexDirection: 'column', alignSelf: 'center', justifyContent: 'center' }}>
         { !findFilm && <Button title={'Search Again'} onPress={() => this.setState({ findFilm: !findFilm }) }/>}
-        
+
         <Text
             style={{
               color: 'white',
@@ -119,6 +121,8 @@ class QrReader extends Component <IProps, IState> {
         > 
         {filmName}
         </Text>
+
+        { filmFound &&      
         <Button
           title="GO TO FILM"
           onPress={() => this.onPressItem(movieId)}
@@ -134,8 +138,7 @@ class QrReader extends Component <IProps, IState> {
             GO TO FILM
           </Text>
         </Button>
-
-
+        }
         </Row>
       </Container>
     )

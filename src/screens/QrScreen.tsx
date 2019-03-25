@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SvgUri from 'react-native-svg-uri'
 import {
   Container,
   Header,
@@ -7,21 +8,15 @@ import {
 } from 'native-base'
 import {
   Dimensions,
-  TouchableWithoutFeedback,
-  Keyboard,
   ActivityIndicator,
-  TouchableOpacity,
   View
 } from 'react-native'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
-import AutoHeightImage from 'react-native-auto-height-image'
 import QrReader from '../components/QrReader'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 interface IState {
     isLoading: boolean
-    show: boolean
 }
 interface IProps extends NavigationScreenProps {}
 
@@ -31,8 +26,7 @@ class QrScreen extends Component<IProps, IState> {
   constructor(props: NavigationScreenProps) {
     super(props)
     this.state = {
-      isLoading: true,
-      show: false
+      isLoading: true
     }
   }
   componentDidMount() {
@@ -40,7 +34,10 @@ class QrScreen extends Component<IProps, IState> {
   }
 
   render() {
-    const { isLoading, show } = this.state
+    const { isLoading } = this.state
+    const { width, height } = Dimensions.get('window')
+    const maxWidth = width / 3.5
+    const maxHeight = height / 4.5
 
     if ( isLoading ) {
       return(
@@ -52,19 +49,35 @@ class QrScreen extends Component<IProps, IState> {
 
     return (
       <Container style={{ backgroundColor: '#12152D' }} >
-        <Header transparent translucent iosBarStyle="light-content" noShadow />
-        <AutoHeightImage
-          source={require('../../assets/header.png')}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            width: '100%',
-            height: '15%',
-          }}
-          width={Dimensions.get('window').width}
-        />
+        <Header
+          transparent
+          translucent={true}
+          noShadow={true}
+          iosBarStyle="light-content"
+          // style={{
+          //   position: 'absolute',
+          //   zIndex: -2,
+          //   top: 0,
+          //   width: '100%',
+          //   height: Constants.statusBarHeight
+          // }}
+        >
+          <View
+            style={{
+              position: 'absolute',
+              width: maxWidth,
+              height: maxHeight,
+              right: 0,
+              top: -34
+            }}
+          >
+            <SvgUri
+              source={require('../../assets/red-blob.svg')}
+              width="100%"
+              height="100%"
+            />
+          </View>
+        </Header>
         <Content style={{ backgroundColor: '#12152D' }}  >
           <Row style={{  }} >
             <QrReader />

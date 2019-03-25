@@ -3,6 +3,8 @@ import { View, ActivityIndicator } from 'react-native'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { Container, Grid, Row, Col, Text, Content } from 'native-base'
+import Review from '../components/ReviewTab'
+
 interface IState {
   userID: string
   username: string
@@ -41,7 +43,7 @@ export default class ReviewsList extends React.Component<any, IState> {
   }
 
   render() {
-    const { isLoading } = this.state
+    const { isLoading, reviewList, userID } = this.state
 
     if (isLoading) {
       return (
@@ -52,12 +54,23 @@ export default class ReviewsList extends React.Component<any, IState> {
     }
 
     return (
-      <Container>
+      <Container style={{ backgroundColor: '#12152D' }} >
         <Content>
           <Grid>
             <Row>
               <Col>
-                <Text>Show me the money</Text>
+              {reviewList.map((element: any) => {
+                return (
+                  <Review
+                    key={element.movieId}
+                    review={element.content}
+                    date={element.createdAt}
+                    rating={element.rating}
+                    userId={userID}
+                    movieId={element.movieId}
+                  />
+                )
+              })}
               </Col>
             </Row>
           </Grid>
