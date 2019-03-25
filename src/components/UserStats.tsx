@@ -203,9 +203,11 @@ class UserStats extends React.Component<IPropsUser, IState> {
               <Text style={{ color: 'white', marginTop: 5 }}>
                 Total Entries:{this.state.totalEntries}
               </Text>
-              <Text style={{ color: 'white', marginTop: 5 }}>Review:0</Text>
-              <Text style={{ color: 'green', marginTop: 5, fontSize: 20 }}>
-                followers: {this.state.followerCount}
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Review:{this.checkifExist(this.props.userData.reviews)}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5, fontSize: 20 }}>
+                Followers: {this.state.followerCount}
               </Text>
             </Col>
 
