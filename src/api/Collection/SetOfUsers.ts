@@ -21,41 +21,6 @@ class SetOfUsers extends Array<User> {
     })
   }
 
-  public async getUserReviewsById(userId: string): Promise<any> {
-    interface ReviewObject {
-      content: string,
-      date: string,
-      movieId: string,
-      rating: number,
-      likes: Array<any>
-    }
-    const reviewList = new Array<ReviewObject>()
-    await this.database.database.ref('users/' + userId + '/reviews/').once(
-      'value',
-      element => {''
-        element.forEach((review: any) => {
-          const reviewID = review.key
-          const element = review.toJSON()
-          console.log(element)
-          // element.likes.forEach(element => {
-          //   console.log(element)
-          // });
-          reviewList.push({ 
-            content: element.content, 
-            date: element.date, 
-            movieId: reviewID, 
-            rating: element.rating,
-            likes: []
-           })    
-        })
-    },
-      (error: any) => {
-        console.error(error)
-      }
-    )
-    return reviewList
-  }
-
   public addUser(aUser: User) {
     super.push(aUser)
   }

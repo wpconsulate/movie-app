@@ -4,25 +4,30 @@ import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { Container, Grid, Row, Col, Text, Content } from 'native-base'
 import Review from '../components/ReviewTab'
+import { database } from 'firebase'
+import _ from 'lodash'
 
 interface IState {
   userID: string
   username: string
   userData: any
   isLoading: boolean
-  reviewList: []
+  userReviewList: Array<any>
+
 }
 
 export default class ReviewsList extends React.Component<any, IState> {
   private users = new SetOfUsers()
+
   constructor(props: any) {
     super(props)
     this.state = {
       isLoading: true,
-      reviewList: [],
       userData: undefined,
       userID: '',
-      username: ''
+      username: '',
+      userReviewList: []
+
     }
   }
   async componentWillMount() {
@@ -31,11 +36,38 @@ export default class ReviewsList extends React.Component<any, IState> {
     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
     const CurrUSerDetails = await this.users.getById(userID)
     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-    const userReviews = await this.users.getUserReviewsById(userID)
+
+    database()
+    .ref('users/' + userID + '/reviews/')
+    .on('value', snapshot => {
+      if (snapshot) {
+        const reviews: Array<any> = []
+        snapshot.forEach(snap => {
+          const reviewID = snap.key
+          const element = snap.val()
+          let likes = []
+          if (element.likes) {
+            likes = Object.keys(element.likes).map(key => {
+              return element.likes[key]
+            })
+          }
+
+          reviews.push({
+            content: element.content,
+            createdAt: element.createdAt,
+            movieId: reviewID as string,
+            rating: element.rating,
+            likes
+          })
+        })
+        this.setState({
+          userReviewList: _.sortBy(reviews, 'createdAt').reverse()
+        })
+      }
+    })
 
     this.setState({
       isLoading: false,
-      reviewList: userReviews,
       userData: CurrUSerDetails,
       userID: userID,
       username: CurrUSerDetails.name
@@ -43,7 +75,7 @@ export default class ReviewsList extends React.Component<any, IState> {
   }
 
   render() {
-    const { isLoading, reviewList, userID } = this.state
+    const { isLoading, userReviewList, userID } = this.state
 
     if (isLoading) {
       return (
@@ -59,7 +91,7 @@ export default class ReviewsList extends React.Component<any, IState> {
           <Grid>
             <Row>
               <Col>
-              {reviewList.map((element: any) => {
+              {userReviewList.map((element: any) => {
                 return (
                   <Review
                     key={element.movieId}
@@ -68,6 +100,7 @@ export default class ReviewsList extends React.Component<any, IState> {
                     rating={element.rating}
                     userId={userID}
                     movieId={element.movieId}
+                    likes={element.likes}
                   />
                 )
               })}
