@@ -600,7 +600,8 @@ function ReleaseDateRuntime(props: any) {
         alignContent: 'center',
         flex: 1,
         flexDirection: 'row',
-        marginTop: 40
+        marginTop: 40,
+        flexWrap: 'wrap'
       }}
     >
       <ReleaseDate date={props.date} />

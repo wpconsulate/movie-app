@@ -62,12 +62,14 @@ class QrReader extends Component <IProps, IState> {
       test = await new SetOfMovies().findMovieById(film)
       test2 = test.title
       poster = test.poster_path
+      Alert.alert(
+        'Scan successful!',
+        JSON.stringify(movieTitle)
+      )
+      this.setState({ filmFound: true })
     }
 
-    Alert.alert(
-      'Scan successful!',
-      JSON.stringify(movieTitle)
-    )
+
     console.log(poster)
     console.log(test2)
     this.setState({ 
@@ -122,8 +124,7 @@ class QrReader extends Component <IProps, IState> {
         {filmName}
         </Text>
 
-        { filmFound &&      
-        <Button
+        { filmFound && <Button
           title="GO TO FILM"
           onPress={() => this.onPressItem(movieId)}
         >
