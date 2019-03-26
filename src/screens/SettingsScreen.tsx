@@ -346,7 +346,8 @@ class SettingsScreen extends Component<IProps, IState> {
                           const currUser = new Authentication()
                           currUser.auth.signOut().then(() => {
                             UserStore.setIsLoggedIn(false)
-                          }) /*this.props.navigation.navigate('home');*/
+                          })
+                          this.props.navigation.navigate('Login')
                         }}
                       >
                         <Text>Logout</Text>

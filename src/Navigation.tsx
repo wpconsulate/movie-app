@@ -27,7 +27,7 @@ import { NavigationScreenProps } from 'react-navigation'
 const ProfileTabNavigator = createBottomTabNavigator(
   {
     Profile: { screen: ProfileScreen },
-    Friends: { screen: FriendsScreen },
+    Followers: { screen: FriendsScreen },
     Reviews: { screen: UserReviewScreen },
     Settings: { screen: SettingsScreen }
   },
@@ -44,7 +44,7 @@ const ProfileTabNavigator = createBottomTabNavigator(
               transparent
               accessible={true}
               accessibilityLabel={routeName}
-              accessibilityHint={'Navigate to the ' + routeName + ' screen'}
+              accessibilityHint={'Navigate to the Home screen'}
               accessibilityRole="button"
               accessibilityTraits="button"
             >
@@ -78,7 +78,7 @@ const ProfileTabNavigator = createBottomTabNavigator(
           case 'Reviews':
             name = 'inbox'
             break
-          case 'Friends':
+          case 'Followers':
             name = 'users'
         }
         return (

@@ -87,7 +87,7 @@ export default class ReviewsList extends React.Component<any, IState> {
 
     return (
       <Container style={{ backgroundColor: '#12152D' }} >
-        <Content>
+        <Content style={{ paddingHorizontal: 30 }} >
           <Grid>
             <Row>
               <Col>
