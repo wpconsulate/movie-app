@@ -5,22 +5,26 @@ import {
   withNavigation,
   NavigationScreenProp,
   NavigationRoute,
-  NavigationParams,
+  NavigationParams
 } from 'react-navigation'
+import UserAvatar from '../components/UserAvatar'
+
 interface IProps extends NavigationInjectedProps {
   userId: string
   username: string
+  userInnitial: string
+  avatarColour: string
   textColour?: string
 }
 const shapes = StyleSheet.create({
   pill: {
     height: 66,
     width: 66,
-    borderRadius: 100,
+    borderRadius: 100
   },
   text: {
-    color: 'white',
-  },
+    color: 'white'
+  }
 })
 
 function handleOnPress(
@@ -41,7 +45,12 @@ function UserIcon(props: IProps) {
       style={{ margin: 5, alignSelf: 'baseline', alignItems: 'center' }}
       onPress={() => handleOnPress(props.userId, props.navigation)}
     >
-      <Image style={[shapes.pill]} source={{ uri: image }} />
+      <UserAvatar
+        userInitials={props.userInnitial}
+        avatarColour={props.avatarColour}
+      />
+      {/* <Image style={[shapes.pill]} source={{ uri: image }} />
+      <Text style={shapes.text}>{props.username}</Text> */}
       <Text style={shapes.text}>{props.username}</Text>
     </TouchableOpacity>
   )

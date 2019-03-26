@@ -35,7 +35,9 @@ class Authentication {
     })
     await this.algolia.add({
       id: userId,
-      username: data.username
+      username: data.username,
+      userInitials: data.userInitials,
+      userAvatarColour: data.userAvatarColour
     })
     return user
   }

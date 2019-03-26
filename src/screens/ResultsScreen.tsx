@@ -56,12 +56,24 @@ class ResultsScreen extends Component<any, IState> {
           }
         })
         const users = await this.algolia.search({ query })
-        let foundUser: Array<{ id: number; username: string }> = []
+        let foundUser: Array<any> = []
         users.hits.forEach(element => {
           if (foundUser !== undefined) {
-            foundUser.push({ id: element.id, username: element.username })
+            foundUser.push({
+              id: element.id,
+              username: element.username,
+              userInitials: element.userInitials,
+              userAvatarColour: element.userAvatarColour
+            })
           } else {
-            foundUser = [{ id: element.id, username: element.username }]
+            foundUser = [
+              {
+                id: element.id,
+                username: element.username,
+                userInitials: element.userInitials,
+                userAvatarColour: element.userAvatarColour
+              }
+            ]
           }
           console.log(element.id)
           console.log(element.username)
@@ -170,6 +182,8 @@ class ResultsScreen extends Component<any, IState> {
                           key={e.id}
                           userId={e.id}
                           username={e.username}
+                          userInnitial={e.userInitials}
+                          avatarColour={e.userAvatarColour}
                         />
                       )
                     })
