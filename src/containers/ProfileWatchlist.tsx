@@ -31,7 +31,7 @@ export default class ProfileWatchlist extends Component<IProps, IState> {
   //this function is called when component has mounted
   async componentDidMount() {
     const { userid } = this.props;
-    console.log(userid)
+    // console.log(userid)
     // let SetOfMovie = new SetOfMovies();
     // SetOfMovie = await SetOfMovie.getTrending();
     const watching = await this.Watchlist.getList(userid, "watching"); 

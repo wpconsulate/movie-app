@@ -95,7 +95,6 @@ class SettingsScreen extends Component<IProps, IState> {
 
   async onRegisterPress() {
     const { isEdited, email, name, username, userInitials, userAvatarColour, userID } = this.state
-    const user = 
     console.log(username)
 
     if (isEdited && name !== '' && username !== '' && userInitials !== '' && userAvatarColour !== '')
@@ -236,6 +235,7 @@ class SettingsScreen extends Component<IProps, IState> {
                         fontSize: 14
                       }}
                       label="EMAIL"
+                      value={email}
                       autoFocus={false}
                       keyboardType="email-address"
                       autoCorrect={true}
@@ -295,7 +295,6 @@ class SettingsScreen extends Component<IProps, IState> {
                         value={username}
                         onChangeText={(text) => this.setState({ username: text, isEdited: true })}
                       />
-                      <Text>CURRENT PROFILE PICTURE</Text>
                       <TouchableOpacity
                         style={{
                           position: 'absolute',
