@@ -106,13 +106,14 @@ export default class ProfilePic extends React.Component<IProps, any> {
   render() {
     return (
       <View style={{ alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, color: 'red' }}>
+        <Text style={{ fontSize: 24, color: 'red' }}>
           {this.props.username}
         </Text>
 
         <UserAvatar
           userInitials={this.props.userInitial}
           avatarColour={this.props.userIconColour}
+          size={'large'}
         />
 
         {this.state.loggedinUserID != this.props.userID ? (

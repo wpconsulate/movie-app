@@ -6,6 +6,7 @@ interface IProps {
   userInitials?: string
   avatarColour?: string
   marginRight?: number
+  size?: 'small' | 'medium' | 'large' | 'xlarge'
 }
 
 export default class UserAvatar extends Component<IProps> {
@@ -22,7 +23,7 @@ export default class UserAvatar extends Component<IProps> {
           style={{
             backgroundColor: 'blue',
             borderRadius: 37.5,
-            height: 40,
+            height: this.props.size,
             width: 40
           }}
         />
@@ -32,7 +33,7 @@ export default class UserAvatar extends Component<IProps> {
     return (
       <View style={{ marginRight: this.props.marginRight }}>
         <Avatar
-          size="medium"
+          size={this.props.size ? this.props.size : 'medium'}
           rounded={true}
           title={userInitials}
           // title="MT"

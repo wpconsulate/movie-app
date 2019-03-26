@@ -39,21 +39,27 @@ const ProfileTabNavigator = createBottomTabNavigator(
       return {
         headerTitle: (
           <StyleProvider style={getTheme(mmdb)}>
-            <Button onPress={() => navigation.navigate('Home')} transparent
+            <Button
+              onPress={() => navigation.navigate('Home')}
+              transparent
               accessible={true}
               accessibilityLabel={routeName}
-              accessibilityHint={"Navigate to the " + routeName + " screen"}
+              accessibilityHint={'Navigate to the ' + routeName + ' screen'}
               accessibilityRole="button"
               accessibilityTraits="button"
             >
               <Text
-                style={{ fontFamily: 'PoppinsBold', color: '#fff', fontSize: 18 }}
+                style={{
+                  fontFamily: 'PoppinsBold',
+                  color: '#fff',
+                  fontSize: 18
+                }}
               >
                 {routeName}
-            </Text>
+              </Text>
             </Button>
           </StyleProvider>
-        ),
+        )
       }
     },
     defaultNavigationOptions: ({ navigation }) => ({

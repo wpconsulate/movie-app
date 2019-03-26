@@ -17,19 +17,11 @@ import ProfileWatchlist from '../containers/ProfileWatchlist'
 import Authentication from '../api/Authentication'
 import SetOfUsers from '../api/Collection/SetOfUsers'
 import { Button, Spinner, Icon, Header } from 'native-base'
-import UserAvatar from '../components/UserAvatar'
-import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
-import AutoHeightImage from 'react-native-auto-height-image'
 import { User } from '../api'
 import { IImage } from '../api/Movie/Interfaces'
 import ProfileSlider, { IDataParams } from '../components/ProfileSlider'
 
-import SettingsScreens from './SettingsScreen'
-import Review from '../components/ReviewTab'
-import UserReviewScreen from './UserReviewScreen'
-import FriendsScreen from './FriendsScreen'
-import SvgUri from 'react-native-svg-uri'
 import ProfilePic from '../components/ProfilePic'
 interface IState {
   userID: string
@@ -47,8 +39,6 @@ interface IProps extends NavigationScreenProps {
   userID: string
 }
 export default class ProfileScreen extends React.Component<IProps, any> {
-  // static navigationOptions = navigationOptions
-
   constructor(props: any) {
     super(props)
     this.state = {
@@ -168,28 +158,27 @@ class ProfileContent extends React.Component<any, IState> {
       >
         <View
           style={{
+            backgroundColor: '#12152D'
+          }}
+        >
+          <ProfilePic
+            userIconColour={this.state.userAvatarColour}
+            userInitial={this.state.userInitials}
+            userID={this.props.userID}
+            username={this.state.username}
+          />
+          <UserStats
+            userData={this.state.userData}
+            userId={this.state.userID}
+          />
+        </View>
+        <View
+          style={{
             flex: 1,
             backgroundColor: '#12152D',
             padding: 10
           }}
         >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}
-          >
-            <ProfilePic
-              userIconColour={this.state.userAvatarColour}
-              userInitial={this.state.userInitials}
-              userID={this.props.userID}
-              username={this.state.username}
-            />
-            <UserStats
-              userData={this.state.userData}
-              userId={this.state.userID}
-            />
-          </View>
           <View style={{ marginTop: 10, flexDirection: 'row' }}>
             {this.returnFriendsSlider()}
           </View>
@@ -204,157 +193,3 @@ class ProfileContent extends React.Component<any, IState> {
     )
   }
 }
-
-// class FriendsList extends React.Component {
-//   render() {
-//     return (
-//       <ScrollView style={{ backgroundColor: '#12152D' }}>
-//         <Text style={{
-//           alignSelf: 'center',
-//           color: 'white',
-//           fontSize: 30,
-//           fontWeight: 'bold'
-//           }}>Settings</Text>
-
-//           {/* <Review
-//             review="testing this review"
-//             username="shezan"
-//             url="../../assets/profilePicture/p1.png"
-//           />
-//           <Review review="testing this review" username="shezan" url="sdfs" />
-//           <Review review="testing this review" username="shezan" url="sdfs" /> */}
-
-//       </ScrollView>
-//     )
-//   }
-// }
-
-// interface IState2 {
-//   userID: string
-//   username: string
-//   userData: any
-//   isLoading: boolean
-//   reviewList: []
-// }
-
-// class ReviewsList extends React.Component<any, IState2> {
-//   private users = new SetOfUsers()
-//   constructor(props: any) {
-//     super(props)
-//     this.state = {
-//       isLoading: true,
-//       reviewList: [],
-//       userData: undefined,
-//       userID: '',
-//       username: ''
-//     }
-//   }
-//   async componentWillMount() {
-//     const currUser = new Authentication()
-//     const userID = currUser.getCurrentUser().uid
-//     // let userID = "4ZmT7I7oZYdBy2YYaw5BS0keAhu1"
-//     const CurrUSerDetails = await this.users.getById(userID)
-//     // let CurrUSerDetails = await new SetOfUsers().getById("4ZmT7I7oZYdBy2YYaw5BS0keAhu1") //uncomment this if you dont want to login everytime to see the profile page
-//     const userReviews = await this.users.getUserReviewsById(userID)
-
-//     this.setState({
-//       isLoading: false,
-//       reviewList: userReviews,
-//       userData: CurrUSerDetails,
-//       userID: userID,
-//       username: CurrUSerDetails.name
-//     })
-//   }e
-
-//   render() {
-//     const { isLoading } = this.state
-
-//     if (isLoading) {
-//       return (
-//         <View>
-//           <ActivityIndicator />
-//         </View>
-//       )
-//     }
-
-//     return (
-//       <ScrollView style={{ backgroundColor: '#12152D' }}>
-//         <Text
-//           style={{
-//             alignSelf: 'center',
-//             color: 'red',
-//             fontSize: 30,
-//             fontWeight: 'bold'
-//           }}
-//         >
-//           Your reviews
-//         </Text>
-
-//          {/* {reviewList.map((element: any) => {
-//           return (
-//             <Review
-//               key={element.id}
-//               review={element.content}
-//               movieId={element.movieId}
-//               rating={element.rating}
-//               userId={element.userId}
-//             />
-//           )
-//         })} */}
-//       </ScrollView>
-//     )
-//   }
-// }
-
-// const TabNavigator = createBottomTabNavigator(
-//   {
-//     All: { screen: ProfileScreen },
-//     Friends: { screen: FriendsScreen },
-//     Review: { screen: UserReviewScreen },
-//     Settings: { screen: SettingsScreens }
-//   },
-//   {
-//     defaultNavigationOptions: ({ navigation }) => ({
-//       tabBarIcon: ({ focused }) => {
-//         const { routeName } = navigation.state
-//         let type: any = 'Feather'
-//         let name
-//         const color = focused ? 'white' : '#686C86'
-//         if (routeName === 'All') {
-//           name = 'user'
-//         } else if (routeName === 'Settings') {
-//           name = 'settings'
-//         } else if (routeName === 'Review') {
-//           name = 'rate-review'
-//           type = 'MaterialIcons'
-//         } else if (routeName === 'Friends') {
-//           name = 'users'
-//         }
-
-//         // You can return any component that you like here! We usually use an
-//         // icon component from react-native-vector-icons
-//         return (
-//           <Icon
-//             type={type}
-//             name={name as string}
-//             style={{ color: color, fontSize: 30, paddingTop: 5 }}
-//           />
-//         )
-//       }
-//     }),
-//     tabBarOptions: {
-//       activeTintColor: 'white',
-//       inactiveTintColor: '#686C86',
-//       labelStyle: {
-//         fontSize: 15,
-//         fontWeight: '400'
-//       },
-//       style: {
-//         backgroundColor: '#1d2249',
-//         height: 60
-//       }
-//     }
-//   }
-// )
-
-// export default createAppContainer(TabNavigator)

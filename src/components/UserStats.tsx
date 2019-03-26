@@ -6,6 +6,7 @@ import { Row, Col, Grid } from 'native-base'
 import { withNavigation } from 'react-navigation'
 import moment from 'moment'
 import User from '../api/User/User'
+import { Tooltip } from 'react-native-elements'
 
 // given to StatsKey to provide circle colour, text next to circle and total watch in that section
 interface IProps {
@@ -139,12 +140,30 @@ class UserStats extends React.Component<IPropsUser, IState> {
 
   render() {
     const style = StyleSheet.create({
-      parent: {
-        flex: 1,
-        marginLeft: 10
-      },
+      parent: { margin: 10 },
       text: {
-        color: 'white'
+        color: 'white',
+        margin: 10
+      },
+      profileDetail: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        backgroundColor: '#686C86',
+        marginTop: 5,
+        borderRadius: 10
+      },
+      detailContent: {
+        margin: 5,
+        alignItems: 'center'
+      },
+      title: {
+        fontSize: 18,
+        color: '#fff'
+      },
+      count: {
+        fontSize: 16,
+        color: '#fff'
       }
     })
     const data = [
@@ -166,6 +185,60 @@ class UserStats extends React.Component<IPropsUser, IState> {
 
     return (
       <View style={style.parent}>
+        <View style={style.profileDetail}>
+          <View style={style.detailContent}>
+            <Text style={style.title}>Followers</Text>
+            <Text style={style.count}>{this.state.followerCount}</Text>
+          </View>
+          <View style={style.detailContent}>
+            <Text style={style.title}>Total Entries</Text>
+            <Text style={style.count}>{this.state.totalEntries}</Text>
+          </View>
+          <View style={style.detailContent}>
+            <Text style={style.title}>Review</Text>
+            <Text style={style.count}>
+              {this.checkifExist(this.props.userData.reviews)}
+            </Text>
+          </View>
+        </View>
+        <Row>
+          <Col style={{ alignItems: 'flex-end' }}>
+            <Text style={{ color: 'white', marginTop: 5 }}>
+              Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
+            </Text>
+          </Col>
+        </Row>
+        {/* <Grid>
+          <Row>
+            <Col>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Total Entries:{this.state.totalEntries}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Review:{this.checkifExist(this.props.userData.reviews)}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5, fontSize: 20 }}>
+                Followers: {this.state.followerCount}
+              </Text>
+            </Col>
+
+            <Col>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Days:{this.state.totalDays}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Hours:{this.state.totalHours}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Minutes: {this.state.totalRuntime}
+              </Text>
+              <Text style={{ color: 'white', marginTop: 5 }}>
+                Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
+              </Text>
+            </Col>
+          </Row>
+        </Grid> */}
+
         <StackedBarChart
           style={{ height: 40 }}
           keys={keys}
@@ -197,36 +270,21 @@ class UserStats extends React.Component<IPropsUser, IState> {
           total={this.state.plannedCount.toString()}
         />
 
-        <Grid>
-          <Row>
-            <Col>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Total Entries:{this.state.totalEntries}
-              </Text>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Review:{this.checkifExist(this.props.userData.reviews)}
-              </Text>
-              <Text style={{ color: 'white', marginTop: 5, fontSize: 20 }}>
-                Followers: {this.state.followerCount}
-              </Text>
-            </Col>
-
-            <Col>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Days:{this.state.totalDays}
-              </Text>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Hours:{this.state.totalHours}
-              </Text>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Minutes: {this.state.totalRuntime}
-              </Text>
-              <Text style={{ color: 'white', marginTop: 5 }}>
-                Joined: {moment(this.props.userData.joined).format('DD/MM/YY')}
-              </Text>
-            </Col>
-          </Row>
-        </Grid>
+        <Col style={{ alignItems: 'flex-end' }}>
+          <Tooltip
+            popover={<Text>Total Minutes: {this.state.totalRuntime}</Text>}
+          >
+            <Text style={{ color: 'white', marginTop: 5 }}>
+              Days:{this.state.totalDays}
+            </Text>
+            <Text style={{ color: 'white', marginTop: 5 }}>
+              Hours:{this.state.totalHours}
+            </Text>
+            {/* <Text style={{ color: 'white', marginTop: 5 }}>
+            Minutes: {this.state.totalRuntime}
+          </Text> */}
+          </Tooltip>
+        </Col>
       </View>
     )
   }
