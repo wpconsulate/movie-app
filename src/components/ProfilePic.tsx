@@ -2,6 +2,8 @@ import React from 'react'
 import { Text, View, Image, TouchableOpacity } from 'react-native'
 import { Authentication, User, SetOfUsers } from '../api'
 import UserAvatar from './UserAvatar'
+import { database } from 'firebase'
+import sendPushNotification from '../helpers/sendPushNotification'
 
 interface IProps {
   username: string
@@ -72,12 +74,12 @@ export default class ProfilePic extends React.Component<IProps, any> {
         this.props.userInitial,
         this.props.userIconColour
       )
+      this.sendNotification()
       this.setState({
         friendIconColor: '#686C86',
         text: 'Unfollow',
         isFollowing: !this.state.isFollowing
       })
-
       //add pushnotification
       // await database()
       //           .ref('users')
@@ -102,6 +104,24 @@ export default class ProfilePic extends React.Component<IProps, any> {
       //           .child('likes')
       //           .push({ userId: this.auth.getCurrentUser().uid })
     }
+  }
+  sendNotification = async () => {
+    await database()
+      .ref('users')
+      .child(this.props.userID)
+      .once('value', snap => {
+        console.log('snap', snap.val())
+        if (snap.exists()) {
+          if (snap.val().expoPushToken) {
+            console.log('attempting to send notification')
+            sendPushNotification(
+              snap.val().expoPushToken,
+              `Mmdb: New follower`,
+              `${this.state.loggedinUserName} has followed you.`
+            )
+          }
+        }
+      })
   }
   render() {
     return (

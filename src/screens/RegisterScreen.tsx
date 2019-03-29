@@ -12,7 +12,7 @@ import {
   Input,
   Form,
   Item,
-  Label,
+  Label
 } from 'native-base'
 import AutoHeightImage from 'react-native-auto-height-image'
 import getTheme from '../native-base-theme/components'
@@ -20,7 +20,7 @@ import mmdb from '../native-base-theme/variables/mmdb'
 import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
 import { Authentication, Database } from '../api'
-
+import { Permissions, Notifications } from 'expo'
 interface IState {
   email: string
   password: string
@@ -33,7 +33,7 @@ interface IState {
   userInitials: string
   userAvatarColour: string
 }
-interface IProps extends NavigationScreenProps { }
+interface IProps extends NavigationScreenProps {}
 
 class RegisterScreen extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps) => {
@@ -57,7 +57,7 @@ class RegisterScreen extends Component<IProps, IState> {
             </Text>
           </Button>
         </StyleProvider>
-      ),
+      )
     }
   }
 
@@ -84,66 +84,119 @@ class RegisterScreen extends Component<IProps, IState> {
   }
   // user = new User('', 'test');
   onRegisterPress() {
-    const { email, password, confirmPassword, name, username, userInitials, userAvatarColour } = this.state
-    if (email !== null && password !== null && name !== null && username !== null )
-    {
-      if(password === confirmPassword)
-      {
-      this.setState({ isLoaded: false })
-      this.auth
-        .register(email, password, {
-          email,
-          name,
-          username,
-          userInitials,
-          userAvatarColour
-
-        })
-        .then(() => {
-          this.setState({ isLoaded: true })
-          Alert.alert('Successfully registered!')
-          this.props.navigation.navigate('Home');
-        })
-        .catch(error => {
-          Alert.alert(error.message)
-          this.props.navigation.navigate('Login');
-
-        })
+    const {
+      email,
+      password,
+      confirmPassword,
+      name,
+      username,
+      userInitials,
+      userAvatarColour
+    } = this.state
+    if (
+      email !== null &&
+      password !== null &&
+      name !== null &&
+      username !== null
+    ) {
+      if (password === confirmPassword) {
+        this.setState({ isLoaded: false })
+        this.auth
+          .register(email, password, {
+            email,
+            name,
+            username,
+            userInitials,
+            userAvatarColour
+          })
+          .then(user => {
+            this.setState({ isLoaded: true })
+            Alert.alert('Successfully registered!')
+            this.props.navigation.navigate('Home')
+            console.log(user)
+            this.createNotification((user.user as firebase.User).uid)
+          })
+          .catch(error => {
+            Alert.alert(error.message)
+            this.props.navigation.navigate('Login')
+          })
       } else {
         Alert.alert('The two Passwords must be the same')
       }
-    }
-    else {
+    } else {
       Alert.alert('Please Input all the data before Registering!')
     }
   }
+  createNotification = async (userID: any) => {
+    // Check for existing permissions...
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+    let finalStatus = status
+    if (status !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+      finalStatus = status
+    }
+    // If no permission, exit the function
+    if (finalStatus !== 'granted') {
+      return
+    }
+    const token = await Notifications.getExpoPushTokenAsync()
+    auth().onAuthStateChanged(user => {
+      console.log('user', user)
+      if (user) {
+        database()
+          .ref('users')
+          .child(user.uid)
+          .update({
+            expoPushToken: token
+          })
+      }
+    })
+  }
 
-  setUserAvatar(name: string){
-    name  = name || '';
+  setUserAvatar(name: string) {
+    name = name || ''
 
-    let nameSplit = String(name).toUpperCase().split(' ')
+    let nameSplit = String(name)
+      .toUpperCase()
+      .split(' ')
     let initials = ''
     let charIndex = 0
     let colourIndex = 0
     let colourChosen = ''
     let colours = [
-      "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
-      "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
+      '#1abc9c',
+      '#2ecc71',
+      '#3498db',
+      '#9b59b6',
+      '#34495e',
+      '#16a085',
+      '#27ae60',
+      '#2980b9',
+      '#8e44ad',
+      '#2c3e50',
+      '#f1c40f',
+      '#e67e22',
+      '#e74c3c',
+      '#ecf0f1',
+      '#95a5a6',
+      '#f39c12',
+      '#d35400',
+      '#c0392b',
+      '#bdc3c7',
+      '#7f8c8d'
     ]
 
     if (nameSplit.length == 1) {
-      initials = nameSplit[0] ? nameSplit[0].charAt(0):'?';
+      initials = nameSplit[0] ? nameSplit[0].charAt(0) : '?'
     } else {
-        initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
+      initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0)
     }
-    charIndex     = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64;
-    colourIndex   = charIndex % 20;
+    charIndex = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64
+    colourIndex = charIndex % 20
 
     colourChosen = colours[colourIndex]
     this.setState({ userInitials: initials, userAvatarColour: colourChosen })
   }
-
-
 
   render() {
     if (!this.state.isLoaded) {
@@ -168,7 +221,9 @@ class RegisterScreen extends Component<IProps, IState> {
           }}
           width={Dimensions.get('window').width}
         />
-        <Content style={{ marginTop: 60, paddingHorizontal: 30 , paddingBottom: 20}}>
+        <Content
+          style={{ marginTop: 60, paddingHorizontal: 30, paddingBottom: 20 }}
+        >
           <Row
             style={{ alignItems: 'center', justifyContent: 'space-between' }}
           >
@@ -178,7 +233,7 @@ class RegisterScreen extends Component<IProps, IState> {
                   fontFamily: 'PoppinsBold',
                   fontSize: 24,
                   color: '#12152D',
-                  marginTop: 50,
+                  marginTop: 50
                 }}
               >
                 Register
@@ -190,8 +245,8 @@ class RegisterScreen extends Component<IProps, IState> {
                   fontFamily: 'PoppinsMedium',
                   fontSize: 13,
                   color: '#696969',
-                  textAlign:'center',
-                  marginTop: 50,
+                  textAlign: 'center',
+                  marginTop: 50
                 }}
               >
                 Sign up for a new account
@@ -206,7 +261,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     style={{
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#696969'
                     }}
                   >
                     YOUR NAME
@@ -218,7 +273,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     value={this.state.name}
                     onChangeText={text => {
                       this.setState({ name: text }),
-                      this.setUserAvatar(this.state.name)
+                        this.setUserAvatar(this.state.name)
                     }}
                   />
                 </Item>
@@ -227,7 +282,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     style={{
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#696969'
                     }}
                   >
                     EMAIL
@@ -247,7 +302,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     style={{
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#696969'
                     }}
                   >
                     USERNAME
@@ -267,7 +322,7 @@ class RegisterScreen extends Component<IProps, IState> {
                     style={{
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#696969'
                     }}
                   >
                     PASSWORD
@@ -283,13 +338,18 @@ class RegisterScreen extends Component<IProps, IState> {
                         this.setState({ password: text })
                       }}
                     />
-                    <Button onPress={() => { this.setState({ showPass: !this.state.showPass })}}  transparent>
+                    <Button
+                      onPress={() => {
+                        this.setState({ showPass: !this.state.showPass })
+                      }}
+                      transparent
+                    >
                       <Text
                         style={{
                           color: '#E20F0F',
                           fontFamily: 'PoppinsMedium',
                           fontSize: 12,
-                          fontWeight: 'bold',
+                          fontWeight: 'bold'
                         }}
                       >
                         Show
@@ -302,13 +362,13 @@ class RegisterScreen extends Component<IProps, IState> {
                     style={{
                       fontSize: 14,
                       fontFamily: 'PoppinsMedium',
-                      color: '#696969',
+                      color: '#696969'
                     }}
                   >
                     CONFIRM PASSWORD
                   </Label>
                   <Row>
-                  <Input
+                    <Input
                       label="CONFIRM PASSWORD"
                       keyboardType="default"
                       autoCapitalize="none"
@@ -317,13 +377,13 @@ class RegisterScreen extends Component<IProps, IState> {
                         this.setState({ confirmPassword: text })
                       }}
                     />
-                    </Row>
-                    </Item>
+                  </Row>
+                </Item>
                 <Row
                   style={{
                     marginTop: 40,
                     alignContent: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'center'
                   }}
                 >
                   <Col style={{ maxWidth: 250 }}>
@@ -332,7 +392,11 @@ class RegisterScreen extends Component<IProps, IState> {
                       primary
                       block
                       onPress={() => this.onRegisterPress()}
-                      style={{ backgroundColor: '#E20F0F', minHeight: 50, marginTop:15 }}
+                      style={{
+                        backgroundColor: '#E20F0F',
+                        minHeight: 50,
+                        marginTop: 15
+                      }}
                     >
                       <Text>Create Account</Text>
                     </Button>
@@ -347,11 +411,13 @@ class RegisterScreen extends Component<IProps, IState> {
               alignItems: 'center',
               marginTop: 20,
               paddingLeft: 40,
-              paddingBottom: 50,
+              paddingBottom: 50
             }}
           >
             <Col>
-              <Text style={{textAlign: 'center', fontSize: 13}}>Already a user?</Text>
+              <Text style={{ textAlign: 'center', fontSize: 13 }}>
+                Already a user?
+              </Text>
             </Col>
             <Col>
               <Button
@@ -360,9 +426,14 @@ class RegisterScreen extends Component<IProps, IState> {
                   this.props.navigation.navigate('Login')
                 }}
               >
-                <Text style={{
-                  color:'black',
-                  fontSize:13}}>Login now</Text>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 13
+                  }}
+                >
+                  Login now
+                </Text>
               </Button>
             </Col>
           </Row>

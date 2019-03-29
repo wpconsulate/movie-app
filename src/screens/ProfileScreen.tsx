@@ -55,7 +55,7 @@ export default class ProfileScreen extends React.Component<IProps, any> {
       const userID = (currUser.getCurrentUser() as firebase.User).uid
       this.setState({ userID: userID, isLoading: false })
     }
-    Keyboard.dismiss
+    Keyboard.dismiss()
   }
   render() {
     const { width, height } = Dimensions.get('window')

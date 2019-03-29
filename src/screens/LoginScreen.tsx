@@ -23,6 +23,7 @@ import UserStore from '../stores/UserStore'
 import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
+import { Permissions, Notifications } from 'expo'
 
 interface IState {
   email: string
@@ -51,13 +52,16 @@ class LoginScreen extends Component<IProps, IState> {
     const { email, password } = this.state
     this.auth
       .login(email, password)
-      .then(() => {
+      .then(user => {
         Keyboard.dismiss()
         Alert.alert('Successfully logged in!')
         this.props.navigation.navigate('Profile', {
           userId: this.auth.getCurrentUser().uid
         })
         UserStore.setIsLoggedIn(true)
+        console.log('new new new new new')
+        this.createNotification((user.user as firebase.User).uid)
+        //this.createNotification(user)
       })
       .catch((error: any) => {
         console.error(error)
@@ -65,7 +69,31 @@ class LoginScreen extends Component<IProps, IState> {
         this.props.navigation.navigate('Login')
       })
   }
-
+  createNotification = async (userID: any) => {
+    // Check for existing permissions...
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+    let finalStatus = status
+    if (status !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+      finalStatus = status
+    }
+    // If no permission, exit the function
+    if (finalStatus !== 'granted') {
+      return
+    }
+    const token = await Notifications.getExpoPushTokenAsync()
+    auth().onAuthStateChanged(user => {
+      console.log('user', user)
+      if (user) {
+        database()
+          .ref('users')
+          .child(user.uid)
+          .update({
+            expoPushToken: token
+          })
+      }
+    })
+  }
   render() {
     const { email, password } = this.state
     return (
