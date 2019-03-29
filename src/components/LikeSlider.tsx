@@ -74,7 +74,9 @@ class LikeSlider extends Component<IProps, IState> {
                 return (
                   <TouchableOpacity
                     onPress={() => this.onPress(index)}
-                    onLongPress={() => 
+                    onLongPress={() => {
+                      if(this.props.userid != undefined)
+                    {
                       ActionSheet.show(
                         {
                           options: OPTIONS,
@@ -85,19 +87,16 @@ class LikeSlider extends Component<IProps, IState> {
                           const option = OPTIONS[buttonIndex].toLowerCase()
                           if(option !== "Cancel")
                           {
-                            if(this.props.userid == null)
-                          {
-                            Alert.alert("Please Login First!")
-                          } else{
                             const stringed = JSON.stringify(item.url);
                             let removeSpeech = stringed.substring(1, stringed.length-1);
                             removeSpeech = removeSpeech.substring(0, removeSpeech.indexOf('?'));
                             this.user.addFavActor(removeSpeech, this.props.userid)
-                          }
                           }  
                           
                         }
                       )
+                    }
+                  }
                     }
                     key={index}
                   >
