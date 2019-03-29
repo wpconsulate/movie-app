@@ -48,26 +48,38 @@ class LoginScreen extends Component<IProps, IState> {
     this.auth = new Authentication()
   }
 
+  validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase())
+}
+
   onLoginPress() {
     const { email, password } = this.state
-    this.auth
-      .login(email, password)
-      .then(user => {
-        Keyboard.dismiss()
-        Alert.alert('Successfully logged in!')
-        this.props.navigation.navigate('Profile', {
-          userId: this.auth.getCurrentUser().uid
+    
+    if (email !== undefined && password !== undefined){
+
+      if (this.validateEmail(email)){
+        this.auth
+        .login(email, password)
+        .then(user => {
+          Keyboard.dismiss()
+          Alert.alert('Successfully logged in!')
+          this.props.navigation.navigate('Profile', {
+            userId: this.auth.getCurrentUser().uid
+          })
+          UserStore.setIsLoggedIn(true)
+          console.log('new new new new new')
+          this.createNotification((user.user as firebase.User).uid)
+          //this.createNotification(user)
         })
-        UserStore.setIsLoggedIn(true)
-        console.log('new new new new new')
-        this.createNotification((user.user as firebase.User).uid)
-        //this.createNotification(user)
-      })
-      .catch((error: any) => {
-        console.error(error)
-        this.setState({ errorMsg: 'please check login details' })
-        this.props.navigation.navigate('Login')
-      })
+        .catch((error: any) => {
+          this.setState({ errorMsg: 'please check login details' })
+          this.props.navigation.navigate('Login')
+        })
+      } else {
+        Alert.alert('Please enter valid login credentials!')
+      }
+    }
   }
   createNotification = async (userID: any) => {
     // Check for existing permissions...
