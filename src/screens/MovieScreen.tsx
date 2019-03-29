@@ -332,6 +332,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             zIndex: -2
           }}
         />
+                {this.auth.getCurrentUser() &&
         <TouchableOpacity
           style={{
             backgroundColor: '#12152D',
@@ -399,6 +400,7 @@ export default class MovieScreen extends Component<IProps, IState> {
             />
           </View>
         </TouchableOpacity>
+                }
         <MovieSidebar movie={movie} userid={currentUid as string} likes={this.likes} />
         <Content style={{ flex: 1, paddingBottom: 20 }}>
           <Backdrop uri={movie.getBackdrop()} />
