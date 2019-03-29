@@ -21,6 +21,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { Dimensions, Alert, ActivityIndicator } from 'react-native'
 import { Authentication, Database } from '../api'
 import { Permissions, Notifications } from 'expo'
+import { auth, database } from 'firebase'
 interface IState {
   email: string
   password: string
@@ -145,7 +146,7 @@ class RegisterScreen extends Component<IProps, IState> {
       if (user) {
         database()
           .ref('users')
-          .child(user.uid)
+          .child(userID)
           .update({
             expoPushToken: token
           })

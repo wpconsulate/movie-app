@@ -24,7 +24,7 @@ import { navigationOptions } from '../helpers/header'
 import { NavigationScreenProps } from 'react-navigation'
 import AutoHeightImage from 'react-native-auto-height-image'
 import { Permissions, Notifications } from 'expo'
-
+import { auth, database } from 'firebase'
 interface IState {
   email: string
   password: string
@@ -49,33 +49,30 @@ class LoginScreen extends Component<IProps, IState> {
   }
 
   validateEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
-}
+  }
 
   onLoginPress() {
     const { email, password } = this.state
-    
-    if (email !== undefined && password !== undefined){
 
-      if (this.validateEmail(email)){
+    if (email !== undefined && password !== undefined) {
+      if (this.validateEmail(email)) {
         this.auth
-        .login(email, password)
-        .then(user => {
-          Keyboard.dismiss()
-          Alert.alert('Successfully logged in!')
-          this.props.navigation.navigate('Profile', {
-            userId: this.auth.getCurrentUser().uid
+          .login(email, password)
+          .then(user => {
+            Keyboard.dismiss()
+            Alert.alert('Successfully logged in!')
+            this.props.navigation.navigate('Profile', {
+              userId: this.auth.getCurrentUser().uid
+            })
+            UserStore.setIsLoggedIn(true)
+            this.createNotification((user.user as firebase.User).uid)
           })
-          UserStore.setIsLoggedIn(true)
-          console.log('new new new new new')
-          this.createNotification((user.user as firebase.User).uid)
-          //this.createNotification(user)
-        })
-        .catch((error: any) => {
-          this.setState({ errorMsg: 'please check login details' })
-          this.props.navigation.navigate('Login')
-        })
+          .catch((error: any) => {
+            this.setState({ errorMsg: 'please check login details' })
+            this.props.navigation.navigate('Login')
+          })
       } else {
         Alert.alert('Please enter valid login credentials!')
       }
@@ -99,7 +96,7 @@ class LoginScreen extends Component<IProps, IState> {
       if (user) {
         database()
           .ref('users')
-          .child(user.uid)
+          .child(userID)
           .update({
             expoPushToken: token
           })
