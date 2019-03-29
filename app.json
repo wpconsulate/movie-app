@@ -24,6 +24,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "A movie & tv show reviewing application. (SHU Project)",
+    "githubUrl": "https://github.com/lukepaoloni/movie-app"
   }
 }
