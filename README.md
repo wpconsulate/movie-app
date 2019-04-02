@@ -5,6 +5,8 @@ A movie & tv show reviewing IOS & Android app built with React Native & Expo.
 <img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/home.png" width="350" />
 <img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/movie.png" width="350" />
 </p>
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
