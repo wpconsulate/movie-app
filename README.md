@@ -1,7 +1,8 @@
 # Mmdb - My Movie Database
 
 A movie & tv show reviewing IOS & Android app built with React Native & Expo.
-<img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/home.png" />
+
+<img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/home.png" width="200" />
 
 ## Getting Started
 
