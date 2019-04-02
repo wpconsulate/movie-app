@@ -3,7 +3,7 @@
 A movie & tv show reviewing IOS & Android app built with React Native & Expo.
 
 <img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/home.png" width="350" />
-<img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/movie.png" width="350" />
+<img src="https://raw.githubusercontent.com/lukepaoloni/movie-app/master/docs/movie.png" width="350" style="float: left;" />
 
 ## Getting Started
 
